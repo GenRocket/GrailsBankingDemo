@@ -10,9 +10,9 @@ class Branch {
   String country
   String phoneNumber
 
-//  static hasMany = [
-//    accounts : Account
-//  ]
+  static hasMany = [
+    accounts : Account
+  ]
 
   static constraints = {
     externalId nullable: false, unique: true
