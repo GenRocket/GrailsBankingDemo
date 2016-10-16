@@ -4,6 +4,6 @@ class TransactionType {
   String name
 
   static constraints = {
-    name nullable: false, blank: false, maxSize: 25, unique: true
+    name nullable: false, blank: false, maxSize: 35, unique: true
   }
 }
