@@ -19,7 +19,7 @@ class Card {
 
   static constraints = {
     nameOnCard nullable: false, blank: false, maxSize: 50
-    cardNumber nullable: false, blank: false, maxSize: 16
+    cardNumber nullable: false, blank: false, maxSize: 16, unique: true
     securityCode nullable: false
     pinNumber nullable: false
     enabled nullable: false
