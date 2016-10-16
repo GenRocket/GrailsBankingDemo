@@ -2,7 +2,7 @@ package com.banking.demo
 
 class CustomerLevel {
   String name
-  String overdraftAllowed = Boolean.FALSE
+  Boolean overdraftAllowed = Boolean.FALSE
   Integer dailyWithdrawalLimit
   Integer monthlyMaxTransfersAllowed
 
