@@ -1,7 +1,6 @@
 package com.banking.demo
 
 class Customer {
-  Integer pinNumber
   Boolean enabled = Boolean.FALSE
   User user
   Account account
@@ -12,7 +11,6 @@ class Customer {
   ]
 
   static constraints = {
-    pinNumber nullable: false
     enabled nullable: false
     user nullable: false
     account nullable: false
