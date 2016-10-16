@@ -20,7 +20,7 @@ environments {
         dataSource {
             logSql = false
             username = "root"
-            password = "nextdefault"
+            password = "admin"
             dbCreate = "update"
             driverClassName = "com.mysql.jdbc.Driver"
             url = "jdbc:mysql://localhost/acme_bank"
