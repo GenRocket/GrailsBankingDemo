@@ -21,7 +21,7 @@ class Card {
     nameOnCard nullable: false, blank: false, maxSize: 50
     cardNumber nullable: false, blank: false, maxSize: 16, unique: true
     securityCode nullable: false
-    pinNumber nullable: false
+    pinNumber nullable: true
     enabled nullable: false
     dateIssued nullable: false
     dateExpired nullable: false
