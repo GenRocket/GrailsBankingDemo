@@ -1,9 +1,10 @@
 package com.genrocket.bank.testDataLoader
 
-import com.genrocket.bank.Transaction
 import com.genRocket.tdl.LoaderDTO
-import com.genRocket.tdl.TestDataLoader
 import com.genRocket.tdl.ScenarioParams
+import com.genRocket.tdl.TestDataLoader
+import com.genrocket.bank.Transaction
+
 import java.text.SimpleDateFormat
 
 /**

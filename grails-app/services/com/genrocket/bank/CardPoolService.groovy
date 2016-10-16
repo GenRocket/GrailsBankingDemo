@@ -26,7 +26,7 @@ class CardPoolService {
     if (!cardPool) {
       cardPool = CardPool.first()
 
-      if (cardPool.used) {
+      if (cardPool?.used) {
         return null
       }
     }
