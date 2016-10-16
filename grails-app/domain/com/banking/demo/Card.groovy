@@ -11,7 +11,7 @@ class Card {
     Date dateExpired
     Date dateActivated
     Date dateDeactivated
-    CustomerLevel customerLevel
+    CardType cardType
 
     static belongsTo = [
             customer: Customer
@@ -27,6 +27,5 @@ class Card {
         dateExpired nullable: false
         dateActivated nullable: true
         dateDeactivated nullable: true
-        customerLevel nullable: false
     }
 }

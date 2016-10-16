@@ -23,7 +23,7 @@
                 <form action='${createLink(controller: 'home', action: 'login')}' method='POST' id='loginForm'>
                     <div class="form-group"><label class="col-sm-5 control-label">Card Number:</label>
                         <input type="text" placeholder="**** **** **** ****" title="Please enter you card number"
-                               name="cardNumber" id="cardNumber" class="form-control">
+                               name="cardNumber" id="cardNumber" class="form-control" value="${loginCO?.cardNumber}">
                     </div>
                     <div class="form-group"><label class="col-sm-5 control-label">Pin Number:</label>
                         <input type="password" placeholder="****" title="Please enter you pin number"

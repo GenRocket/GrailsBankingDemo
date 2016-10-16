@@ -3,7 +3,6 @@ package com.banking.demo
 class Customer {
   Boolean enabled = Boolean.FALSE
   User user
-  Account account
   CustomerLevel customerLevel
 
   static belongsTo = [
