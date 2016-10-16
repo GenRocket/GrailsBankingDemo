@@ -1,4 +1,4 @@
-<%@ page import="com.banking.demo.User" %>
+<%@ page import="com.genrocket.bank.User" %>
 <!DOCTYPE html>
 <html>
 <head>
