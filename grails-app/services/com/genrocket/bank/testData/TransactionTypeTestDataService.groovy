@@ -18,10 +18,6 @@ class TransactionTypeTestDataService {
   def loadData(Integer loopCount = 1, Map<String, Object> domainMap = null) {
     println "Loading data for TransactionType..."
 
-    if (domainMap) {
-    }
-
-
     if (TransactionType.count() == 0) {
 
       def transactionTypeList = (LoaderDTO[]) TransactionTypeTestDataLoader.load(loopCount)

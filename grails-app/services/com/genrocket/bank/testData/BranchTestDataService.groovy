@@ -18,10 +18,6 @@ class BranchTestDataService {
   def loadData(Integer loopCount = 1, Map<String, Object> domainMap = null) {
     println "Loading data for Branch..."
 
-    if (domainMap) {
-    }
-
-
     if (Branch.count() == 0) {
 
       def branchList = (LoaderDTO[]) BranchTestDataLoader.load(loopCount)

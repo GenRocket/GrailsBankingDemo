@@ -18,10 +18,6 @@ class UserTestDataService {
   def loadData(Integer loopCount = 1, Map<String, Object> domainMap = null) {
     println "Loading data for User..."
 
-    if (domainMap) {
-    }
-
-
     if (User.count() == 0) {
 
       def userList = (LoaderDTO[]) UserTestDataLoader.load(loopCount)

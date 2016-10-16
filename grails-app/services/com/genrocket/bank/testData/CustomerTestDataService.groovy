@@ -27,12 +27,12 @@ class CustomerTestDataService {
     Account account = null
     CustomerLevel customerLevel = null
     User user = null
+
     if (domainMap) {
       account = (Account) domainMap['account']
       customerLevel = (CustomerLevel) domainMap['customerLevel']
       user = (User) domainMap['user']
     }
-
 
     if (Customer.count() == 0) {
       if (!account) {

@@ -29,7 +29,6 @@ class TransactionTestDataService {
       transactionType = (TransactionType) domainMap['transactionType']
     }
 
-
     if (Transaction.count() == 0) {
       if (!account) {
         accountTestDataService.loadData()

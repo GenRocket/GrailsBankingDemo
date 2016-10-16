@@ -18,10 +18,6 @@ class CardPoolTestDataService {
   def loadData(Integer loopCount = 1, Map<String, Object> domainMap = null) {
     println "Loading data for CardPool..."
 
-    if (domainMap) {
-    }
-
-
     if (CardPool.count() == 0) {
 
       def cardPoolList = (LoaderDTO[]) CardPoolTestDataLoader.load(loopCount)

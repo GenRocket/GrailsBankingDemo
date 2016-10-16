@@ -18,10 +18,6 @@ class CardTypeTestDataService {
   def loadData(Integer loopCount = 1, Map<String, Object> domainMap = null) {
     println "Loading data for CardType..."
 
-    if (domainMap) {
-    }
-
-
     if (CardType.count() == 0) {
 
       def cardTypeList = (LoaderDTO[]) CardTypeTestDataLoader.load(loopCount)

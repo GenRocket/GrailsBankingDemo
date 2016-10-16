@@ -19,5 +19,30 @@ class CardPoolService {
   def delete(CardPool cardPool) {
     cardPool.delete()
   }
+
+  def synchronized nextCardNumber() {
+    CardPool cardPool = CardPool.findByNextAvailable(true)
+
+    if (!cardPool) {
+      cardPool = CardPool.first()
+
+      if (cardPool.used) {
+        return null
+      }
+    }
+
+    cardPool.used = true
+    cardPool.nextAvailable = false
+    cardPool.save(flush: true)
+
+    CardPool nextCardPool = CardPool.findById(cardPool.id + 1)
+
+    if (nextCardPool) {
+      nextCardPool.nextAvailable = true
+      nextCardPool.save(flush: true)
+    }
+
+    return cardPool.cardNumber
+  }
 }
     

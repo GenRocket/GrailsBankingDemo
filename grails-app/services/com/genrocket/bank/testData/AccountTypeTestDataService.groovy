@@ -18,10 +18,6 @@ class AccountTypeTestDataService {
   def loadData(Integer loopCount = 1, Map<String, Object> domainMap = null) {
     println "Loading data for AccountType..."
 
-    if (domainMap) {
-    }
-
-
     if (AccountType.count() == 0) {
 
       def accountTypeList = (LoaderDTO[]) AccountTypeTestDataLoader.load(loopCount)

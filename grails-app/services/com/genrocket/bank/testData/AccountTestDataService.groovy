@@ -1,6 +1,9 @@
 package com.genrocket.bank.testData
 
 import com.genRocket.tdl.LoaderDTO
+import com.genrocket.bank.CardType
+import com.genrocket.bank.CustomerLevel
+import com.genrocket.bank.User
 import org.springframework.transaction.annotation.Transactional
 
 import com.genrocket.bank.testDataLoader.AccountTestDataLoader
@@ -18,17 +21,26 @@ class AccountTestDataService {
   def accountService
   def accountTypeTestDataService
   def branchTestDataService
+  def userTestDataService
+  def cardTypeTestDataService
+  def customerLevelTestDataService
 
   def loadData(Integer loopCount = 1, Map<String, Object> domainMap = null) {
     println "Loading data for Account..."
 
     AccountType accountType = null
     Branch branch = null
+    User user = null
+    CardType cardType = null
+    CustomerLevel customerLevel = null
+
     if (domainMap) {
       accountType = (AccountType) domainMap['accountType']
       branch = (Branch) domainMap['branch']
+      user = (User) domainMap['user']
+      cardType = (CardType) domainMap['cardType']
+      customerLevel = (CustomerLevel ) domainMap['customerLevel']
     }
-
 
     if (Account.count() == 0) {
       if (!accountType) {
@@ -41,6 +53,21 @@ class AccountTestDataService {
         branch = Branch.first()
       }
 
+      if (!user) {
+        userTestDataService.loadData()
+        user = User.first()
+      }
+
+      if (!cardType) {
+        cardTypeTestDataService.loadData()
+        cardType = CardType.first()
+      }
+
+      if (!customerLevel) {
+        customerLevelTestDataService.loadData()
+        customerLevel = customerLevel.first()
+      }
+
       def accountList = (LoaderDTO[]) AccountTestDataLoader.load(loopCount)
 
       accountList.each { node ->
@@ -48,7 +75,7 @@ class AccountTestDataService {
 
         account.accountType = accountType
         account.branch = branch
-        accountService.save(account)
+        accountService.save(user, branch, cardType, accountType, customerLevel)
       }
     }
   }

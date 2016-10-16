@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import groovy.time.TimeCategory
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -7,9 +8,32 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Transactional
 class AccountService {
+  def customerService
+  def cardService
 
-  def save(Account account) {
+
+  def save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
+    Account account = new Account(
+      branch: branch,
+      accountType: accountType
+    )
+
     account.save()
+
+    if (!account.hasErrors()) {
+      Customer customer = new Customer(
+        enabled: false,
+        user: user,
+        account: account,
+        customerLevel: customerLevel
+      )
+
+      customerService.save(customer)
+
+      if (!customer.hasErrors()) {
+        cardService.save(cardType, customer)
+      }
+    }
   }
 
   def update(Account account) {
@@ -19,5 +43,6 @@ class AccountService {
   def delete(Account account) {
     account.delete()
   }
+
 }
     
