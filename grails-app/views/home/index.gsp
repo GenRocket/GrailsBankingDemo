@@ -14,26 +14,19 @@
             </div>
 
             <div class="hpanel">
-                <g:if test='${flash.message && flash.success}'>
-                    <div class="alert alert-block alert-success" style="margin: 5px;">
-                        ${flash.message}
+                <g:if test="${loginCO?.hasErrors()}">
+                    <div class="alert alert-block alert-danger">
+                        <g:renderErrors bean="${loginCO}" as="list"/>
                     </div>
                 </g:if>
 
-                <g:if test='${flash.message && !flash.success}'>
-                    <div class="alert alert-block alert-danger" style="margin: 5px;">
-                        <h4 class="alert-heading">Login Error</h4>
-                        ${flash.message}
-                    </div>
-                </g:if>
-
-                <form action='${postUrl}' method='POST' id='loginForm'>
+                <form action='${createLink(controller: 'home', action: 'login')}' method='POST' id='loginForm'>
                     <div class="form-group"><label class="col-sm-5 control-label">Card Number:</label>
-                        <input type="text" placeholder="**** **** **** ****" title="Please enter you card number" required="" value=""
-                               name="cardNumber" id="cardNumber" class="form-control">
+                        <input type="text" placeholder="**** **** **** ****" title="Please enter you card number"
+                               name="cardNumber" id="cardNumber" class="form-control" value="${loginCO?.cardNumber}">
                     </div>
                     <div class="form-group"><label class="col-sm-5 control-label">Pin Number:</label>
-                        <input type="text" placeholder="****" title="Please enter you pin number" required="" value=""
+                        <input type="password" placeholder="****" title="Please enter you pin number"
                                name="pinNumber" id="pinNumber" class="form-control">
                     </div>
 
