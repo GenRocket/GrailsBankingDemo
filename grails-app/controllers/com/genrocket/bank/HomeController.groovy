@@ -21,7 +21,10 @@ class HomeController {
         }
     }
 
-    def menu() {
+    def menu() {}
 
+    def exit() {
+        session.invalidate()
+        redirect(action: "index")
     }
 }
