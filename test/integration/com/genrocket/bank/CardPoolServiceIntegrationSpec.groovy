@@ -27,6 +27,55 @@ class CardPoolServiceIntegrationSpec extends IntegrationSpec {
     cardPool.id
   }
 
+  void "test cardNumber for Null"() {
+    given:
+
+    cardPoolTestDataService.loadData()
+    CardPool cardPool = CardPool.first()
+    cardPool.cardNumber = null
+
+    when:
+
+    cardPool.save()
+
+    then:
+
+    cardPool.errors.getFieldError("cardNumber").code == "nullable"
+  }
+
+  void "test nextAvailable for Null"() {
+    given:
+
+    cardPoolTestDataService.loadData()
+    CardPool cardPool = CardPool.first()
+    cardPool.nextAvailable = null
+
+    when:
+
+    cardPool.save()
+
+    then:
+
+    cardPool.errors.getFieldError("nextAvailable").code == "nullable"
+  }
+
+  void "test used for Null"() {
+    given:
+
+    cardPoolTestDataService.loadData()
+    CardPool cardPool = CardPool.first()
+    cardPool.used = null
+
+    when:
+
+    cardPool.save()
+
+    then:
+
+    cardPool.errors.getFieldError("used").code == "nullable"
+
+  }
+
   void "test cardNumber for unique"() {
     given:
 
