@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>Welcome to Acme ATM</title>
+    <title>Welcome to GenRocket Bank ATM</title>
     <meta name="layout" content="main"/>
 </head>
 
@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="text-center m-b-md">
-                <h2>Welcome to Acme ATM</h2>
+                <h2>Welcome to GenRocket Bank ATM</h2>
             </div>
 
             <div class="hpanel">
