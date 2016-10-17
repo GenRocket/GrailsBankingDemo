@@ -12,14 +12,6 @@ class CardPoolService {
     cardPool.save()
   }
 
-  def update(CardPool cardPool) {
-    cardPool.save()
-  }
-
-  def delete(CardPool cardPool) {
-    cardPool.delete()
-  }
-
   def synchronized nextCardNumber() {
     CardPool cardPool = CardPool.findByNextAvailable(true)
 
