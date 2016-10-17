@@ -31,8 +31,8 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.findByCardTypeAndCustomer(cardType, customer)
     card.id
-    card.cardType = cardType
-    card.customer = customer
+    card.cardType == cardType
+    card.customer == customer
 
     card.enabled
     card.cardNumber
@@ -79,24 +79,6 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     then:
 
     Card.get(id) == null
-  }
-
-
-  void "test activated for Null"() {
-    given:
-
-    cardTestDataService.loadData()
-    Card card = Card.first()
-    card.activated = null
-
-    when:
-
-    cardService.update(card);
-
-    then:
-
-    card.errors.getFieldError("activated").code == "nullable"
-
   }
 
   void "test cardNumber for Null"() {
