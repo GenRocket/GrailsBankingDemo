@@ -44,42 +44,6 @@ class CustomerServiceIntegrationSpec extends IntegrationSpec {
     customer.id
   }
 
-  void "update customer"() {
-    given:
-
-    customerTestDataService.loadData()
-    def customer = Customer.first()
-    def id = customer.id
-
-    when:
-
-    Boolean enabled = customer.enabled ? false : true
-    customer.enabled = enabled
-    customerService.update(customer)
-
-    then:
-
-    def temp = Customer.get(id)
-    temp.enabled == enabled
-  }
-
-  void "delete customer"() {
-    given:
-
-    customerTestDataService.loadData()
-    def customer = Customer.first()
-    def id = customer.id
-
-    when:
-
-    customerService.delete(customer)
-
-    then:
-
-    Customer.get(id) == null
-  }
-
-
   void "test account for Null"() {
     given:
 
@@ -89,7 +53,7 @@ class CustomerServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    customerService.update(customer);
+    customer.save()
 
     then:
 
@@ -106,7 +70,7 @@ class CustomerServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    customerService.update(customer);
+    customer.save()
 
     then:
 
@@ -123,7 +87,7 @@ class CustomerServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    customerService.update(customer);
+    customer.save()
 
     then:
 
@@ -140,12 +104,52 @@ class CustomerServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    customerService.update(customer);
+    customer.save()
 
     then:
 
     customer.errors.getFieldError("user").code == "nullable"
 
+  }
+
+  void "test enable true"() {
+    given:
+
+    customerTestDataService.loadData()
+    Customer customer = Customer.first()
+    Integer id = customer.id
+
+    customer.enabled = false
+    customer.save()
+
+    when:
+
+    customerService.enableCustomer(customer)
+    customer = Customer.get(id)
+
+    then:
+
+    customer.enabled
+  }
+
+  void "test enable false"() {
+    given:
+
+    customerTestDataService.loadData()
+    Customer customer = Customer.first()
+    Integer id = customer.id
+
+    customer.enabled = true
+    customer.save()
+
+    when:
+
+    customerService.disableCustomer(customer)
+    customer = Customer.get(id)
+
+    then:
+
+    !customer.enabled
   }
 }
     

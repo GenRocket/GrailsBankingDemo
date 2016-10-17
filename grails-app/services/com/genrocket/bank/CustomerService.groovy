@@ -12,12 +12,14 @@ class CustomerService {
     customer.save()
   }
 
-  def update(Customer customer) {
+  def enableCustomer(Customer customer) {
+    customer.enabled = true
     customer.save()
   }
 
-  def delete(Customer customer) {
-    customer.delete()
+  def disableCustomer(Customer customer) {
+    customer.enabled = false
+    customer.save()
   }
 }
     
