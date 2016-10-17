@@ -5,8 +5,7 @@ class Card {
   String cardNumber
   Integer securityCode
   Integer pinNumber
-  Boolean enabled = Boolean.FALSE
-  Boolean activated = Boolean.FALSE
+  Boolean enabled = Boolean.TRUE
   Date dateIssued
   Date dateExpired
   Date dateActivated

@@ -37,6 +37,7 @@ class CardService {
       Card card = new Card(
         dateIssued: dateIssued,
         dateExpired: dateExpired,
+        enabled: true,
         nameOnCard: parseFullName(customer.user),
         cardNumber: cardPoolService.nextCardNumber(),
         securityCode: createSecurityCode(),

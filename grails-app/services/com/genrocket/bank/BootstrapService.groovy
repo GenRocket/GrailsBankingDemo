@@ -26,5 +26,15 @@ class BootstrapService {
         customerLevelIndex = 0
       }
     }
+
+    User user = User.first()
+    List<Customer> customers = Customer.findAllByUser(user) as Customer[]
+
+    customers.each { customer ->
+      Card card = Card.findByCustomer(customer)
+      card.dateActivated = new Date()
+      card.pinNumber = 123456
+      card.save()
+    }
   }
 }

@@ -31,6 +31,20 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.findByCardTypeAndCustomer(cardType, customer)
     card.id
+    card.cardType = cardType
+    card.customer = customer
+
+    card.enabled
+    card.cardNumber
+    card.nameOnCard
+    card.securityCode
+    card.dateIssued
+    card.dateExpired
+
+    !card.pinNumber
+    !card.dateActivated
+    !card.dateDeactivated
+
   }
 
   void "update card"() {
