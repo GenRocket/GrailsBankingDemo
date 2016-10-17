@@ -22,6 +22,7 @@ class AccountService {
     if (!account.hasErrors()) {
       Customer customer = new Customer(
         enabled: false,
+        active: false,
         user: user,
         account: account,
         customerLevel: customerLevel
