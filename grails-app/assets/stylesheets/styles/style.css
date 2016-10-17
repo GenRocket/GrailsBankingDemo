@@ -784,8 +784,23 @@ body.blank {
 .dropdown-menu.hdropdown li {
   padding: 6px 12px;
   text-align: left;
-  background: #fafbfc;
-  border-bottom: 1px solid #e4e5e7;
+    background-color: #1a82f7;
+    background-repeat: repeat-x;
+
+    /* Safari 4-5, Chrome 1-9 */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1a82f7), to(#2F2727));
+
+    /* Safari 5.1, Chrome 10+ */
+    background: -webkit-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* IE 10 */
+    background: -ms-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #2F2727, #1a82f7);
 }
 .dropdown-menu.filedropdown li {
   padding: 6px 6px;
@@ -808,7 +823,23 @@ body.blank {
 }
 .dropdown-menu.hdropdown li:hover,
 .dropdown-menu.filedropdown li:hover {
-  background: #f1f3f6;
+    background-color: #1a82f7;
+    background-repeat: repeat-x;
+
+    /* Safari 4-5, Chrome 1-9 */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1a82f7), to(#2F2727));
+
+    /* Safari 5.1, Chrome 10+ */
+    background: -webkit-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* IE 10 */
+    background: -ms-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #2F2727, #1a82f7);
 }
 .dropdown-menu.hdropdown li.summary {
   padding: 6px 12px;
@@ -821,8 +852,23 @@ body.blank {
 .navbar-nav .open > a:hover,
 .navbar-nav .open > a:focus {
   color: inherit;
-  background: #f7f8fa;
-  border-bottom: 1px solid #e4e5e7;
+    background-color: #1a82f7;
+    background-repeat: repeat-x;
+
+    /* Safari 4-5, Chrome 1-9 */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1a82f7), to(#2F2727));
+
+    /* Safari 5.1, Chrome 10+ */
+    background: -webkit-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* IE 10 */
+    background: -ms-linear-gradient(top, #2F2727, #1a82f7);
+
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #2F2727, #1a82f7);
 }
 .chat-avatar {
   width: 36px;

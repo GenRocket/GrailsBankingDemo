@@ -18,4 +18,8 @@ class AccountController {
             }
         }
     }
+
+    def doWithdrawal() {
+
+    }
 }
