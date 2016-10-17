@@ -41,9 +41,9 @@ class AccountService {
     if (customer) {
       CustomerLevel customerLevel = customer.customerLevel
       return customerLevel.overdraftAllowed
+    } else {
+      return false
     }
-
-    return false
   }
 
   def update(Account account) {
