@@ -3701,3 +3701,7 @@ ul.h-list li:hover a {
     margin-left: 10px;
   }
 }
+
+#bank-menu .col-sm-6 {
+    cursor: pointer;
+}
