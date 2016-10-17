@@ -35,6 +35,17 @@ class AccountService {
     }
   }
 
+  def checkOverdraftAllowed(User user, Account account) {
+    Customer customer = Customer.findByUserAndAccount(user, account)
+
+    if (customer) {
+      CustomerLevel customerLevel = customer.customerLevel
+      return customerLevel.overdraftAllowed
+    }
+
+    return false
+  }
+
   def update(Account account) {
     account.save()
   }
