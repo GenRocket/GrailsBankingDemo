@@ -17,7 +17,7 @@ class HomeController {
             bankingService.setSelectedCard(card)
             redirect(action: 'menu')
         } else {
-            render(view: "index", model: [loginCO: loginCO])
+            render(view: 'index', model: [loginCO: loginCO])
         }
     }
 
@@ -25,6 +25,6 @@ class HomeController {
 
     def exit() {
         session.invalidate()
-        redirect(action: "index")
+        redirect(action: 'index')
     }
 }

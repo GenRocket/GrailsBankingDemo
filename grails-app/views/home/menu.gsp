@@ -9,6 +9,11 @@
 <body>
 <div class="content animate-panel m-t-xxxl" id="bank-menu">
     <div class="col-lg-12" >
+       <g:if test="${flash.error}">
+        <div class="alert alert-block alert-danger">
+            ${flash.error}
+        </div>
+        </g:if>
         <div class="row">
             <div class="col-sm-6">
                 <div class="hpanel plan-box hyellow">
@@ -27,7 +32,7 @@
             </div>
 
             <div class="col-sm-6">
-                <div class="hpanel plan-box hblue">
+                <div class="hpanel plan-box hblue" id="withdrawal-menu">
                     <div class="panel-heading hbuilt text-center">
                         <h4 class="font-bold h-bg-navy-blue">Withdrawal</h4>
                     </div>
