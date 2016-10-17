@@ -27,92 +27,6 @@ class CardPoolServiceIntegrationSpec extends IntegrationSpec {
     cardPool.id
   }
 
-  void "update cardPool"() {
-    given:
-
-    cardPoolTestDataService.loadData()
-    def cardPool = CardPool.first()
-    def id = cardPool.id
-
-    when:
-
-    cardPool.cardNumber = 'TEST'
-    cardPoolService.update(cardPool)
-
-    then:
-
-    def temp = CardPool.get(id)
-    temp.cardNumber == 'TEST'
-  }
-
-  void "delete cardPool"() {
-    given:
-
-    cardPoolTestDataService.loadData()
-    def cardPool = CardPool.first()
-    def id = cardPool.id
-
-    when:
-
-    cardPoolService.delete(cardPool)
-
-    then:
-
-    CardPool.get(id) == null
-  }
-
-
-  void "test cardNumber for Null"() {
-    given:
-
-    cardPoolTestDataService.loadData()
-    CardPool cardPool = CardPool.first()
-    cardPool.cardNumber = null
-
-    when:
-
-    cardPoolService.update(cardPool);
-
-    then:
-
-    cardPool.errors.getFieldError("cardNumber").code == "nullable"
-
-  }
-
-  void "test nextAvailable for Null"() {
-    given:
-
-    cardPoolTestDataService.loadData()
-    CardPool cardPool = CardPool.first()
-    cardPool.nextAvailable = null
-
-    when:
-
-    cardPoolService.update(cardPool);
-
-    then:
-
-    cardPool.errors.getFieldError("nextAvailable").code == "nullable"
-
-  }
-
-  void "test used for Null"() {
-    given:
-
-    cardPoolTestDataService.loadData()
-    CardPool cardPool = CardPool.first()
-    cardPool.used = null
-
-    when:
-
-    cardPoolService.update(cardPool);
-
-    then:
-
-    cardPool.errors.getFieldError("used").code == "nullable"
-
-  }
-
   void "test cardNumber for unique"() {
     given:
 
@@ -134,6 +48,111 @@ class CardPoolServiceIntegrationSpec extends IntegrationSpec {
     then:
 
     testCardPool.errors.getFieldError("cardNumber").code == "unique"
+  }
+
+  void "test nextCardNumber get first card"() {
+    given:
+
+    cardPoolTestDataService.loadData(3)
+
+    when:
+
+    String cardNumber1 = cardPoolService.nextCardNumber()
+
+    CardPool[] cardPoolList = CardPool.findAll() as CardPool[]
+    CardPool cardPool1 = cardPoolList[0]
+    CardPool cardPool2 = cardPoolList[1]
+
+    then:
+
+    cardPool1.cardNumber == cardNumber1
+    cardPool1.used
+    !cardPool1.nextAvailable
+
+    !cardPool2.used
+    cardPool2.nextAvailable
+
+  }
+
+  void "test nextCardNumber get second card"() {
+    given:
+
+    cardPoolTestDataService.loadData(3)
+
+    when:
+
+    String cardNumber1 = cardPoolService.nextCardNumber()
+    String cardNumber2 = cardPoolService.nextCardNumber()
+
+    CardPool[] cardPoolList = CardPool.findAll() as CardPool[]
+    CardPool cardPool1 = cardPoolList[0]
+    CardPool cardPool2 = cardPoolList[1]
+    CardPool cardPool3 = cardPoolList[2]
+
+    then:
+
+    cardPool1.cardNumber == cardNumber1
+    cardPool1.used
+    !cardPool1.nextAvailable
+
+    cardPool2.cardNumber == cardNumber2
+    cardPool2.used
+    !cardPool2.nextAvailable
+
+    !cardPool3.used
+    cardPool3.nextAvailable
+
+  }
+
+  void "test nextCardNumber get third card"() {
+    given:
+
+    cardPoolTestDataService.loadData(3)
+
+    when:
+
+    String cardNumber1 = cardPoolService.nextCardNumber()
+    String cardNumber2 = cardPoolService.nextCardNumber()
+    String cardNumber3 = cardPoolService.nextCardNumber()
+
+    CardPool[] cardPoolList = CardPool.findAll() as CardPool[]
+    CardPool cardPool1 = cardPoolList[0]
+    CardPool cardPool2 = cardPoolList[1]
+    CardPool cardPool3 = cardPoolList[2]
+
+    then:
+
+    cardPool1.cardNumber == cardNumber1
+    cardPool1.used
+    !cardPool1.nextAvailable
+
+    cardPool2.cardNumber == cardNumber2
+    cardPool2.used
+    !cardPool2.nextAvailable
+
+    cardPool3.cardNumber == cardNumber3
+    cardPool3.used
+    !cardPool3.nextAvailable
+  }
+
+  void "test nextCardNumber out of cards"() {
+    given:
+
+    cardPoolTestDataService.loadData(3)
+
+    when:
+
+    String cardNumber1 = cardPoolService.nextCardNumber()
+    String cardNumber2 = cardPoolService.nextCardNumber()
+    String cardNumber3 = cardPoolService.nextCardNumber()
+    String cardNumber4 = cardPoolService.nextCardNumber()
+
+    then:
+
+    cardNumber1
+    cardNumber2
+    cardNumber3
+    !cardNumber4
   }
 }
     
