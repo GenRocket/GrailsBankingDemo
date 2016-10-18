@@ -9,7 +9,7 @@ class SavingsService {
 
   }
 
-  def transfer(Account checking, Account savings, Float amount) {
+  def transfer(Account savings, Account checking, Float amount) {
 
   }
 }
