@@ -3,11 +3,12 @@ package com.genrocket.bank
 /**
  * Created by htaylor on 10/18/16.
  */
-enum WithdrawalErrors {
-  OVERDRAFT_NOT_ALLOWED('card.not.enabled'),
-  WITHDRAWAL_LIMIT_REACHED('card.expired')
+enum TransactionErrors {
+  OVERDRAFT_NOT_ALLOWED('overdraft.not.allowed'),
+  WITHDRAWAL_LIMIT_REACHED('withdrawal.limit.reached'),
+  MAX_TRANSFERS_EXCEEDED('max.transfers.exceeded')
 
-  WithdrawalErrors(value) {
+  TransactionErrors(value) {
     this.value = value
   }
 
