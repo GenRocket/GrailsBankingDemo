@@ -6,6 +6,46 @@ import grails.test.spock.IntegrationSpec
 class HomeControllerIntegrationSpec extends IntegrationSpec {
   def cardTestDataService
 
+  void "test index"() {
+    given:
+
+    cardTestDataService.loadData()
+    def card = Card.first()
+
+    when:
+
+    HomeController controller = new HomeController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.index()
+
+    then:
+
+    controller.response.redirectedUrl == '/home/menu'
+  }
+
+  void "test exit"() {
+    given:
+
+
+    when:
+
+    HomeController controller = new HomeController()
+    controller.session.setAttribute('test','test')
+    controller.exit()
+
+    then:
+
+    try {
+      controller.session.getAttribute('test')
+      assert false
+    } catch (IllegalStateException ise) {
+      assert true
+    }
+
+    controller.response.redirectedUrl == '/'
+
+  }
+
   void "test cardValidation CARD_INVALID"() {
     given:
 
@@ -31,6 +71,8 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     then:
 
     loginCO.errors.getFieldError("cardNumber").code == "invalid.card.number"
+    controller.modelAndView.viewName == '/home/index'
+    controller.modelAndView.model.get('loginCO') == loginCO
   }
 
   void "test cardValidation CARD_NOT_ENABLED"() {
@@ -58,6 +100,8 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     then:
 
     loginCO.errors.getFieldError("cardNumber").code == "card.not.enabled"
+    controller.modelAndView.viewName == '/home/index'
+    controller.modelAndView.model.get('loginCO') == loginCO
   }
 
   void "test cardValidation CARD_EXPIRED"() {
@@ -86,6 +130,8 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     then:
 
     loginCO.errors.getFieldError("cardNumber").code == "card.expired"
+    controller.modelAndView.viewName == '/home/index'
+    controller.modelAndView.model.get('loginCO') == loginCO
   }
 
   void "test cardValidation CARD_DEACTIVATED"() {
@@ -113,6 +159,8 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     then:
 
     loginCO.errors.getFieldError("cardNumber").code == "card.deactivated"
+    controller.modelAndView.viewName == '/home/index'
+    controller.modelAndView.model.get('loginCO') == loginCO
   }
 
   void "test cardValidation PIN_INVALID"() {
@@ -142,6 +190,8 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     then:
 
     loginCO.errors.getFieldError("cardNumber").code == "invalid.pin.number"
+    controller.modelAndView.viewName == '/home/index'
+    controller.modelAndView.model.get('loginCO') == loginCO
   }
 
   void "test cardValidation CARD_VALID"() {
@@ -173,7 +223,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     !loginCO.hasErrors()
     temp.cardNumber == card.cardNumber
-    controller.response.redirectedUrl
+    controller.response.redirectedUrl == '/home/menu'
   }
 
 }
