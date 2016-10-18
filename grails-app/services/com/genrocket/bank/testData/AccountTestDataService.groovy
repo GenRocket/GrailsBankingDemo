@@ -28,7 +28,6 @@ class AccountTestDataService {
     User user = null
     CardType cardType = null
     CustomerLevel customerLevel = null
-    CardPool cardPool = null
 
     if (domainMap) {
       accountType = (AccountType) domainMap['accountType']
@@ -39,9 +38,7 @@ class AccountTestDataService {
     }
 
     if (Account.count() == 0) {
-      if (!cardPool) {
-        cardPoolTestDataService.loadData(100)
-      }
+      cardPoolTestDataService.loadData(10)
 
       if (!accountType) {
         accountTypeTestDataService.loadData()

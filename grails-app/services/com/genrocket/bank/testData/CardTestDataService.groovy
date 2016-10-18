@@ -32,7 +32,7 @@ class CardTestDataService {
 
 
     if (Card.count() == 0) {
-      cardPoolTestDataService.loadData(100)
+      cardPoolTestDataService.loadData(10)
 
       if (!cardType) {
         cardTypeTestDataService.loadData()
