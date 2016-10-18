@@ -56,5 +56,31 @@ class CardService {
   def delete(Card card) {
     card.delete()
   }
+
+  def cardValidation(String cardNumber, Integer pinNumber) {
+    Card card = Card.findByCardNumber(cardNumber)
+
+    if (!card) {
+      return CardValidationTypes.CARD_INVALID
+    }
+
+    if (!card.enabled) {
+      return CardValidationTypes.CARD_NOT_ENABLED
+    }
+
+    if (card.dateExpired) {
+      return CardValidationTypes.CARD_EXPIRED
+    }
+
+    if (card.dateDeactivated) {
+      return CardValidationTypes.CARD_DEACTIVATED
+    }
+
+    if (card.pinNumber != pinNumber) {
+      return CardValidationTypes.PIN_INVALID
+    }
+
+    return CardValidationTypes.CARD_VALIDATED
+  }
 }
     
