@@ -16,8 +16,8 @@ class LoginCO {
           return "card.not.enabled"
         } else if (card.dateExpired < new Date()) {
           return "card.expired"
-        } else if (!card.dateActivated && card.dateDeactivated) {
-          return "card.not.active"
+        } else if (card.dateDeactivated) {
+          return "card.deactivated"
         } else if (object.pinNumber && !object.pinNumber.isInteger()) {
           return "invalid.pin.number"
         } else if (object.pinNumber.toInteger() != card.pinNumber) {

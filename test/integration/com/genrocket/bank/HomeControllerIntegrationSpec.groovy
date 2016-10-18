@@ -1,13 +1,10 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.co.LoginCO
 import grails.test.spock.IntegrationSpec
 
-/**
- * Created by htaylor on 10/17/16.
- */
-class CardServiceCustomIntegrationSpec extends IntegrationSpec {
+class HomeControllerIntegrationSpec extends IntegrationSpec {
   def cardTestDataService
-  def cardService
 
   void "test cardValidation CARD_INVALID"() {
     given:
@@ -17,18 +14,23 @@ class CardServiceCustomIntegrationSpec extends IntegrationSpec {
     def cardNumber = '9999999999999999'
     def pinNumber = 123456
 
+    LoginCO loginCO = new LoginCO(
+      cardNumber: cardNumber,
+      pinNumber: pinNumber
+    )
+
     when:
 
     card.enabled = true
     card.pinNumber = pinNumber
-    card.dateExpired = null
     card.dateDeactivated = null
 
-    CardValidationTypes cardValidationType = cardService.cardValidation(cardNumber, pinNumber)
+    HomeController controller = new HomeController()
+    controller.login(loginCO)
 
     then:
 
-    cardValidationType == CardValidationTypes.CARD_INVALID
+    loginCO.errors.getFieldError("cardNumber").code == "invalid.card.number"
   }
 
   void "test cardValidation CARD_NOT_ENABLED"() {
@@ -39,18 +41,23 @@ class CardServiceCustomIntegrationSpec extends IntegrationSpec {
     def cardNumber = card.cardNumber
     def pinNumber = 123456
 
+    LoginCO loginCO = new LoginCO(
+      cardNumber: cardNumber,
+      pinNumber: pinNumber
+    )
+
     when:
 
     card.enabled = false
     card.pinNumber = pinNumber
-    card.dateExpired = null
     card.dateDeactivated = null
 
-    CardValidationTypes cardValidationType = cardService.cardValidation(cardNumber, pinNumber)
+    HomeController controller = new HomeController()
+    controller.login(loginCO)
 
     then:
 
-    cardValidationType == CardValidationTypes.CARD_NOT_ENABLED
+    loginCO.errors.getFieldError("cardNumber").code == "card.not.enabled"
   }
 
   void "test cardValidation CARD_EXPIRED"() {
@@ -61,21 +68,27 @@ class CardServiceCustomIntegrationSpec extends IntegrationSpec {
     def cardNumber = card.cardNumber
     def pinNumber = 123456
 
+    LoginCO loginCO = new LoginCO(
+      cardNumber: cardNumber,
+      pinNumber: pinNumber
+    )
+
     when:
 
     card.enabled = true
     card.pinNumber = pinNumber
-    card.dateExpired = new Date()
+    card.dateExpired = new Date() - 10
     card.dateDeactivated = null
 
-    CardValidationTypes cardValidationType = cardService.cardValidation(cardNumber, pinNumber)
+    HomeController controller = new HomeController()
+    controller.login(loginCO)
 
     then:
 
-    cardValidationType == CardValidationTypes.CARD_EXPIRED
+    loginCO.errors.getFieldError("cardNumber").code == "card.expired"
   }
 
- void "test cardValidation CARD_DEACTIVATED"() {
+  void "test cardValidation CARD_DEACTIVATED"() {
     given:
 
     cardTestDataService.loadData()
@@ -83,18 +96,23 @@ class CardServiceCustomIntegrationSpec extends IntegrationSpec {
     def cardNumber = card.cardNumber
     def pinNumber = 123456
 
+    LoginCO loginCO = new LoginCO(
+      cardNumber: cardNumber,
+      pinNumber: pinNumber
+    )
+
     when:
 
     card.enabled = true
     card.pinNumber = pinNumber
-    card.dateExpired = null
     card.dateDeactivated = new Date()
 
-    CardValidationTypes cardValidationType = cardService.cardValidation(cardNumber, pinNumber)
+    HomeController controller = new HomeController()
+    controller.login(loginCO)
 
     then:
 
-    cardValidationType == CardValidationTypes.CARD_DEACTIVATED
+    loginCO.errors.getFieldError("cardNumber").code == "card.deactivated"
   }
 
   void "test cardValidation PIN_INVALID"() {
@@ -105,19 +123,25 @@ class CardServiceCustomIntegrationSpec extends IntegrationSpec {
     def cardNumber = card.cardNumber
     def pinNumber = 123456
 
+    LoginCO loginCO = new LoginCO(
+      cardNumber: cardNumber,
+      pinNumber: pinNumber
+    )
+
     when:
 
     card.pinNumber = 999999
     card.save()
 
     card.enabled = true
-    card.dateExpired = null
     card.dateDeactivated = null
-    CardValidationTypes cardValidationType = cardService.cardValidation(cardNumber, pinNumber)
+
+    HomeController controller = new HomeController()
+    controller.login(loginCO)
 
     then:
 
-    cardValidationType == CardValidationTypes.PIN_INVALID
+    loginCO.errors.getFieldError("cardNumber").code == "invalid.pin.number"
   }
 
   void "test cardValidation CARD_VALID"() {
@@ -128,19 +152,28 @@ class CardServiceCustomIntegrationSpec extends IntegrationSpec {
     def cardNumber = card.cardNumber
     def pinNumber = 123456
 
+    LoginCO loginCO = new LoginCO(
+      cardNumber: cardNumber,
+      pinNumber: pinNumber
+    )
+
     when:
 
     card.pinNumber = pinNumber
     card.save()
 
     card.enabled = true
-    card.dateExpired = null
     card.dateDeactivated = null
-    CardValidationTypes cardValidationType = cardService.cardValidation(cardNumber, pinNumber)
+
+    HomeController controller = new HomeController()
+    controller.login(loginCO)
+    Card temp = (Card) controller.session.getAttribute(BankingService.SELECTED_CARD_SESSION)
 
     then:
 
-    cardValidationType == CardValidationTypes.CARD_VALIDATED
+    !loginCO.hasErrors()
+    temp.cardNumber == card.cardNumber
+    controller.response.redirectedUrl
   }
 
 }
