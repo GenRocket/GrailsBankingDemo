@@ -26,7 +26,6 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
   void "test exit"() {
     given:
 
-
     when:
 
     HomeController controller = new HomeController()
@@ -38,21 +37,21 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     try {
       controller.session.getAttribute('test')
       assert false
-    } catch (IllegalStateException ise) {
+    } catch (IllegalStateException e) {
       assert true
     }
 
     controller.response.redirectedUrl == '/'
-
   }
 
   void "test cardValidation CARD_INVALID"() {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def cardNumber = '9999999999999999'
-    def pinNumber = 123456
+
+    Card card = Card.first()
+    String cardNumber = '9999999999999999'
+    Integer pinNumber = 123456
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
@@ -79,9 +78,10 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def cardNumber = card.cardNumber
-    def pinNumber = 123456
+
+    Card card = Card.first()
+    String cardNumber = card.cardNumber
+    Integer pinNumber = 123456
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
@@ -108,9 +108,10 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def cardNumber = card.cardNumber
-    def pinNumber = 123456
+
+    Card card = Card.first()
+    String cardNumber = card.cardNumber
+    Integer pinNumber = 123456
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
@@ -138,9 +139,10 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def cardNumber = card.cardNumber
-    def pinNumber = 123456
+
+    Card card = Card.first()
+    String cardNumber = card.cardNumber
+    Integer pinNumber = 123456
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
@@ -167,9 +169,10 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def cardNumber = card.cardNumber
-    def pinNumber = 123456
+
+    Card card = Card.first()
+    String cardNumber = card.cardNumber
+    Integer pinNumber = 123456
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
@@ -198,9 +201,10 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def cardNumber = card.cardNumber
-    def pinNumber = 123456
+
+    Card card = Card.first()
+    String cardNumber = card.cardNumber
+    Integer pinNumber = 123456
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
@@ -225,5 +229,4 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     temp.cardNumber == card.cardNumber
     controller.response.redirectedUrl == '/home/menu'
   }
-
 }
