@@ -20,6 +20,9 @@
     <asset:javascript src="vendor/jquery/dist/jquery.min.js"/>
     <asset:javascript src="vendor/jquery-ui/jquery-ui.min.js"/>
     <asset:javascript src="vendor/bootstrap/dist/js/bootstrap.min.js"/>
+    <script type="text/javascript">
+        contextPath = "${request.contextPath}";
+    </script>
     <g:layoutHead/>
 </head>
 

@@ -17,11 +17,14 @@ class HomeController {
             bankingService.setSelectedCard(card)
             redirect(action: 'menu')
         } else {
-            render(view: "index", model: [loginCO: loginCO])
+            render(view: 'index', model: [loginCO: loginCO])
         }
     }
 
-    def menu() {
+    def menu() {}
 
+    def exit() {
+        session.invalidate()
+        redirect(action: 'index')
     }
 }
