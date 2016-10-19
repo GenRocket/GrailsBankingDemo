@@ -6,15 +6,15 @@ import grails.transaction.Transactional
 class SavingsService {
   def checkingService
 
-  void deposit(User user, Account account, Float amount) {
+  TransactionStatus deposit(User user, Account account, Float amount) {
 
   }
 
-  void withdrawal(User user, Account account, Float amount) {
+  TransactionStatus withdrawal(User user, Account account, Float amount) {
 
   }
 
-  void transfer(User user, Account savings, Account checking, Float amount) {
+  TransactionStatus transfer(User user, Account savings, Account checking, Float amount) {
     withdrawal(user, savings, amount)
     checkingService.deposit(user, checking, amount)
   }
