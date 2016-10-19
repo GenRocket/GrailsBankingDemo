@@ -3751,3 +3751,7 @@ ul.h-list li:hover a {
 #bank-menu .col-sm-6 {
     cursor: pointer;
 }
+
+#withdrawalErrorContainer {
+  margin-bottom: 10px;
+}

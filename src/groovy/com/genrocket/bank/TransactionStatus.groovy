@@ -4,6 +4,7 @@ package com.genrocket.bank
  * Created by htaylor on 10/18/16.
  */
 enum TransactionStatus {
+  INVALID_AMOUNT_VALUE('invalid.amount.value'),
   OVERDRAFT_NOT_ALLOWED('overdraft.not.allowed'),
   WITHDRAWAL_LIMIT_REACHED('withdrawal.limit.reached'),
   MAX_TRANSFERS_EXCEEDED('max.transfers.exceeded'),
