@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat
 class CheckingService {
   def accountService
   def savingsService
+  def transactionService
 
   TransactionStatus deposit(User user, Account account, Float amount) {
 
@@ -32,6 +33,18 @@ class CheckingService {
 
     account.balance -= amount
     account.save()
+
+    TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
+
+    Transaction transaction = new Transaction(
+      user: user,
+      amount: amount,
+      account: account,
+      dateCreated: new Date(),
+      transactionType: transactionType
+    )
+
+    transactionService.save(transaction)
 
     return TransactionStatus.TRANSACTION_COMPLETE
   }
