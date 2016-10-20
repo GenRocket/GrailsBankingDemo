@@ -15,8 +15,13 @@
                 <h2>Withdrawal From Checking</h2>
             </div>
 
-            <div class="hpanel">
+          <div class="hpanel">
                 <div id="withdrawalErrorContainer">
+                  <g:if test="${errorMessage}">
+                    <div class="alert alert-block alert-danger">
+                      <ul><li>${errorMessage}</li></ul>
+                    </div>
+                  </g:if>
                 </div>
 
                 <form action='${createLink(controller: 'account', action: 'doWithdrawal')}' method='POST' id='withdrawal'>
