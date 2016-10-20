@@ -40,6 +40,10 @@ class CheckingService {
   }
 
   TransactionStatus withdrawal(User user, Account account, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
+
     AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
 
     if (account.accountType != accountType) {
@@ -68,11 +72,11 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     Transaction transaction = new Transaction(
-      user: user,
-      amount: amount,
-      account: account,
-      dateCreated: new Date(),
-      transactionType: transactionType
+        user: user,
+        amount: amount,
+        account: account,
+        dateCreated: new Date(),
+        transactionType: transactionType
     )
 
     transactionService.save(transaction)
@@ -109,7 +113,7 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     List<Transaction> transactions =
-      Transaction.findAllByAccountAndDateCreatedGreaterThanEquals(account, today)
+        Transaction.findAllByAccountAndDateCreatedGreaterThanEquals(account, today)
 
     transactions.each { transaction ->
       if (transaction.transactionType == transactionType) {

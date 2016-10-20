@@ -16,11 +16,8 @@
             </div>
 
             <div class="hpanel">
-                <g:if test="${flash.error}">
-                    <div class="alert alert-block alert-danger">
-                        ${flash.error}
-                    </div>
-                </g:if>
+                <div id="withdrawalErrorContainer">
+                </div>
 
                 <form action='${createLink(controller: 'account', action: 'doWithdrawal')}' method='POST' id='withdrawal'>
                     <div class="form-group">
