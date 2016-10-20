@@ -12,7 +12,13 @@ class CheckingService {
 
   TransactionStatus deposit(User user, Account account, Float amount) {
     if (account.accountType.name != AccountTypes.CHECKING.value) {
-      return false
+      return TransactionStatus.ACCOUNT_NOT_CHECKING
+    }
+
+    Customer customer = Customer.findByUser(user)
+
+    if (!customer.enabled) {
+      return TransactionStatus.ACCOUNT_NOT_ENABLED
     }
 
     account.balance += amount
@@ -74,9 +80,18 @@ class CheckingService {
     return TransactionStatus.TRANSACTION_COMPLETE
   }
 
-  TransactionStatus transfer(User user, Account checking, Account savings, Float amount) {
-    withdrawal(user, savings, amount)
-    savingsService.deposit(user, checking, amount)
+  TransactionStatus transfer(User user, Account fromChecking, Account toSavings, Float amount) {
+    if (fromChecking.balance < amount) {
+      return TransactionStatus.AMOUNT_GT_BALANCE
+    }
+
+    TransactionStatus status = withdrawal(user, fromChecking, amount)
+
+    if (TransactionStatus.TRANSACTION_COMPLETE) {
+      status = savingsService.deposit(user, toSavings, amount)
+    }
+
+    return status
   }
 
   Boolean checkDailyWithdrawalLimit(User user, Account account, Float amount) {
