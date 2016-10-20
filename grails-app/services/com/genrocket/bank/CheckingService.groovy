@@ -11,7 +11,26 @@ class CheckingService {
   def transactionService
 
   TransactionStatus deposit(User user, Account account, Float amount) {
+    if (account.accountType.name != AccountTypes.CHECKING.value) {
+      return false
+    }
 
+    account.balance += amount
+    account.save()
+
+    TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_CHECKING.value)
+
+    Transaction transaction = new Transaction(
+      user: user,
+      amount: amount,
+      account: account,
+      dateCreated: new Date(),
+      transactionType: transactionType
+    )
+
+    transactionService.save(transaction)
+
+    return TransactionStatus.TRANSACTION_COMPLETE
   }
 
   TransactionStatus withdrawal(User user, Account account, Float amount) {
@@ -19,6 +38,12 @@ class CheckingService {
 
     if (account.accountType != accountType) {
       return TransactionStatus.ACCOUNT_NOT_CHECKING
+    }
+
+    Customer customer = Customer.findByUser(user)
+
+    if (!customer.enabled) {
+      return TransactionStatus.ACCOUNT_NOT_ENABLED
     }
 
     if (amount > account.balance) {

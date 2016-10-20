@@ -28,6 +28,9 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.accountType = accountType
     account.save()
 
+    customer.enabled = true
+    customer.save()
+
     customerLevel.overdraftAllowed = true
     customerLevel.dailyWithdrawalLimit = 100
     customerLevel.save()
@@ -37,6 +40,38 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     then:
 
     status == TransactionStatus.ACCOUNT_NOT_CHECKING
+  }
+
+  void "test withdrawal ACCOUNT_NOT_ENABLED"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+    CustomerLevel customerLevel = customer.customerLevel
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+
+    when:
+
+    account.balance = 100.0
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = false
+    customer.save()
+
+    customerLevel.overdraftAllowed = true
+    customerLevel.dailyWithdrawalLimit = 100
+    customerLevel.save()
+
+    TransactionStatus status = checkingService.withdrawal(user, account, 100)
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
   }
 
   void "test withdrawal OVERDRAFT_NOT_ALLOWED"() {
@@ -56,6 +91,9 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.balance = 100.00
     account.accountType = accountType
     account.save()
+
+    customer.enabled = true
+    customer.save()
 
     customerLevel.overdraftAllowed = false
     customerLevel.dailyWithdrawalLimit = 100
@@ -85,6 +123,9 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.balance = 500.0
     account.accountType = accountType
     account.save()
+
+    customer.enabled = true
+    customer.save()
 
     customerLevel.overdraftAllowed = false
     customerLevel.dailyWithdrawalLimit = 150
@@ -124,6 +165,9 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.balance = balance
     account.accountType = accountType
     account.save()
+
+    customer.enabled = true
+    customer.save()
 
     customerLevel.overdraftAllowed = false
     customerLevel.dailyWithdrawalLimit = 1000
@@ -169,6 +213,9 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.accountType = accountType
     account.save()
 
+    customer.enabled = true
+    customer.save()
+
     customerLevel.dailyWithdrawalLimit = 100
     customerLevel.save()
 
@@ -209,6 +256,9 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     account.accountType = accountType
     account.save()
+
+    customer.enabled = true
+    customer.save()
 
     customerLevel.dailyWithdrawalLimit = 250
     customerLevel.save()
