@@ -10,6 +10,7 @@ enum TransactionStatus {
   TRANSACTION_COMPLETE('transaction.complete'),
   OVERDRAFT_NOT_ALLOWED('overdraft.not.allowed'),
   MAX_TRANSFERS_EXCEEDED('max.transfers.exceeded'),
+  AMOUNT_GT_BALANCE('amount.greater.than.balance'),
   WITHDRAWAL_LIMIT_REACHED('withdrawal.limit.reached')
 
   TransactionStatus(value) {
