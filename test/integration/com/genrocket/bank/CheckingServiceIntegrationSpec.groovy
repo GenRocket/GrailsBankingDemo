@@ -10,6 +10,32 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
   def transactionTestDataService
   def transactionTypeTestDataService
 
+  void "test deposit INVALID_AMOUNT_VALUE"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+
+    when:
+
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = true
+    customer.save()
+
+    TransactionStatus status = checkingService.deposit(user, account, null)
+
+    then:
+
+    status == TransactionStatus.INVALID_AMOUNT_VALUE
+  }
+
   void "test deposit ACCOUNT_NOT_CHECKING"() {
     given:
 
@@ -106,6 +132,32 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     ((Float) account.balance).round(2) == oldBalance.round(2)
     dateCreated == today
+  }
+
+  void "test withdrawal INVALID_AMOUNT_VALUE"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+
+    when:
+
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = true
+    customer.save()
+
+    TransactionStatus status = checkingService.withdrawal(user, account, null)
+
+    then:
+
+    status == TransactionStatus.INVALID_AMOUNT_VALUE
   }
 
   void "test withdrawal ACCOUNT_NOT_CHECKING"() {

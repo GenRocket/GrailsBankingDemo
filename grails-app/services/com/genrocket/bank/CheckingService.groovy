@@ -11,6 +11,10 @@ class CheckingService {
   def transactionService
 
   TransactionStatus deposit(User user, Account account, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
+
     if (account.accountType.name != AccountTypes.CHECKING.value) {
       return TransactionStatus.ACCOUNT_NOT_CHECKING
     }
@@ -85,6 +89,10 @@ class CheckingService {
   }
 
   TransactionStatus transfer(User user, Account fromChecking, Account toSavings, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
+
     if (fromChecking.balance < amount) {
       return TransactionStatus.AMOUNT_GT_BALANCE
     }
