@@ -76,11 +76,11 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     Transaction transaction = new Transaction(
-        user: user,
-        amount: amount,
-        account: account,
-        dateCreated: new Date(),
-        transactionType: transactionType
+      user: user,
+      amount: amount,
+      account: account,
+      dateCreated: new Date(),
+      transactionType: transactionType
     )
 
     transactionService.save(transaction)
@@ -89,21 +89,26 @@ class CheckingService {
   }
 
   TransactionStatus transfer(User user, Account fromChecking, Account toSavings, Float amount) {
-    if (!amount) {
-      return TransactionStatus.INVALID_AMOUNT_VALUE
+    Account.withTransaction { transactionStatus ->
+      if (!amount) {
+        return TransactionStatus.INVALID_AMOUNT_VALUE
+      }
+
+      if (fromChecking.balance < amount) {
+        return TransactionStatus.AMOUNT_GT_BALANCE
+      }
+
+      TransactionStatus status = withdrawal(user, fromChecking, amount)
+
+      if (TransactionStatus.TRANSACTION_COMPLETE) {
+        status = savingsService.deposit(user, toSavings, amount)
+      } else {
+        transactionStatus.setRollbackOnly()
+      }
+
+      return status
+
     }
-
-    if (fromChecking.balance < amount) {
-      return TransactionStatus.AMOUNT_GT_BALANCE
-    }
-
-    TransactionStatus status = withdrawal(user, fromChecking, amount)
-
-    if (TransactionStatus.TRANSACTION_COMPLETE) {
-      status = savingsService.deposit(user, toSavings, amount)
-    }
-
-    return status
   }
 
   Boolean checkDailyWithdrawalLimit(User user, Account account, Float amount) {
@@ -121,7 +126,7 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     List<Transaction> transactions =
-        Transaction.findAllByAccountAndDateCreatedGreaterThanEquals(account, today)
+      Transaction.findAllByAccountAndDateCreatedGreaterThanEquals(account, today)
 
     transactions.each { transaction ->
       if (transaction.transactionType == transactionType) {
