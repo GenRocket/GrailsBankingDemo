@@ -11,7 +11,36 @@ class CheckingService {
   def transactionService
 
   TransactionStatus deposit(User user, Account account, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
 
+    if (account.accountType.name != AccountTypes.CHECKING.value) {
+      return TransactionStatus.ACCOUNT_NOT_CHECKING
+    }
+
+    Customer customer = Customer.findByUser(user)
+
+    if (!customer.enabled) {
+      return TransactionStatus.ACCOUNT_NOT_ENABLED
+    }
+
+    account.balance += amount
+    account.save()
+
+    TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_CHECKING.value)
+
+    Transaction transaction = new Transaction(
+      user: user,
+      amount: amount,
+      account: account,
+      dateCreated: new Date(),
+      transactionType: transactionType
+    )
+
+    transactionService.save(transaction)
+
+    return TransactionStatus.TRANSACTION_COMPLETE
   }
 
   TransactionStatus withdrawal(User user, Account account, Float amount) {
@@ -23,6 +52,12 @@ class CheckingService {
 
     if (account.accountType != accountType) {
       return TransactionStatus.ACCOUNT_NOT_CHECKING
+    }
+
+    Customer customer = Customer.findByUser(user)
+
+    if (!customer.enabled) {
+      return TransactionStatus.ACCOUNT_NOT_ENABLED
     }
 
     if (amount > account.balance) {
@@ -41,11 +76,11 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     Transaction transaction = new Transaction(
-        user: user,
-        amount: amount,
-        account: account,
-        dateCreated: new Date(),
-        transactionType: transactionType
+      user: user,
+      amount: amount,
+      account: account,
+      dateCreated: new Date(),
+      transactionType: transactionType
     )
 
     transactionService.save(transaction)
@@ -53,9 +88,27 @@ class CheckingService {
     return TransactionStatus.TRANSACTION_COMPLETE
   }
 
-  TransactionStatus transfer(User user, Account checking, Account savings, Float amount) {
-    withdrawal(user, savings, amount)
-    savingsService.deposit(user, checking, amount)
+  TransactionStatus transfer(User user, Account fromChecking, Account toSavings, Float amount) {
+    Account.withTransaction { controlledTransaction ->
+      if (!amount) {
+        return TransactionStatus.INVALID_AMOUNT_VALUE
+      }
+
+      if (fromChecking.balance < amount) {
+        return TransactionStatus.AMOUNT_GT_BALANCE
+      }
+
+      TransactionStatus status = withdrawal(user, fromChecking, amount)
+
+      if (TransactionStatus.TRANSACTION_COMPLETE) {
+        status = savingsService.deposit(user, toSavings, amount)
+      } else {
+        controlledTransaction.setRollbackOnly()
+      }
+
+      return status
+
+    }
   }
 
   Boolean checkDailyWithdrawalLimit(User user, Account account, Float amount) {
@@ -73,7 +126,7 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     List<Transaction> transactions =
-        Transaction.findAllByAccountAndDateCreatedGreaterThanEquals(account, today)
+      Transaction.findAllByAccountAndDateCreatedGreaterThanEquals(account, today)
 
     transactions.each { transaction ->
       if (transaction.transactionType == transactionType) {

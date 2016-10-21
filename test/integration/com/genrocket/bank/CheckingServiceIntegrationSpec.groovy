@@ -10,6 +10,156 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
   def transactionTestDataService
   def transactionTypeTestDataService
 
+  void "test deposit INVALID_AMOUNT_VALUE"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+
+    when:
+
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = true
+    customer.save()
+
+    TransactionStatus status = checkingService.deposit(user, account, null)
+
+    then:
+
+    status == TransactionStatus.INVALID_AMOUNT_VALUE
+  }
+
+  void "test deposit ACCOUNT_NOT_CHECKING"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+
+    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+
+    when:
+
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = true
+    customer.save()
+
+    TransactionStatus status = checkingService.deposit(user, account, 100.0.floatValue())
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_CHECKING
+  }
+
+  void "test deposit ACCOUNT_NOT_ENABLED"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+
+    when:
+
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = false
+    customer.save()
+
+    TransactionStatus status = checkingService.deposit(user, account, 100.0.floatValue())
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+  }
+
+  void "test deposit TRANSACTION_COMPLETE"() {
+    given:
+
+    accountTestDataService.loadData(1)
+    transactionTypeTestDataService.loadData()
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+    TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_CHECKING.value)
+
+    SimpleDateFormat sdf = new SimpleDateFormat('yyyy/MM/dd')
+
+    when:
+
+    Float balance = 1000.95
+    Float deposit = 150.25
+
+    account.balance = balance
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = true
+    customer.save()
+
+    TransactionStatus status = checkingService.deposit(user, account, deposit)
+
+    Transaction transaction = Transaction.findByUserAndAccount(user, account)
+    String dateCreated = sdf.parse(sdf.format(transaction.dateCreated))
+    String today = sdf.parse(sdf.format(new Date()))
+    account = Account.get(account.id)
+    Float oldBalance = balance.round(2) + deposit.round(2)
+
+    then:
+
+    status == TransactionStatus.TRANSACTION_COMPLETE
+    transaction != null
+    transaction.transactionType == transactionType
+    transaction.amount.round(2) == deposit.round(2)
+
+    ((Float) account.balance).round(2) == oldBalance.round(2)
+    dateCreated == today
+  }
+
+  void "test withdrawal INVALID_AMOUNT_VALUE"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+
+    when:
+
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = true
+    customer.save()
+
+    TransactionStatus status = checkingService.withdrawal(user, account, null)
+
+    then:
+
+    status == TransactionStatus.INVALID_AMOUNT_VALUE
+  }
+
   void "test withdrawal ACCOUNT_NOT_CHECKING"() {
     given:
 
@@ -28,15 +178,50 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.accountType = accountType
     account.save()
 
+    customer.enabled = true
+    customer.save()
+
     customerLevel.overdraftAllowed = true
-    customerLevel.dailyWithdrawalLimit = 100
+    customerLevel.dailyWithdrawalLimit = 100.0
     customerLevel.save()
 
-    TransactionStatus status = checkingService.withdrawal(user, account, 100)
+    TransactionStatus status = checkingService.withdrawal(user, account, 100.0.floatValue())
 
     then:
 
     status == TransactionStatus.ACCOUNT_NOT_CHECKING
+  }
+
+  void "test withdrawal ACCOUNT_NOT_ENABLED"() {
+    given:
+
+    accountTestDataService.loadData(1)
+
+    Account account = Account.first()
+    Customer customer = Customer.findByAccount(account)
+    User user = customer.user
+    CustomerLevel customerLevel = customer.customerLevel
+
+    AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+
+    when:
+
+    account.balance = 100.0
+    account.accountType = accountType
+    account.save()
+
+    customer.enabled = false
+    customer.save()
+
+    customerLevel.overdraftAllowed = true
+    customerLevel.dailyWithdrawalLimit = 100.0
+    customerLevel.save()
+
+    TransactionStatus status = checkingService.withdrawal(user, account, 100.0.floatValue())
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
   }
 
   void "test withdrawal OVERDRAFT_NOT_ALLOWED"() {
@@ -53,12 +238,15 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    account.balance = 100.00
+    account.balance = 100.0
     account.accountType = accountType
     account.save()
 
+    customer.enabled = true
+    customer.save()
+
     customerLevel.overdraftAllowed = false
-    customerLevel.dailyWithdrawalLimit = 100
+    customerLevel.dailyWithdrawalLimit = 100.0
     customerLevel.save()
 
     TransactionStatus status = checkingService.withdrawal(user, account, 101)
@@ -86,14 +274,17 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.accountType = accountType
     account.save()
 
+    customer.enabled = true
+    customer.save()
+
     customerLevel.overdraftAllowed = false
-    customerLevel.dailyWithdrawalLimit = 150
-    customerLevel.dailyWithdrawalLimit = 100
+    customerLevel.dailyWithdrawalLimit = 150.0
+    customerLevel.dailyWithdrawalLimit = 100.0
     customerLevel.save()
 
-    checkingService.withdrawal(user, account, 250)
+    checkingService.withdrawal(user, account, 250.0.floatValue())
 
-    TransactionStatus status = checkingService.withdrawal(user, account, 250)
+    TransactionStatus status = checkingService.withdrawal(user, account, 250.0.floatValue())
 
     then:
 
@@ -115,7 +306,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     Float balance = 500.00
-    Float withdrawalAmount = 250
+    Float withdrawalAmount = 250.0
 
     SimpleDateFormat sdf = new SimpleDateFormat('yyyy/MM/dd')
 
@@ -125,8 +316,11 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.accountType = accountType
     account.save()
 
+    customer.enabled = true
+    customer.save()
+
     customerLevel.overdraftAllowed = false
-    customerLevel.dailyWithdrawalLimit = 1000
+    customerLevel.dailyWithdrawalLimit = 1000.0
     customerLevel.save()
 
     checkingService.withdrawal(user, account, withdrawalAmount)
@@ -169,11 +363,14 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.accountType = accountType
     account.save()
 
-    customerLevel.dailyWithdrawalLimit = 100
+    customer.enabled = true
+    customer.save()
+
+    customerLevel.dailyWithdrawalLimit = 100.0
     customerLevel.save()
 
     transactions.eachWithIndex { transaction, index ->
-      transaction.amount = 50
+      transaction.amount = 50.0
       transaction.dateCreated = today
       transaction.transactionType = transactionType
       transaction.save()
@@ -210,11 +407,14 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     account.accountType = accountType
     account.save()
 
-    customerLevel.dailyWithdrawalLimit = 250
+    customer.enabled = true
+    customer.save()
+
+    customerLevel.dailyWithdrawalLimit = 250.0
     customerLevel.save()
 
     transactions.eachWithIndex { transaction, index ->
-      transaction.amount = 50
+      transaction.amount = 50.0
       transaction.dateCreated = today
       transaction.transactionType = transactionType
       transaction.save()

@@ -1,7 +1,7 @@
 package com.genrocket.bank
 
 class Account {
-  Float balance = 0
+  Float balance = 0.0
   AccountType accountType
 
   static belongsTo = [
