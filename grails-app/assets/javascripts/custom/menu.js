@@ -18,6 +18,10 @@ $(function () {
     }
     return valid;
   });
+
+  $("#moveToMenu").click(function() {
+    window.location.href = contextPath + "/home/menu"
+  });
 });
 
 function isValid(val) {
