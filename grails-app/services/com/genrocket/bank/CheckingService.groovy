@@ -89,7 +89,7 @@ class CheckingService {
   }
 
   TransactionStatus transfer(User user, Account fromChecking, Account toSavings, Float amount) {
-    Account.withTransaction { transactionStatus ->
+    Account.withTransaction { controlledTransaction ->
       if (!amount) {
         return TransactionStatus.INVALID_AMOUNT_VALUE
       }
@@ -103,7 +103,7 @@ class CheckingService {
       if (TransactionStatus.TRANSACTION_COMPLETE) {
         status = savingsService.deposit(user, toSavings, amount)
       } else {
-        transactionStatus.setRollbackOnly()
+        controlledTransaction.setRollbackOnly()
       }
 
       return status
