@@ -89,7 +89,7 @@ class CheckingService {
   }
 
   TransactionStatus transfer(User user, Account fromChecking, Account toSavings, Float amount) {
-    Account.withTransaction { controlledTransaction ->
+//    Account.withTransaction { controlledTransaction ->
       if (!amount) {
         return TransactionStatus.INVALID_AMOUNT_VALUE
       }
@@ -102,13 +102,12 @@ class CheckingService {
 
       if (TransactionStatus.TRANSACTION_COMPLETE) {
         status = savingsService.deposit(user, toSavings, amount)
-      } else {
-        controlledTransaction.setRollbackOnly()
+//      } else {
+//        controlledTransaction.setRollbackOnly()
+//      }
+
+        return status
       }
-
-      return status
-
-    }
   }
 
   Boolean checkDailyWithdrawalLimit(User user, Account account, Float amount) {
