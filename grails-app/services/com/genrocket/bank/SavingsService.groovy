@@ -67,7 +67,7 @@ class SavingsService {
     account.balance -= amount
     account.save()
 
-    TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
+    TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_SAVINGS.value)
 
     Transaction transaction = new Transaction(
       user: user,
