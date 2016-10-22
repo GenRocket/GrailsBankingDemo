@@ -17,12 +17,14 @@ class AccountController {
     }
   }
 
-  //TODO - In progress
   def doWithdrawal(Float amount) {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
-    //String message = checkingService.withdrawal(card.customer.user, card.customer.account, amount)
-
-
+    String withdrawalMessage = checkingService.withdrawal(card.customer.user, card.customer.account, amount)
+    if (withdrawalMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
+      render(view: "doWithdrawal", model: [withdrawalAmount: amount, balance: card.customer.account.balance])
+    } else {
+      render(view: 'withdrawal', model: [errorMessage: g.message(code: withdrawalMessage.toString())])
+    }
   }
 }
