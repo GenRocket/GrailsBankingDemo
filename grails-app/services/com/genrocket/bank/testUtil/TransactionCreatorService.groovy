@@ -54,12 +54,12 @@ class TransactionCreatorService {
     savingsCustomer.enabled = true
     savingsCustomer.save()
 
-    checkingCustomerLevel.dailyWithdrawalLimit = 1000
+    checkingCustomerLevel.dailyWithdrawalLimit = 500
     checkingCustomerLevel.monthlyMaxTransfersAllowed = 3
     checkingCustomerLevel.overdraftAllowed = true
     checkingCustomerLevel.save()
 
-    savingsCustomerLevel.dailyWithdrawalLimit = 1000
+    savingsCustomerLevel.dailyWithdrawalLimit = 500
     savingsCustomerLevel.monthlyMaxTransfersAllowed = 3
     savingsCustomerLevel.overdraftAllowed = true
     savingsCustomerLevel.save()
