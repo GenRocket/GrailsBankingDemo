@@ -7,6 +7,7 @@ class BootstrapService {
   def accountService
 
   void createAccounts() {
+    Integer accountNumber = 1000000000
     List<User> users = User.findAll()
 
     Branch branch = Branch.first()
@@ -19,8 +20,14 @@ class BootstrapService {
     users.each { user ->
       println "Creating accounts for User ${user.id}. ${user.firstName} ${user.lastName}"
       CustomerLevel customerLevel = customerLevels[customerLevelIndex]
-      accountService.save(user, branch, cardType, checking, customerLevel)
-      accountService.save(user, branch, cardType, savings, customerLevel)
+      Account account1 = accountService.save(user, branch, cardType, checking, customerLevel)
+      Account account2 = accountService.save(user, branch, cardType, savings, customerLevel)
+
+      account1.accountNumber = accountNumber++
+      account2.accountNumber = accountNumber++
+
+      account1.save()
+      account2.save()
 
       if (++customerLevelIndex == 3) {
         customerLevelIndex = 0

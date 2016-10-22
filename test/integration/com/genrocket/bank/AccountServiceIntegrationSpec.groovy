@@ -1,5 +1,7 @@
 package com.genrocket.bank
 
+import com.genRocket.tdl.LoaderDTO
+import com.genrocket.bank.testDataLoader.AccountTestDataLoader
 import grails.test.spock.IntegrationSpec
 
 /**
@@ -10,6 +12,8 @@ class AccountServiceIntegrationSpec extends IntegrationSpec {
   def customerLevelService
   def accountTestDataService
   def customerTestDataService
+  def accountTypeTestDataService
+  def branchTestDataService
 
   void "update account"() {
     given:
@@ -94,6 +98,23 @@ class AccountServiceIntegrationSpec extends IntegrationSpec {
     then:
 
     account.errors.getFieldError("branch").code == "nullable"
+  }
+
+  void "test accountNumber for Null"() {
+    given:
+
+    accountTestDataService.loadData()
+    Account account = Account.first()
+    account.accountNumber = null
+
+    when:
+
+    accountService.update(account);
+
+    then:
+
+    account.errors.getFieldError("accountNumber").code == "nullable"
+
   }
 
   void "test checkOverdraftAllowed"() {

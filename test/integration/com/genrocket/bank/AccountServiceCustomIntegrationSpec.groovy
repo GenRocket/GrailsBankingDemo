@@ -1,5 +1,7 @@
 package com.genrocket.bank
 
+import com.genRocket.tdl.LoaderDTO
+import com.genrocket.bank.testDataLoader.AccountTestDataLoader
 import grails.test.spock.IntegrationSpec
 
 /**
@@ -55,5 +57,38 @@ class AccountServiceCustomIntegrationSpec extends IntegrationSpec {
 
     card.id
     card.cardType == cardType
+  }
+
+  void "test accountNumber for unique"() {
+    given:
+
+    cardPoolTestDataService.loadData(100)
+
+    accountTypeTestDataService.loadData()
+    AccountType accountType = AccountType.first()
+
+    branchTestDataService.loadData()
+    Branch branch = Branch.first()
+
+    userTestDataService.loadData()
+    User user = User.first()
+
+    cardTypeTestDataService.loadData()
+    CardType cardType = CardType.first()
+
+    customerLevelTestDataService.loadData()
+    CustomerLevel customerLevel = CustomerLevel.first()
+
+    Account account1 = accountService.save(user, branch, cardType, accountType, customerLevel)
+    Account account2 = accountService.save(user, branch, cardType, accountType, customerLevel)
+
+    when:
+
+    account2.accountNumber = account1.accountNumber
+    account2.save()
+
+    then:
+
+    account2.errors.getFieldError("accountNumber").code == "unique"
   }
 }

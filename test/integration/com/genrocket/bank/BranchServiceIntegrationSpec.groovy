@@ -67,7 +67,7 @@ class BranchServiceIntegrationSpec extends IntegrationSpec {
 
     branchTestDataService.loadData()
     Branch branch = Branch.first()
-    branch.externalId = null
+    branch.branchCode = null
 
     when:
 
@@ -75,7 +75,7 @@ class BranchServiceIntegrationSpec extends IntegrationSpec {
 
     then:
 
-    branch.errors.getFieldError("externalId").code == "nullable"
+    branch.errors.getFieldError("branchCode").code == "nullable"
 
   }
 
@@ -198,27 +198,27 @@ class BranchServiceIntegrationSpec extends IntegrationSpec {
 
   }
 
-  void "test externalId for unique"() {
+  void "test branchCode for unique"() {
     given:
 
 
     def branchList = (List<LoaderDTO>) BranchTestDataLoader.load(2)
     def branch = (Branch) branchList.first().object
 
-    def temp = branch.externalId;
+    def temp = branch.branchCode;
 
     when:
 
     branchService.save(branch);
 
     def testBranch = (Branch) branchList[1].object
-    testBranch.externalId = temp;
+    testBranch.branchCode = temp;
 
     branchService.save(testBranch);
 
     then:
 
-    testBranch.errors.getFieldError("externalId").code == "unique"
+    testBranch.errors.getFieldError("branchCode").code == "unique"
   }
 }
     
