@@ -82,20 +82,24 @@ class SavingsService {
     return TransactionStatus.TRANSACTION_COMPLETE
   }
 
-  TransactionStatus transfer(User user, Account savings, Account checking, Float amount) {
+  TransactionStatus transfer(User user, Account fromSavings, Account toSavings, Float amount) {
     Account.withTransaction { controlledTransaction ->
       if (!amount) {
         return TransactionStatus.INVALID_AMOUNT_VALUE
       }
 
-      if (checkMonthlyMaxTransfersExceeded(user, savings)) {
+      if (checkMonthlyMaxTransfersExceeded(user, fromSavings)) {
         return TransactionStatus.MAX_TRANSFERS_EXCEEDED
       }
 
-      TransactionStatus status = withdrawal(user, savings, amount)
+      if (fromSavings.balance < amount) {
+        return TransactionStatus.AMOUNT_GT_BALANCE
+      }
+
+      TransactionStatus status = withdrawal(user, fromSavings, amount)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
-        status = checkingService.deposit(user, checking, amount)
+        status = checkingService.deposit(user, toSavings, amount)
       }
 
       if (status != TransactionStatus.TRANSACTION_COMPLETE) {
