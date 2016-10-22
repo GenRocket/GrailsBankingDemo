@@ -9,6 +9,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
   def accountTestDataService
   def transactionTestDataService
   def transactionTypeTestDataService
+  def transactionCreatorService
 
   void "test deposit INVALID_AMOUNT_VALUE"() {
     given:
@@ -426,4 +427,77 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     !reached
   }
+
+  void "test transfer INVALID_AMOUNT_VALUE"() {
+    given:
+
+    Map map = transactionCreatorService.createCheckingAndSavingsAccount()
+
+    User user = (User) map['user']
+    Account checkingAccount = (Account) map['checkingAccount']
+    Account savingsAccount = (Account) map['savingsAccount']
+
+    when:
+
+    TransactionStatus status = checkingService.transfer(user, checkingAccount, savingsAccount, null)
+
+    then:
+
+    status == TransactionStatus.INVALID_AMOUNT_VALUE
+  }
+
+  void "test transfer with checking ACCOUNT_NOT_ENABLED"() {
+    given:
+
+    Map map = transactionCreatorService.createCheckingAndSavingsAccount()
+
+    User user = (User) map['user']
+    Account checkingAccount = (Account) map['checkingAccount']
+    Account savingsAccount = (Account) map['savingsAccount']
+    Customer customer = (Customer) map['checkingCustomer']
+
+    checkingAccount.balance = 500
+    checkingAccount.save()
+
+    customer.enabled = false
+    customer.save()
+
+    when:
+
+    TransactionStatus status = checkingService.transfer(user, checkingAccount, savingsAccount, 100)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+    transactions.size() == 0
+  }
+
+  void "test transfer with savings ACCOUNT_NOT_ENABLED"() {
+    given:
+
+    Map map = transactionCreatorService.createCheckingAndSavingsAccount()
+
+    User user = (User) map['user']
+    Account checkingAccount = (Account) map['checkingAccount']
+    Account savingsAccount = (Account) map['savingsAccount']
+    Customer customer = (Customer) map['savingsCustomer']
+
+    checkingAccount.balance = 500
+    checkingAccount.save()
+
+    customer.enabled = false
+    customer.save()
+
+    when:
+
+    TransactionStatus status = checkingService.transfer(user, checkingAccount, savingsAccount, 100)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+    transactions.size() == 0
+  }
+
 }

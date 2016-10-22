@@ -17,7 +17,7 @@ class SavingsService {
       return TransactionStatus.ACCOUNT_NOT_SAVINGS
     }
 
-    Customer customer = Customer.findByUser(user)
+    Customer customer = Customer.findByUserAndAccount(user, account)
 
     if (!customer.enabled) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
@@ -52,7 +52,7 @@ class SavingsService {
       return TransactionStatus.ACCOUNT_NOT_SAVINGS
     }
 
-    Customer customer = Customer.findByUser(user)
+    Customer customer = Customer.findByUserAndAccount(user, account)
 
     if (!customer.enabled) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
@@ -83,19 +83,19 @@ class SavingsService {
   }
 
   TransactionStatus transfer(User user, Account fromSavings, Account toSavings, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
+
+    if (checkMonthlyMaxTransfersExceeded(user, fromSavings)) {
+      return TransactionStatus.MAX_TRANSFERS_EXCEEDED
+    }
+
+    if (fromSavings.balance < amount) {
+      return TransactionStatus.AMOUNT_GT_BALANCE
+    }
+
     Account.withTransaction { controlledTransaction ->
-      if (!amount) {
-        return TransactionStatus.INVALID_AMOUNT_VALUE
-      }
-
-      if (checkMonthlyMaxTransfersExceeded(user, fromSavings)) {
-        return TransactionStatus.MAX_TRANSFERS_EXCEEDED
-      }
-
-      if (fromSavings.balance < amount) {
-        return TransactionStatus.AMOUNT_GT_BALANCE
-      }
-
       TransactionStatus status = withdrawal(user, fromSavings, amount)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
@@ -124,6 +124,6 @@ class SavingsService {
 
     Integer count = 0                 // todo select count(*)
 
-    return count < monthlyMaxTransfersAllowed
+    return count > monthlyMaxTransfersAllowed
   }
 }

@@ -8,11 +8,10 @@ import java.text.SimpleDateFormat
  * Created by htaylor on 10/22/16.
  */
 class SavingsServiceIntegrationSpec extends IntegrationSpec {
-  def checkingService
   def savingsService
   def accountTestDataService
-  def transactionTestDataService
   def transactionTypeTestDataService
+  def transactionCreatorService
 
   void "test deposit INVALID_AMOUNT_VALUE"() {
     given:
@@ -306,5 +305,76 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     dateCreated == today
   }
 
+  void "test transfer INVALID_AMOUNT_VALUE"() {
+    given:
+
+    Map map = transactionCreatorService.createCheckingAndSavingsAccount()
+
+    User user = (User) map['user']
+    Account checkingAccount = (Account) map['checkingAccount']
+    Account savingsAccount = (Account) map['savingsAccount']
+
+    when:
+
+    TransactionStatus status = savingsService.transfer(user, savingsAccount, checkingAccount, null)
+
+    then:
+
+    status == TransactionStatus.INVALID_AMOUNT_VALUE
+  }
+
+  void "test transfer with checking ACCOUNT_NOT_ENABLED"() {
+    given:
+
+    Map map = transactionCreatorService.createCheckingAndSavingsAccount()
+
+    User user = (User) map['user']
+    Account checkingAccount = (Account) map['checkingAccount']
+    Account savingsAccount = (Account) map['savingsAccount']
+    Customer customer = (Customer) map['checkingCustomer']
+
+    savingsAccount.balance = 500
+    savingsAccount.save()
+
+    customer.enabled = false
+    customer.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transfer(user, savingsAccount, checkingAccount, 100)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+    transactions.size() == 0
+  }
+
+  void "test transfer with savings ACCOUNT_NOT_ENABLED"() {
+    given:
+
+    Map map = transactionCreatorService.createCheckingAndSavingsAccount()
+
+    User user = (User) map['user']
+    Account checkingAccount = (Account) map['checkingAccount']
+    Account savingsAccount = (Account) map['savingsAccount']
+    Customer customer = (Customer) map['savingsCustomer']
+
+    savingsAccount.balance = 500
+    savingsAccount.save()
+
+    customer.enabled = false
+    customer.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transfer(user, savingsAccount, checkingAccount, 100)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+    transactions.size() == 0
+  }
 
 }

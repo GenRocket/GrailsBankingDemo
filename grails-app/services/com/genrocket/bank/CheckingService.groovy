@@ -19,7 +19,7 @@ class CheckingService {
       return TransactionStatus.ACCOUNT_NOT_CHECKING
     }
 
-    Customer customer = Customer.findByUser(user)
+    Customer customer = Customer.findByUserAndAccount(user, account)
 
     if (!customer.enabled) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
@@ -54,7 +54,7 @@ class CheckingService {
       return TransactionStatus.ACCOUNT_NOT_CHECKING
     }
 
-    Customer customer = Customer.findByUser(user)
+    Customer customer = Customer.findByUserAndAccount(user, account)
 
     if (!customer.enabled) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
@@ -89,25 +89,26 @@ class CheckingService {
   }
 
   TransactionStatus transfer(User user, Account fromChecking, Account toSavings, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
+
+    if (fromChecking.balance < amount) {
+      return TransactionStatus.AMOUNT_GT_BALANCE
+    }
+
     Account.withTransaction { controlledTransaction ->
-      if (!amount) {
-        return TransactionStatus.INVALID_AMOUNT_VALUE
-      }
-
-      if (fromChecking.balance < amount) {
-        return TransactionStatus.AMOUNT_GT_BALANCE
-      }
-
       TransactionStatus status = withdrawal(user, fromChecking, amount)
 
-      if (TransactionStatus.TRANSACTION_COMPLETE) {
+      if (status == TransactionStatus.TRANSACTION_COMPLETE) {
         status = savingsService.deposit(user, toSavings, amount)
-      } else {
+      }
+
+      if (status != TransactionStatus.TRANSACTION_COMPLETE) {
         controlledTransaction.setRollbackOnly()
       }
 
       return status
-
     }
   }
 
