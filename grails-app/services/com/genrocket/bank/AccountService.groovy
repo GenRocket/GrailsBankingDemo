@@ -11,24 +11,6 @@ class AccountService {
   def customerService
   def cardService
 
-  Integer generateAccountNumber() {
-    Random random = new Random();
-    Integer min = 1000010000
-    Integer max = 9999999999
-    Boolean found = false
-    Integer accountNumber
-
-    while (!found) {
-      accountNumber = random.nextInt(max - min) + min
-
-      Account account = Account.findByAccountNumber(accountNumber)
-
-      found = account == null
-    }
-
-    return accountNumber
-  }
-
   Account save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
     Account account = new Account(
       accountNumber: AccountUtil.generateAccountNumber(),
