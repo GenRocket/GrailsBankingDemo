@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.util.AccountUtil
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -30,7 +31,7 @@ class AccountService {
 
   Account save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
     Account account = new Account(
-      accountNumber: generateAccountNumber(),
+      accountNumber: AccountUtil.generateAccountNumber(),
       branch: branch,
       accountType: accountType
     )

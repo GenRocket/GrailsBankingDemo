@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.util.CardUtil
 import groovy.time.TimeCategory
 import org.springframework.transaction.annotation.Transactional
 
@@ -10,26 +11,6 @@ import org.springframework.transaction.annotation.Transactional
 class CardService {
   def cardPoolService
 
-  def parseFullName(User user) {
-    String fullName
-
-    if (user.middleInitial)
-      fullName = "${user.title} ${user.firstName} ${user.middleInitial}. ${user.lastName} ${user.suffix}"
-    else
-      fullName = "${user.title} ${user.firstName} ${user.lastName} ${user.suffix}"
-
-    return fullName.trim()
-  }
-
-  def createSecurityCode() {
-    Random rand = new Random()
-    Integer min = 100
-    Integer max = 999
-    Integer code = rand.nextInt(max - min) + min
-
-    return code
-  }
-
   def save(CardType cardType, Customer customer) {
     use(TimeCategory) {
       Date dateIssued = new Date()
@@ -39,9 +20,9 @@ class CardService {
         dateIssued: dateIssued,
         dateExpired: dateExpired,
         enabled: true,
-        nameOnCard: parseFullName(customer.user),
+        nameOnCard: CardUtil.parseFullName(customer.user),
         cardNumber: cardPoolService.nextCardNumber(),
-        securityCode: createSecurityCode(),
+        securityCode: CardUtil.createSecurityCode(),
         cardType: cardType,
         customer: customer
       )
