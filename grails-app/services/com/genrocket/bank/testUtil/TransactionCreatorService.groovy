@@ -13,15 +13,17 @@ import grails.transaction.Transactional
 @Transactional
 class TransactionCreatorService {
   def accountService
-  def accountTypeTestDataService
-  def branchTestDataService
-  def cardTypeTestDataService
-  def customerLevelTestDataService
   def userTestDataService
+  def branchTestDataService
   def cardPoolTestDataService
+  def cardTypeTestDataService
+  def accountTypeTestDataService
+  def customerLevelTestDataService
+  def transactionTypeTestDataService
 
   Map createCheckingAndSavingsAccount() {
     cardPoolTestDataService.loadData(100)
+    transactionTypeTestDataService.loadData()
 
     accountTypeTestDataService.loadData()
     AccountType checkingType = AccountType.findByName(AccountTypes.CHECKING.value)
