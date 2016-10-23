@@ -377,4 +377,35 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     transactions.size() == 0
   }
 
+  void "test checkingService.withdrawal"() {
+    given:
+
+    Map map = transactionCreatorService.createCheckingAndSavingsAccount()
+
+    User user = (User) map['user']
+    Account checkingAccount = (Account) map['checkingAccount']
+    Account savingsAccount = (Account) map['savingsAccount']
+    CustomerLevel customerLevel = (CustomerLevel) map['savingsCustomerLevel']
+
+    savingsAccount.balance = 5000
+    savingsAccount.save()
+
+    customerLevel.dailyWithdrawalLimit = 10000
+    customerLevel.monthlyMaxTransfersAllowed = 3
+    customerLevel.save()
+
+    when:
+
+    savingsService.transfer(user, savingsAccount, checkingAccount, 500)
+    savingsService.transfer(user, savingsAccount, checkingAccount, 500)
+    savingsService.transfer(user, savingsAccount, checkingAccount, 500)
+    TransactionStatus status = savingsService.transfer(user, savingsAccount, checkingAccount, 500)
+
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.MAX_TRANSFERS_EXCEEDED
+    transactions.size() == 6
+  }
 }
