@@ -1,6 +1,7 @@
 package com.genrocket.bank
 
 import grails.transaction.Transactional
+import org.springframework.transaction.TransactionDefinition
 
 import java.text.SimpleDateFormat
 
@@ -97,7 +98,7 @@ class CheckingService {
       return TransactionStatus.AMOUNT_GT_BALANCE
     }
 
-    Account.withTransaction { controlledTransaction ->
+    Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
       TransactionStatus status = withdrawal(user, fromChecking, amount)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {

@@ -7,8 +7,10 @@ class BootStrap {
   def accountTypeTestDataService
   def customerLevelTestDataService
   def transactionTypeTestDataService
+  def transactionManager
 
   def init = { servletContext ->
+    transactionManager.setNestedTransactionAllowed(true)
 
     environments {
       development {
