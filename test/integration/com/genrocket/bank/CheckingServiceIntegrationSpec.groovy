@@ -324,8 +324,6 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     customerLevel.dailyWithdrawalLimit = 1000.0
     customerLevel.save()
 
-    checkingService.withdrawal(user, account, withdrawalAmount)
-
     TransactionStatus status = checkingService.withdrawal(user, account, withdrawalAmount)
     Transaction transaction = Transaction.findByUserAndAccount(user, account)
     String dateCreated = sdf.parse(sdf.format(transaction.dateCreated))
