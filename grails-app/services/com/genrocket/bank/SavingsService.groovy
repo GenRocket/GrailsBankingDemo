@@ -119,11 +119,15 @@ class SavingsService {
 
     Integer monthlyMaxTransfersAllowed = customer.customerLevel.monthlyMaxTransfersAllowed
 
-    Date firstDayOfMonth = new Date() // todo
-    Date lastDayOfMonth = new Date()  // toto
+    Calendar calendar = Calendar.getInstance()
+    calendar.set(Calendar.DAY_OF_MONTH, 1)
 
-    Integer count = 0                 // todo select count(*)
+    Date firstDayOfMonth = calendar.getTime()
+    Date lastDayOfMonth = firstDayOfMonth + calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - 1
 
-    return count > monthlyMaxTransfersAllowed
+    List<Transaction> transactions =
+      Transaction.findAllByAccountAndDateCreatedBetween(account, firstDayOfMonth, lastDayOfMonth)
+
+    return transactions.size() >= monthlyMaxTransfersAllowed
   }
 }
