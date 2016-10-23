@@ -18,7 +18,7 @@ class AccountService {
     Integer accountNumber
 
     while (!found) {
-      accountNumber = random.nextInt(max - min) + min;
+      accountNumber = random.nextInt(max - min) + min
 
       Account account = Account.findByAccountNumber(accountNumber)
 

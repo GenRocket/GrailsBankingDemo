@@ -11,7 +11,7 @@ class CardService {
   def cardPoolService
 
   def parseFullName(User user) {
-    String fullName = null
+    String fullName
 
     if (user.middleInitial)
       fullName = "${user.title} ${user.firstName} ${user.middleInitial}. ${user.lastName} ${user.suffix}"
@@ -23,10 +23,11 @@ class CardService {
 
   def createSecurityCode() {
     Random rand = new Random()
+    Integer min = 100
     Integer max = 999
-    Integer code = rand.nextInt(max + 1)
+    Integer code = rand.nextInt(max - min) + min
 
-    return (code < 100) ? code + 100 : code
+    return code
   }
 
   def save(CardType cardType, Customer customer) {
