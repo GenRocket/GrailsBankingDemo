@@ -377,7 +377,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     transactions.size() == 0
   }
 
-  void "test checkingService.withdrawal"() {
+  void "test MAX_TRANSFERS_EXCEEDED"() {
     given:
 
     Map map = transactionCreatorService.createCheckingAndSavingsAccount()
