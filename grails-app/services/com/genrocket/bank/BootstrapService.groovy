@@ -5,6 +5,7 @@ import grails.transaction.Transactional
 @Transactional
 class BootstrapService {
   def accountService
+  def cardService
 
   void createAccounts() {
     Integer accountNumber = 1000000000
@@ -39,9 +40,7 @@ class BootstrapService {
 
     customers.each { customer ->
       Card card = Card.findByCustomer(customer)
-      card.dateActivated = new Date()
-      card.pinNumber = 123456
-      card.save()
+      cardService.activateCard(card, 123456)
     }
   }
 }
