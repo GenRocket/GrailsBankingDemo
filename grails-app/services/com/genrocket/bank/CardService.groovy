@@ -12,6 +12,12 @@ class CardService {
   def cardPoolService
 
   void save(CardType cardType, Customer customer) {
+    Card activeCard = findActiveCard(customer, cardType)
+
+    if (activeCard) {
+      deactivateCard(activeCard)
+    }
+
     use(TimeCategory) {
       Date dateIssued = new Date()
       Date dateExpired = dateIssued + 3.years
@@ -57,6 +63,15 @@ class CardService {
     card.save()
 
     TransactionStatus.TRANSACTION_COMPLETE
+  }
+
+  Card findActiveCard(Customer customer, CardType cardType) {
+    Card.findByCustomerAndCardTypeAndDateActivatedIsNotNull(customer, cardType)
+  }
+
+  void deactivateCard(Card card) {
+    card.dateDeactivated = new Date()
+    card.save()
   }
 
   def update(Card card) {
