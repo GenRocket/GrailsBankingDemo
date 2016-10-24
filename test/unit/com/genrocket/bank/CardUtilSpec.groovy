@@ -29,20 +29,20 @@ class CardUtilSpec extends Specification {
     then:
 
     users.each { user ->
-      if (user.title && user.firstName && user.middleInitial && user.lastName && user.suffix) {
-        CardUtil.parseFullName(user) == "${user.firstName && user.middleInitial && user.lastName && user.suffix}".toString()
+      if (user.firstName && user.middleInitial && user.lastName && user.suffix) {
+        assert CardUtil.parseFullName(user) == "${user.firstName} ${user.middleInitial} ${user.lastName} ${user.suffix}".toString()
       }
 
-      if (user.title && user.firstName && user.middleInitial && user.lastName) {
-        CardUtil.parseFullName(user) == "${user.firstName && user.middleInitial && user.lastName}".toString()
+      else if (user.firstName && user.middleInitial && user.lastName ) {
+        assert CardUtil.parseFullName(user) == "${user.firstName} ${user.middleInitial} ${user.lastName}".toString()
       }
 
-      if (user.title && user.firstName && user.lastName && user.suffix) {
-        CardUtil.parseFullName(user) == "${user.firstName && user.lastName && user.suffix}".toString()
+      else if (user.firstName && user.lastName && user.suffix) {
+        assert CardUtil.parseFullName(user) == "${user.firstName} ${user.lastName} ${user.suffix}".toString()
       }
 
-      if (user.title && user.firstName && user.lastName) {
-        CardUtil.parseFullName(user) == "${user.firstName && user.lastName}".toString()
+      else if (user.firstName && user.lastName) {
+        assert CardUtil.parseFullName(user) == "${user.firstName} ${user.lastName}".toString()
       }
     }
   }

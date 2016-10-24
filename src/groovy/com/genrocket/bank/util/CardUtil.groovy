@@ -8,14 +8,18 @@ import com.genrocket.bank.User
 class CardUtil {
 
   static String parseFullName(User user) {
-    String fullName
+    StringBuilder fullName = new StringBuilder()
 
     if (user.middleInitial)
-      fullName = "${user.title} ${user.firstName} ${user.middleInitial}. ${user.lastName} ${user.suffix}"
+      fullName.append("${user.firstName} ${user.middleInitial} ${user.lastName}")
     else
-      fullName = "${user.title} ${user.firstName} ${user.lastName} ${user.suffix}"
+      fullName.append("${user.firstName} ${user.lastName}")
 
-    return fullName.trim()
+    if (user.suffix) {
+      fullName.append(" ${user.suffix}")
+    }
+
+    return fullName.toString().trim()
   }
 
   static Integer createSecurityCode() {
