@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class CardService {
   def cardPoolService
 
-  void save(CardType cardType, Customer customer) {
+  Card save(CardType cardType, Customer customer) {
     Card activeCard = findActiveCard(customer, cardType)
 
     if (activeCard) {
@@ -66,7 +66,9 @@ class CardService {
   }
 
   Card findActiveCard(Customer customer, CardType cardType) {
-    Card.findByCustomerAndCardTypeAndDateActivatedIsNotNull(customer, cardType)
+    Card.where {
+      customer == customer && cardType == cardType && dateActivated != null
+    }.get()
   }
 
   void deactivateCard(Card card) {
