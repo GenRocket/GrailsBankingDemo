@@ -14,9 +14,12 @@
             ${flash.error}
         </div>
         </g:if>
+      <div class="text-center m-b-md p-m">
+        <h2>Account Type: ${accountType?.name}</h2>
+      </div>
         <div class="row">
             <div class="col-sm-6">
-                <div class="hpanel plan-box hyellow">
+                <div class="hpanel plan-box hyellow" id="balance-menu">
                     <div class="panel-heading hbuilt text-center">
                         <h4 class="font-bold h-bg-navy-blue">Balance</h4>
                     </div>

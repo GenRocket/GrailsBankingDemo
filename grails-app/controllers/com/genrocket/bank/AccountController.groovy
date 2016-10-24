@@ -4,6 +4,12 @@ class AccountController {
   def bankingService
   def checkingService
 
+  def balance() {
+    Card card = bankingService.selectedCard
+    card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
+    [balance: card?.customer?.account?.balance]
+  }
+
   def withdrawal() {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session

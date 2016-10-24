@@ -19,8 +19,8 @@ $(function () {
     return valid;
   });
 
-  $("#moveToMenu").click(function() {
-    window.location.href = contextPath + "/home/menu"
+  $("#balance-menu").click(function() {
+    window.location.href = contextPath + "/account/balance"
   });
 });
 
