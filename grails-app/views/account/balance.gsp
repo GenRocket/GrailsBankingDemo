@@ -12,7 +12,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="text-center m-b-md">
-        <h2>Your Checking Balance</h2>
+        <h2>Your ${accountType?.name} Balance</h2>
         <h3>$${balance}</h3>
       </div>
       <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
