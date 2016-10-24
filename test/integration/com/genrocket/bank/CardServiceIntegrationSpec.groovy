@@ -204,8 +204,29 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     then:
 
+    card.dateActivated
     status == TransactionStatus.TRANSACTION_COMPLETE
 
+  }
+
+  void "test deactivateCard"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    TransactionStatus status = cardService.activateCard(card, 123456)
+
+    assert card.dateActivated
+    assert status == TransactionStatus.TRANSACTION_COMPLETE
+
+    when:
+
+    cardService.deactivateCard(card)
+
+    then:
+
+    card.dateDeactivated
   }
 }
     

@@ -59,7 +59,7 @@ class CardService {
     }
 
     card.pinNumber = pinNumber
-    card.dateDeactivated = new Date()
+    card.dateActivated = new Date()
     card.save()
 
     TransactionStatus.TRANSACTION_COMPLETE
