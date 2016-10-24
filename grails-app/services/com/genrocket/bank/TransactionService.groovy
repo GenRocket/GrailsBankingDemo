@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional
 class TransactionService {
 
   def save(Transaction transaction) {
-    transaction.save(failOnError: true)
+    transaction.save()
   }
 
   def update(Transaction transaction) {
-    transaction.save(failOnError: true)
+    transaction.save()
   }
 
   def delete(Transaction transaction) {

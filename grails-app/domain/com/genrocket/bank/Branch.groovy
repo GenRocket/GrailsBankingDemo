@@ -1,7 +1,7 @@
 package com.genrocket.bank
 
 class Branch {
-  Long externalId
+  Long branchCode
   String name
   String address
   String city
@@ -15,7 +15,7 @@ class Branch {
   ]
 
   static constraints = {
-    externalId nullable: false, unique: true
+    branchCode nullable: false, unique: true
     name nullable: false, blank: false, maxSize: 40
     address nullable: false, blank: false, maxSize: 50
     city nullable: false, blank: false, maxSize: 25

@@ -61,45 +61,5 @@ class CardTypeServiceIntegrationSpec extends IntegrationSpec {
     CardType.get(id) == null
   }
 
-
-  void "test name for Null"() {
-    given:
-
-    cardTypeTestDataService.loadData()
-    CardType cardType = CardType.first()
-    cardType.name = null
-
-    when:
-
-    cardTypeService.update(cardType);
-
-    then:
-
-    cardType.errors.getFieldError("name").code == "nullable"
-
-  }
-
-  void "test name for unique"() {
-    given:
-
-
-    def cardTypeList = (List<LoaderDTO>) CardTypeTestDataLoader.load(2)
-    def cardType = (CardType) cardTypeList.first().object
-
-    def temp = cardType.name;
-
-    when:
-
-    cardTypeService.save(cardType);
-
-    def testCardType = (CardType) cardTypeList[1].object
-    testCardType.name = temp;
-
-    cardTypeService.save(testCardType);
-
-    then:
-
-    testCardType.errors.getFieldError("name").code == "unique"
-  }
 }
     

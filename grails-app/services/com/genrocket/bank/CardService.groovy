@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.util.CardUtil
 import groovy.time.TimeCategory
 import org.springframework.transaction.annotation.Transactional
 
@@ -10,26 +11,13 @@ import org.springframework.transaction.annotation.Transactional
 class CardService {
   def cardPoolService
 
-  def parseFullName(User user) {
-    String fullName = null
+  Card save(CardType cardType, Customer customer) {
+    Card activeCard = findActiveCard(customer, cardType)
 
-    if (user.middleInitial)
-      fullName = "${user.title} ${user.firstName} ${user.middleInitial}. ${user.lastName} ${user.suffix}"
-    else
-      fullName = "${user.title} ${user.firstName} ${user.lastName} ${user.suffix}"
+    if (activeCard) {
+      deactivateCard(activeCard)
+    }
 
-    return fullName.trim()
-  }
-
-  def createSecurityCode() {
-    Random rand = new Random()
-    Integer max = 999
-    Integer code = rand.nextInt(max + 1)
-
-    return (code < 100) ? code + 100 : code
-  }
-
-  def save(CardType cardType, Customer customer) {
     use(TimeCategory) {
       Date dateIssued = new Date()
       Date dateExpired = dateIssued + 3.years
@@ -38,15 +26,54 @@ class CardService {
         dateIssued: dateIssued,
         dateExpired: dateExpired,
         enabled: true,
-        nameOnCard: parseFullName(customer.user),
+        nameOnCard: CardUtil.parseFullName(customer.user),
         cardNumber: cardPoolService.nextCardNumber(),
-        securityCode: createSecurityCode(),
+        securityCode: CardUtil.createSecurityCode(),
         cardType: cardType,
         customer: customer
       )
 
       card.save()
     }
+  }
+
+  TransactionStatus activateCard(Card card, Integer pinNumber) {
+    if (!pinNumber) {
+      return TransactionStatus.INVALID_PIN_NUMBER
+    }
+
+    if (pinNumber.toString().size() != 6) {
+      return TransactionStatus.INVALID_PIN_NUMBER
+    }
+
+    if (card.dateActivated) {
+      return TransactionStatus.CARD_ALREADY_ACTIVE
+    }
+
+    if (card.dateDeactivated) {
+      return TransactionStatus.CARD_DEACTIVATED
+    }
+
+    if (!card.enabled) {
+      return TransactionStatus.CARD_NOT_ENABLED
+    }
+
+    card.pinNumber = pinNumber
+    card.dateActivated = new Date()
+    card.save()
+
+    TransactionStatus.TRANSACTION_COMPLETE
+  }
+
+  Card findActiveCard(Customer customer, CardType cardType) {
+    Card.where {
+      customer == customer && cardType == cardType && dateActivated != null
+    }.get()
+  }
+
+  void deactivateCard(Card card) {
+    card.dateDeactivated = new Date()
+    card.save()
   }
 
   def update(Card card) {

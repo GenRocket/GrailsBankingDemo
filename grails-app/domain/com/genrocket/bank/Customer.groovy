@@ -9,6 +9,10 @@ class Customer {
     account: Account
   ]
 
+  static hasMany = [
+    cards: Card
+  ]
+
   static constraints = {
     enabled nullable: false
     user nullable: false

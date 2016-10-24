@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.util.AccountUtil
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -10,9 +11,9 @@ class AccountService {
   def customerService
   def cardService
 
-
-  def save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
+  Account save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
     Account account = new Account(
+      accountNumber: AccountUtil.generateAccountNumber(),
       branch: branch,
       accountType: accountType
     )
@@ -22,7 +23,6 @@ class AccountService {
     if (!account.hasErrors()) {
       Customer customer = new Customer(
         enabled: false,
-        active: false,
         user: user,
         account: account,
         customerLevel: customerLevel
@@ -34,9 +34,11 @@ class AccountService {
         cardService.save(cardType, customer)
       }
     }
+
+    return account
   }
 
-  def checkOverdraftAllowed(User user, Account account) {
+  Boolean checkOverdraftAllowed(User user, Account account) {
     Customer customer = Customer.findByUserAndAccount(user, account)
 
     if (customer) {
@@ -46,14 +48,5 @@ class AccountService {
       return false
     }
   }
-
-  def update(Account account) {
-    account.save()
-  }
-
-  def delete(Account account) {
-    account.delete()
-  }
-
 }
     
