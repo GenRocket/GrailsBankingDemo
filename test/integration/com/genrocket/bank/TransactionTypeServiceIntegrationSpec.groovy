@@ -61,45 +61,5 @@ class TransactionTypeServiceIntegrationSpec extends IntegrationSpec {
     TransactionType.get(id) == null
   }
 
-
-  void "test name for Null"() {
-    given:
-
-    transactionTypeTestDataService.loadData()
-    TransactionType transactionType = TransactionType.first()
-    transactionType.name = null
-
-    when:
-
-    transactionTypeService.update(transactionType);
-
-    then:
-
-    transactionType.errors.getFieldError("name").code == "nullable"
-
-  }
-
-  void "test name for unique"() {
-    given:
-
-
-    def transactionTypeList = (List<LoaderDTO>) TransactionTypeTestDataLoader.load(2)
-    def transactionType = (TransactionType) transactionTypeList.first().object
-
-    def temp = transactionType.name;
-
-    when:
-
-    transactionTypeService.save(transactionType);
-
-    def testTransactionType = (TransactionType) transactionTypeList[1].object
-    testTransactionType.name = temp;
-
-    transactionTypeService.save(testTransactionType);
-
-    then:
-
-    testTransactionType.errors.getFieldError("name").code == "unique"
-  }
 }
     
