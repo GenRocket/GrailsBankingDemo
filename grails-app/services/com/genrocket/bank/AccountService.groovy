@@ -38,7 +38,7 @@ class AccountService {
     return account
   }
 
-  def checkOverdraftAllowed(User user, Account account) {
+  Boolean checkOverdraftAllowed(User user, Account account) {
     Customer customer = Customer.findByUserAndAccount(user, account)
 
     if (customer) {
@@ -48,14 +48,5 @@ class AccountService {
       return false
     }
   }
-
-  def update(Account account) {
-    account.save()
-  }
-
-  def delete(Account account) {
-    account.delete()
-  }
-
 }
     
