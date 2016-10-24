@@ -228,5 +228,47 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     card.dateDeactivated
   }
+
+  void "test find active card"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card oldCard = Card.first()
+    Customer customer = oldCard.customer
+    CardType cardType = oldCard.cardType
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(oldCard, 123456)
+    Card activeCard = cardService.findActiveCard(customer, cardType)
+
+    then:
+
+    status == TransactionStatus.TRANSACTION_COMPLETE
+    activeCard
+  }
+
+  void "test create replace card"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card oldCard = Card.first()
+    Customer customer = oldCard.customer
+    CardType cardType = oldCard.cardType
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(oldCard, 123456)
+
+    assert oldCard.dateActivated
+    assert status == TransactionStatus.TRANSACTION_COMPLETE
+
+    Card newCard = cardService.save(cardType, customer)
+
+    then:
+
+    oldCard.dateDeactivated
+    newCard
+  }
 }
     
