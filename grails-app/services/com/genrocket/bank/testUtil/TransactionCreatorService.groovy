@@ -4,6 +4,7 @@ import com.genrocket.bank.Account
 import com.genrocket.bank.AccountType
 import com.genrocket.bank.AccountTypes
 import com.genrocket.bank.Branch
+import com.genrocket.bank.Card
 import com.genrocket.bank.CardType
 import com.genrocket.bank.Customer
 import com.genrocket.bank.CustomerLevel
@@ -66,6 +67,9 @@ class TransactionCreatorService {
     savingsCustomerLevel.overdraftAllowed = true
     savingsCustomerLevel.save()
 
+    Card checkingCard = checkingCustomer.cards[0]
+    Card savingsCard = savingsCustomer.cards[0]
+
     return [
       user: user,
       checkingAccount: checkingAccount,
@@ -73,7 +77,9 @@ class TransactionCreatorService {
       checkingCustomer: checkingCustomer,
       savingsCustomer: savingsCustomer,
       checkingCustomerLevel: checkingCustomerLevel,
-      savingsCustomerLevel: savingsCustomerLevel
+      savingsCustomerLevel: savingsCustomerLevel,
+      checkingCard: checkingCard,
+      savingsCard: savingsCard
     ]
   }
 }
