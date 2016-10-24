@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class CardService {
   def cardPoolService
 
-  def save(CardType cardType, Customer customer) {
+  void save(CardType cardType, Customer customer) {
     use(TimeCategory) {
       Date dateIssued = new Date()
       Date dateExpired = dateIssued + 3.years
@@ -29,6 +29,24 @@ class CardService {
 
       card.save()
     }
+  }
+
+  TransactionStatus activateCard(Card card, Integer pinNumber) {
+    if (!pinNumber) {
+      return TransactionStatus.INVALID_PIN_NUMBER
+    }
+
+    if (pinNumber.toString().size() != 6) {
+      return TransactionStatus.INVALID_PIN_NUMBER
+    }
+
+    if (!card.dateDeactivated) {
+      card.pinNumber = pinNumber
+      card.dateDeactivated = new Date()
+      card.save()
+    }
+
+    TransactionStatus.TRANSACTION_COMPLETE
   }
 
   def update(Card card) {
