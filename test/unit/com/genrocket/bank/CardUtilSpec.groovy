@@ -23,7 +23,7 @@ class CardUtilSpec extends Specification {
     List<User> users = []
 
     testData.each { node ->
-      users.add(node.object)
+      users.add((User) node.object)
     }
 
     then:
