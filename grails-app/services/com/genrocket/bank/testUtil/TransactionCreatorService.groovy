@@ -57,6 +57,9 @@ class TransactionCreatorService {
     savingsCustomer.enabled = true
     savingsCustomer.save()
 
+    Card checkingCard = Card.findByCustomer(checkingCustomer)
+    Card savingsCard = Card.findByCustomer(savingsCustomer)
+
     checkingCustomerLevel.dailyWithdrawalLimit = 500
     checkingCustomerLevel.monthlyMaxTransfersAllowed = 3
     checkingCustomerLevel.overdraftAllowed = true
@@ -66,9 +69,6 @@ class TransactionCreatorService {
     savingsCustomerLevel.monthlyMaxTransfersAllowed = 3
     savingsCustomerLevel.overdraftAllowed = true
     savingsCustomerLevel.save()
-
-    Card checkingCard = checkingCustomer.cards[0]
-    Card savingsCard = savingsCustomer.cards[0]
 
     return [
       user: user,
