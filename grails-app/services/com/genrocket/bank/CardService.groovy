@@ -40,11 +40,21 @@ class CardService {
       return TransactionStatus.INVALID_PIN_NUMBER
     }
 
-    if (!card.dateDeactivated) {
-      card.pinNumber = pinNumber
-      card.dateDeactivated = new Date()
-      card.save()
+    if (card.dateActivated) {
+      return TransactionStatus.CARD_ALREADY_ACTIVE
     }
+
+    if (card.dateDeactivated) {
+      return TransactionStatus.CARD_DEACTIVATED
+    }
+
+    if (!card.enabled) {
+      return TransactionStatus.CARD_NOT_ENABLED
+    }
+
+    card.pinNumber = pinNumber
+    card.dateDeactivated = new Date()
+    card.save()
 
     TransactionStatus.TRANSACTION_COMPLETE
   }

@@ -221,5 +221,128 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     card.errors.getFieldError("securityCode").code == "nullable"
 
   }
+
+  void "test cardActivated INVALID_PIN_NUMBER when null"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(card, null)
+
+    then:
+
+    status == TransactionStatus.INVALID_PIN_NUMBER
+
+  }
+
+  void "test cardActivated INVALID_PIN_NUMBER < 6 digits"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(card, 12345)
+
+    then:
+
+    status == TransactionStatus.INVALID_PIN_NUMBER
+
+  }
+
+  void "test cardActivated INVALID_PIN_NUMBER > 6 digits"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(card, 1234567)
+
+    then:
+
+    status == TransactionStatus.INVALID_PIN_NUMBER
+
+  }
+
+  void "test cardActivated CARD_ALREADY_ACTIVE"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    card.dateActivated = new Date()
+    card.pinNumber = 123456
+    card.save()
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(card, 123456)
+
+    then:
+
+    status == TransactionStatus.CARD_ALREADY_ACTIVE
+
+  }
+
+  void "test cardActivated CARD_DEACTIVATED"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    card.dateDeactivated = new Date()
+    card.save()
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(card, 123456)
+
+    then:
+
+    status == TransactionStatus.CARD_DEACTIVATED
+
+  }
+
+  void "test cardActivated CARD_NOT_ENABLED"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    card.enabled = false
+    card.save()
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(card, 123456)
+
+    then:
+
+    status == TransactionStatus.CARD_NOT_ENABLED
+
+  }
+
+  void "test cardActivated TRANSACTION_COMPLETE"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+
+    when:
+
+    TransactionStatus status = cardService.activateCard(card, 123456)
+
+    then:
+
+    status == TransactionStatus.TRANSACTION_COMPLETE
+
+  }
+
 }
     

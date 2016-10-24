@@ -13,7 +13,10 @@ enum TransactionStatus {
   OVERDRAFT_NOT_ALLOWED('overdraft.not.allowed'),
   MAX_TRANSFERS_EXCEEDED('max.transfers.exceeded'),
   AMOUNT_GT_BALANCE('amount.greater.than.balance'),
-  WITHDRAWAL_LIMIT_REACHED('withdrawal.limit.reached')
+  WITHDRAWAL_LIMIT_REACHED('withdrawal.limit.reached'),
+  CARD_ALREADY_ACTIVE('card.already.active'),
+  CARD_DEACTIVATED('card.deactivated'),
+  CARD_NOT_ENABLED('card.not.enabled')
 
   TransactionStatus(value) {
     this.value = value
