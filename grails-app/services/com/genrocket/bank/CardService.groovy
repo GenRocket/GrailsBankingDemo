@@ -11,6 +11,11 @@ import org.springframework.transaction.annotation.Transactional
 class CardService {
   def cardPoolService
 
+  Card changePin(Card card, Integer newPinNumber) {
+    card.pinNumber = newPinNumber
+    card.save()
+  }
+
   Card save(CardType cardType, Customer customer) {
     Card activeCard = findActiveCard(customer, cardType)
 

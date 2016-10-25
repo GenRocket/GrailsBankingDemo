@@ -1,8 +1,11 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.co.ChangePinCO
+
 class AccountController {
   def bankingService
   def checkingService
+  def cardService
 
   def balance() {
     Card card = bankingService.selectedCard
@@ -32,5 +35,21 @@ class AccountController {
     } else {
       render(view: 'withdrawal', model: [errorMessage: g.message(code: withdrawalMessage.toString())])
     }
+  }
+
+  def changePin() {}
+
+  def savePin(ChangePinCO changePinCO) {
+    Card card = bankingService.selectedCard
+    changePinCO.actualPinNumber = card.pinNumber
+      if(changePinCO.validate()) {
+        card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
+        cardService.changePin(card, changePinCO.newPinNumber)
+        bankingService.setSelectedCard(card)
+        flash.message = message(code: 'pin.updated')
+        redirect(controller: 'home', action: 'menu')
+      } else {
+        render (view: 'changePin', model: [changePinCO: changePinCO])
+      }
   }
 }

@@ -14,6 +14,11 @@
             ${flash.error}
         </div>
         </g:if>
+      <g:if test="${flash.message}">
+        <div class="alert alert-block alert-info">
+          ${flash.message}
+        </div>
+      </g:if>
       <div class="text-center m-b-md p-m">
         <h2>Account Type: ${accountType?.name}</h2>
       </div>
@@ -51,7 +56,7 @@
             </div>
 
             <div class="col-sm-6">
-                <div class="hpanel plan-box hred">
+                <div class="hpanel plan-box hred" id="change-pin">
                     <div class="panel-heading hbuilt text-center">
                         <h4 class="font-bold h-bg-navy-blue">Change Pin</h4>
                     </div>

@@ -22,6 +22,10 @@ $(function () {
   $("#balance-menu").click(function() {
     window.location.href = contextPath + "/account/balance"
   });
+
+  $("#change-pin").click(function() {
+    window.location.href = contextPath + "/account/changePin"
+  });
 });
 
 function isValid(val) {
