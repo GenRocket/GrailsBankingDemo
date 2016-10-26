@@ -11,7 +11,11 @@ $(function () {
     window.location.href = contextPath + "/account/deposit"
   });
 
-  $("#withdrawal").submit(function () {
+  $("#transfer-menu").click(function () {
+    window.location.href = contextPath + "/account/transfer"
+  });
+
+  $("#withdrawalDeposit").submit(function () {
     var errorContainer = $("#withdrawalErrorContainer");
     errorContainer.html("");
     var amount = $("#amount").val();

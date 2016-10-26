@@ -24,7 +24,7 @@
                   </g:if>
                 </div>
 
-                <form action='${createLink(controller: 'account', action: 'doWithdrawal')}' method='POST' id='withdrawal'>
+                <form action='${createLink(controller: 'account', action: 'doWithdrawal')}' method='POST' id='withdrawalDeposit'>
                     <div class="form-group">
                         <input type="text" placeholder="Amount" title="Amount" name="amount" id="amount" class="form-control">
                     </div>

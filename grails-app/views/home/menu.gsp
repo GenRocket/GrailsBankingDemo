@@ -48,7 +48,7 @@
             </div>
 
             <div class="col-sm-6">
-                <div class="hpanel plan-box hred">
+                <div class="hpanel plan-box hred" id="transfer-menu">
                     <div class="panel-heading hbuilt text-center">
                         <h4 class="font-bold h-bg-navy-blue">Transfer</h4>
                     </div>

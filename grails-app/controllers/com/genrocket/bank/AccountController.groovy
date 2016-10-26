@@ -1,10 +1,13 @@
 package com.genrocket.bank
 
 import com.genrocket.bank.co.ChangePinCO
+import com.genrocket.bank.co.TransferAmountCO
+import com.genrocket.bank.co.TransferCO
 
 class AccountController {
   def bankingService
   def checkingService
+  def savingsService
   def cardService
 
   def balance() {
@@ -62,6 +65,33 @@ class AccountController {
   }
 
   def changePin() {}
+
+  def transfer() {}
+
+  def transferAmount(TransferCO transferCO) {
+    Card card = bankingService.selectedCard
+    card = Card.get(card.id)
+    transferCO.currentAccountNumber = card.customer.account.accountNumber
+    if (transferCO.validate()) {
+      render(view: "transferAmount", model: [currentAccountType: card.customer?.account?.accountType,
+                                             accountToTransfer : Account.findByAccountNumber(transferCO.accountNumber)])
+    } else {
+      render(view: 'transfer', model: [transferCO: transferCO])
+    }
+  }
+
+  def doTransfer(TransferAmountCO transferAmountCO) {
+    Card card = bankingService.selectedCard
+    card = Card.get(card.id)
+    if (transferAmountCO.validate()) {
+      Account fromAccount = card.customer.account
+      Account toAccount = transferAmountCO.account
+
+      render(view: "doTransfer", model: [])
+    } else {
+      render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, transferAmountCO: transferAmountCO])
+    }
+  }
 
   def savePin(ChangePinCO changePinCO) {
     Card card = bankingService.selectedCard
