@@ -8,7 +8,8 @@
 
 <body>
 <g:render template="/layouts/header"/>
-<div class="login-container">
+<div class="col-md-9">
+  <div class="login-container">
   <div class="row">
     <div class="col-md-12">
       <div class="text-center m-b-md">
@@ -42,6 +43,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 </body>
 </html>
