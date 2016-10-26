@@ -13,6 +13,30 @@ class AccountController {
     [balance: card?.customer?.account?.balance, accountType: card.customer?.account?.accountType]
   }
 
+  def deposit() {
+    Card card = bankingService.selectedCard
+    card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
+    AccountType accountType = card.customer?.account?.accountType
+
+    if (accountType.name == AccountTypes.CHECKING.getValue()) {
+      render(view: 'deposit')
+    } else {
+      flash.error = message(code: 'deposit.not.allowed.into.saving.account')
+      redirect(controller: 'home', action: 'menu')
+    }
+  }
+
+  def deDeposit(Float amount) {
+    Card card = bankingService.selectedCard
+    card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
+    String depositMessage = checkingService.deposit(card.customer.user, card.customer.account, amount)
+    if (depositMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
+      render(view: "doDeposit", model: [depositAmount: amount, balance: card.customer.account.balance])
+    } else {
+      render(view: 'deposit', model: [errorMessage: g.message(code: depositMessage.toString())])
+    }
+  }
+
   def withdrawal() {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session

@@ -27,7 +27,7 @@ class CheckingService {
     }
 
     account.balance += amount
-    account.save()
+    account.save(flush: true)
 
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_CHECKING.value)
 
@@ -72,7 +72,7 @@ class CheckingService {
     }
 
     account.balance -= amount
-    account.save()
+    account.save(flush: true)
 
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 

@@ -32,7 +32,7 @@
             </div>
 
             <div class="col-sm-6">
-                <div class="hpanel plan-box hgreen">
+                <div class="hpanel plan-box hgreen" id="deposit-menu">
                     <div class="panel-heading hbuilt text-center">
                         <h4 class="font-bold h-bg-navy-blue">Deposit</h4>
                     </div>

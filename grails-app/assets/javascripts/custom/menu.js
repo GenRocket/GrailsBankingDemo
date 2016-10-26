@@ -7,6 +7,10 @@ $(function () {
     window.location.href = contextPath + "/account/withdrawal"
   });
 
+  $("#deposit-menu").click(function () {
+    window.location.href = contextPath + "/account/deposit"
+  });
+
   $("#withdrawal").submit(function () {
     var errorContainer = $("#withdrawalErrorContainer");
     errorContainer.html("");
