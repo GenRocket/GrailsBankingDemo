@@ -21,7 +21,11 @@ class HomeController {
     }
   }
 
-  def menu() {}
+  def menu() {
+    Card card = bankingService.getSelectedCard()
+    card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
+    [accountType: card.customer.account.accountType]
+  }
 
   def exit() {
     session.invalidate()

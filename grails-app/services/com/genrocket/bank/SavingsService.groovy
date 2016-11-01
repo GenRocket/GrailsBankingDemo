@@ -85,7 +85,7 @@ class SavingsService {
     return TransactionStatus.TRANSACTION_COMPLETE
   }
 
-  TransactionStatus transfer(User user, Account fromSavings, Account toSavings, Float amount) {
+  TransactionStatus transfer(User user, Account fromSavings, Account toChecking, Float amount) {
     if (!amount) {
       return TransactionStatus.INVALID_AMOUNT_VALUE
     }
@@ -102,7 +102,7 @@ class SavingsService {
       TransactionStatus status = withdrawal(user, fromSavings, amount)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
-        status = checkingService.deposit(user, toSavings, amount)
+        status = checkingService.deposit(user, toChecking, amount)
       }
 
       if (status != TransactionStatus.TRANSACTION_COMPLETE) {

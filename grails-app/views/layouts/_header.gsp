@@ -1,31 +1,52 @@
-<nav role="navigation">
-
-    <div class="navbar-right">
-        <ul class="nav navbar-nav no-borders">
-            <li class="dropdown">
-                <a class="dropdown-toggle label-menu-corner" href="#" data-toggle="dropdown">
-                    <i class="fa fa-bars"></i>
-                </a>
-                <ul class="dropdown-menu hdropdown animated flipInX">
-                    <li><a href="#">Balance</a></li>
-                    <li>
-                        <a href="#">Deposit</a>
-                    </li>
-                    <li>
-                        <a href="#">Withdrawal</a>
-                    </li>
-                    <li>
-                        <a href="#">Transfer</a>
-                    </li>
-                    <li>
-                        <a href="#">Change Pin</a>
-                    </li>
-                    <li>
-                        <a href="#" id="exit-menu">Exit
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+<div class="col-md-3 p-m" id="bank-menu">
+<div class="row">
+  <div class="col-sm-12">
+    <div class="hpanel plan-box hyellow" id="balance-menu">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Balance</h4>
+      </div>
     </div>
-</nav>
+  </div>
+
+  <div class="col-sm-12">
+    <div class="hpanel plan-box hgreen" id="deposit-menu">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Deposit</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+    <div class="hpanel plan-box hblue" id="withdrawal-menu">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Withdrawal</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+    <div class="hpanel plan-box hred" id="transfer-menu">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Transfer</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+    <div class="hpanel plan-box hred" id="change-pin">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Change Pin</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+    <div class="hpanel plan-box hred" id="exit-menu">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Exit</h4>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>

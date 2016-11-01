@@ -427,7 +427,7 @@ body.blank {
 .login-container {
   max-width: 420px;
   margin: auto;
-  padding-top: 6%;
+  padding-top: 10%;
 }
 .register-container {
   max-width: 720px;
@@ -3748,8 +3748,8 @@ ul.h-list li:hover a {
   }
 }
 
-#bank-menu .col-sm-6 {
-    cursor: pointer;
+#bank-menu .col-sm-6, #bank-menu .col-sm-12 {
+  cursor: pointer;
 }
 
 #withdrawalErrorContainer {

@@ -13,16 +13,10 @@
   <div class="row">
     <div class="col-md-12">
       <div class="text-center m-b-md">
-        <h3>Transaction is Complete</h3>
-
-        <h3>Please take money.</h3>
-
-        <h3>You drew $${withdrawalAmount}.</h3>
-
-        <h3>Adjusted balance $${balance}.</h3>
-
-        <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
+        <h2>Your ${accountType?.name} Balance</h2>
+        <h3>$${balance}</h3>
       </div>
+      <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
     </div>
   </div>
 </div>

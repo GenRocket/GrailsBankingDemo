@@ -15,9 +15,7 @@
       <div class="text-center m-b-md">
         <h3>Transaction is Complete</h3>
 
-        <h3>Please take money.</h3>
-
-        <h3>You drew $${withdrawalAmount}.</h3>
+        <h3>You deposited $${depositAmount}.</h3>
 
         <h3>Adjusted balance $${balance}.</h3>
 

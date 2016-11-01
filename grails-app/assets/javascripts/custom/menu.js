@@ -7,7 +7,15 @@ $(function () {
     window.location.href = contextPath + "/account/withdrawal"
   });
 
-  $("#withdrawal").submit(function () {
+  $("#deposit-menu").click(function () {
+    window.location.href = contextPath + "/account/deposit"
+  });
+
+  $("#transfer-menu").click(function () {
+    window.location.href = contextPath + "/account/transfer"
+  });
+
+  $("#withdrawalDeposit").submit(function () {
     var errorContainer = $("#withdrawalErrorContainer");
     errorContainer.html("");
     var amount = $("#amount").val();
@@ -19,8 +27,12 @@ $(function () {
     return valid;
   });
 
-  $("#moveToMenu").click(function() {
-    window.location.href = contextPath + "/home/menu"
+  $("#balance-menu").click(function() {
+    window.location.href = contextPath + "/account/balance"
+  });
+
+  $("#change-pin").click(function() {
+    window.location.href = contextPath + "/account/changePin"
   });
 });
 
