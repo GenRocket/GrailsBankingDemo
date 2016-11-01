@@ -39,6 +39,14 @@ class BootstrapService {
     List<Customer> customers = Customer.findAllByUser(user) as Customer[]
 
     customers.each { customer ->
+      customer.enabled = true
+      customer.save()
+
+      customer.customerLevel.dailyWithdrawalLimit = 500
+      customer.customerLevel.monthlyMaxTransfersAllowed = 3
+      customer.customerLevel.overdraftAllowed = true
+      customer.customerLevel.save()
+
       Card card = Card.findByCustomer(customer)
       cardService.activateCard(card, 123456)
     }
