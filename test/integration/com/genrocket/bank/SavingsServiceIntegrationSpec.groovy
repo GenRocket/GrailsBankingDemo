@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat
  */
 class SavingsServiceIntegrationSpec extends IntegrationSpec {
   def savingsService
+  def customerService
   def accountTestDataService
   def transactionTypeTestDataService
   def transactionCreatorService
@@ -407,5 +408,196 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
 
     status == TransactionStatus.MAX_TRANSFERS_EXCEEDED
     transactions.size() == 6
+  }
+
+  void "test transfer from savings to savings ACCOUNT_NOT_ENABLE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccount(2)
+
+    User fromUser = User.list().get(0)
+    User toUser = User.list().get(1)
+
+    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
+    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+
+    fromCustomer.enabled = false
+    fromCustomer.save()
+
+    Account fromAccount = fromCustomer.account
+    Account toAccount = toCustomer.account
+
+    fromAccount.balance = 100.00
+    fromAccount.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+    transactions.size() == 0
+  }
+
+  void "test transfer from savings to savings INVALID_AMOUNT_VALUE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccount(2)
+
+    User fromUser = User.list().get(0)
+    User toUser = User.list().get(1)
+
+    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
+    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+
+    Account fromAccount = fromCustomer.account
+    Account toAccount = toCustomer.account
+
+    fromAccount.balance = 100.00
+    fromAccount.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 0.0)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.INVALID_AMOUNT_VALUE
+    transactions.size() == 0
+  }
+
+  void "test transfer from savings to savings AMOUNT_GT_BALANCE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccount(2)
+
+    User fromUser = User.list().get(0)
+    User toUser = User.list().get(1)
+
+    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
+    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+
+    Account fromAccount = fromCustomer.account
+    Account toAccount = toCustomer.account
+
+    fromAccount.balance = 100.00
+    fromAccount.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 100.01)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.AMOUNT_GT_BALANCE
+    transactions.size() == 0
+  }
+
+  void "test transfer from savings to savings fromUser ACCOUNT_NOT_ENABLE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccount(2)
+
+    User fromUser = User.list().get(0)
+    User toUser = User.list().get(1)
+
+    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
+    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+
+    fromCustomer.enabled = false
+    fromCustomer.save()
+
+    Account fromAccount = fromCustomer.account
+    Account toAccount = toCustomer.account
+
+    fromAccount.balance = 100.00
+    fromAccount.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+    transactions.size() == 0
+  }
+
+  void "test transfer from savings to savings toUser ACCOUNT_NOT_ENABLE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccount(2)
+
+    User fromUser = User.list().get(0)
+    User toUser = User.list().get(1)
+
+    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
+    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+
+    toCustomer.enabled = false
+    toCustomer.save()
+
+    Account fromAccount = fromCustomer.account
+    Account toAccount = toCustomer.account
+
+    fromAccount.balance = 100.00
+    fromAccount.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.ACCOUNT_NOT_ENABLED
+    transactions.size() == 0
+  }
+
+  void "test transfer from savings to savings TRANSACTION_COMPLETE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccount(2)
+
+    User fromUser = User.list().get(0)
+    User toUser = User.list().get(1)
+
+    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
+    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+
+    Account fromAccount = fromCustomer.account
+    Account toAccount = toCustomer.account
+
+    Float balance = 100.00
+    Float amount = 50.00
+
+    fromAccount.balance = balance
+    fromAccount.save()
+
+    toAccount.balance = balance
+    toAccount.save()
+
+    when:
+
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, amount)
+    List<Transaction> transactions = Transaction.findAll()
+
+    then:
+
+    status == TransactionStatus.TRANSACTION_COMPLETE
+    fromAccount.balance == balance - amount
+    toAccount.balance == balance + amount
+    transactions.size() == 2
   }
 }

@@ -113,6 +113,30 @@ class CheckingService {
     }
   }
 
+  TransactionStatus transferCheckingToChecking(User fromUser, User toUser, Account fromChecking, Account toChecking, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
+
+    if (fromChecking.balance < amount) {
+      return TransactionStatus.AMOUNT_GT_BALANCE
+    }
+
+    Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
+      TransactionStatus status = withdrawal(fromUser, fromChecking, amount)
+
+      if (status == TransactionStatus.TRANSACTION_COMPLETE) {
+        status = deposit(toUser, toChecking, amount)
+      }
+
+      if (status != TransactionStatus.TRANSACTION_COMPLETE) {
+        controlledTransaction.setRollbackOnly()
+      }
+
+      return status
+    }
+  }
+
   Boolean checkDailyWithdrawalLimit(User user, Account account, Float amount) {
     if (account.accountType.name != AccountTypes.CHECKING.value) {
       return false

@@ -3,6 +3,8 @@ package com.genrocket.bank
 import grails.transaction.Transactional
 import org.springframework.transaction.TransactionDefinition
 
+import java.text.SimpleDateFormat
+
 @Transactional
 class SavingsService {
   def accountService
@@ -111,7 +113,32 @@ class SavingsService {
     }
   }
 
+  TransactionStatus transferSavingsToSavings(User fromUser, User toUser, Account fromSavings, Account toSavings, Float amount) {
+    if (!amount) {
+      return TransactionStatus.INVALID_AMOUNT_VALUE
+    }
+
+    if (fromSavings.balance < amount) {
+      return TransactionStatus.AMOUNT_GT_BALANCE
+    }
+
+    Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
+      TransactionStatus status = withdrawal(fromUser, fromSavings, amount)
+
+      if (status == TransactionStatus.TRANSACTION_COMPLETE) {
+        status = deposit(toUser, toSavings, amount)
+      }
+
+      if (status != TransactionStatus.TRANSACTION_COMPLETE) {
+        controlledTransaction.setRollbackOnly()
+      }
+
+      return status
+    }
+  }
+
   Boolean checkMonthlyMaxTransfersExceeded(User user, Account account) {
+    SimpleDateFormat sdf = new SimpleDateFormat('yyyyMMdd')
     Customer customer = Customer.findByUserAndAccount(user, account)
 
     if (!customer) {
@@ -125,6 +152,9 @@ class SavingsService {
 
     Date firstDayOfMonth = calendar.getTime()
     Date lastDayOfMonth = firstDayOfMonth + calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - 1
+
+    firstDayOfMonth = sdf.parse(sdf.format(firstDayOfMonth))
+    lastDayOfMonth = sdf.parse(sdf.format(lastDayOfMonth))
 
     List<Transaction> transactions =
       Transaction.findAllByAccountAndDateCreatedBetween(account, firstDayOfMonth, lastDayOfMonth)

@@ -48,5 +48,18 @@ class AccountService {
       return false
     }
   }
+
+  List<Account> findAccounts(User user, AccountType accountType) {
+    List<Customer> customers = Customer.findAllByUser(user)
+    List<Account> accounts = []
+
+    customers.each { node ->
+      if (node.account.accountType == accountType) {
+        accounts.add(node.account)
+      }
+    }
+
+    return accounts
+  }
 }
     

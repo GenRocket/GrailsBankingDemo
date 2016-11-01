@@ -21,5 +21,18 @@ class CustomerService {
     customer.enabled = false
     customer.save()
   }
+
+  List<Customer> findCustomer(User user, AccountType accountType) {
+    List<Customer> list = Customer.findAllByUser(user)
+    List<Customer> customers = []
+
+    list.each { node ->
+      if (node.account.accountType == accountType) {
+        customers.add(node)
+      }
+    }
+
+    return customers
+  }
 }
     
