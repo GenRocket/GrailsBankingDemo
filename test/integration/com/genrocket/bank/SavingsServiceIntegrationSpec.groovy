@@ -58,7 +58,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     customer.enabled = true
     customer.save()
 
-    TransactionStatus status = savingsService.deposit(user, account, 100.0.floatValue())
+    TransactionStatus status = savingsService.deposit(user, account, (float) 100.0)
 
     then:
 
@@ -84,7 +84,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     customer.enabled = false
     customer.save()
 
-    TransactionStatus status = savingsService.deposit(user, account, 100.0.floatValue())
+    TransactionStatus status = savingsService.deposit(user, account, (float) 100.0)
 
     then:
 
