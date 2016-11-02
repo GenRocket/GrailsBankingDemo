@@ -32,7 +32,7 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_CHECKING.value)
 
     Transaction transaction = new Transaction(
-      user: user,
+      transactedBy: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),
@@ -77,7 +77,7 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     Transaction transaction = new Transaction(
-      user: user,
+      transactedBy: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),

@@ -32,7 +32,7 @@ class SavingsService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_SAVINGS.value)
 
     Transaction transaction = new Transaction(
-      user: user,
+      transactedBy: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),
@@ -73,7 +73,7 @@ class SavingsService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_SAVINGS.value)
 
     Transaction transaction = new Transaction(
-      user: user,
+      transactedBy: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),
