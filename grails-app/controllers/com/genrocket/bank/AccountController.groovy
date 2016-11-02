@@ -106,4 +106,10 @@ class AccountController {
         render (view: 'changePin', model: [changePinCO: changePinCO])
       }
   }
+
+  def history() {
+    Card card = bankingService.selectedCard
+    card = Card.get(card.id)
+    [transactions: Transaction.findAllByAccount(card?.customer?.account, [sort:'dateCreated', order: 'desc'])]
+  }
 }

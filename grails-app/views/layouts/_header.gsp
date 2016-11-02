@@ -41,6 +41,14 @@
   </div>
 
   <div class="col-sm-12">
+    <div class="hpanel plan-box hred" id="history-menu">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Transaction History</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
     <div class="hpanel plan-box hred" id="exit-menu">
       <div class="panel-heading hbuilt text-center">
         <h4 class="font-bold h-bg-navy-blue">Exit</h4>
