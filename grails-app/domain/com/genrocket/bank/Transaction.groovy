@@ -4,7 +4,7 @@ class Transaction {
   Float amount
   Date dateCreated
   TransactionType transactionType
-  User user
+  User transactedBy
 
   static belongsTo = [
     account: Account
@@ -15,6 +15,6 @@ class Transaction {
     dateCreated nullable: true
     transactionType nullable: false
     account nullable: false
-    user nullable: false
+    transactedBy nullable: false
   }
 }
