@@ -36,7 +36,7 @@ class TransactionServiceIntegrationSpec extends IntegrationSpec {
 
     transaction.transactionType = transactionType
 
-    transaction.user = user
+    transaction.transactedBy = user
 
     transactionService.save(transaction)
 
