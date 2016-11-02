@@ -13,12 +13,12 @@
 <div class="col-md-9">
     <div class="row">
       <div class="col-md-12">
-        <div class="text-center m-b-md">
+        <div class="text-center m-b-md m-t-xl">
           <h2>Transaction History</h2>
         </div>
 
         <div class="hpanel">
-          <table id="transactionHistory" class="table table-bordered">
+          <table id="transactionHistory" class="table table-striped table-bordered">
             <thead>
             <tr>
               <th>Account Number</th>
