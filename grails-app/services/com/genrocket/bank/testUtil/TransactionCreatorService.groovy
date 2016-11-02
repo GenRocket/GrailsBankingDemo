@@ -1,15 +1,6 @@
 package com.genrocket.bank.testUtil
 
-import com.genrocket.bank.Account
-import com.genrocket.bank.AccountService
-import com.genrocket.bank.AccountType
-import com.genrocket.bank.AccountTypes
-import com.genrocket.bank.Branch
-import com.genrocket.bank.Card
-import com.genrocket.bank.CardType
-import com.genrocket.bank.Customer
-import com.genrocket.bank.CustomerLevel
-import com.genrocket.bank.User
+import com.genrocket.bank.*
 import grails.transaction.Transactional
 
 @Transactional
