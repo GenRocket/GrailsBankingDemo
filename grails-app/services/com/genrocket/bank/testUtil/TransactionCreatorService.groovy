@@ -1,6 +1,7 @@
 package com.genrocket.bank.testUtil
 
 import com.genrocket.bank.Account
+import com.genrocket.bank.AccountService
 import com.genrocket.bank.AccountType
 import com.genrocket.bank.AccountTypes
 import com.genrocket.bank.Branch
@@ -23,7 +24,7 @@ class TransactionCreatorService {
   def customerLevelTestDataService
   def transactionTypeTestDataService
 
-  void createCheckingAndSavingsAccount(Integer count) {
+  void createCheckingAndSavingsAccounts(Integer count) {
     userTestDataService.loadData(count)
     cardPoolTestDataService.loadData(100)
     transactionTypeTestDataService.loadData()
@@ -66,15 +67,18 @@ class TransactionCreatorService {
     }
   }
 
-  Map createCheckingAndSavingsAccount() {
-    createCheckingAndSavingsAccount(1)
+  Map getUserAccountInformation(Integer index) {
+    if (index > User.count()) {
+      return null
+    }
+
+    User user = User.list().getAt(index - 1)
 
     AccountType checkingType = AccountType.findByName(AccountTypes.CHECKING.value)
     AccountType savingsType = AccountType.findByName(AccountTypes.SAVINGS.value)
-    User user = User.first()
 
-    Account checkingAccount = Account.findByAccountType(checkingType)
-    Account savingsAccount = Account.findByAccountType(savingsType)
+    Account checkingAccount = accountService.findAccounts(user, checkingType).getAt(0)
+    Account savingsAccount = accountService.findAccounts(user, savingsType).getAt(0)
 
     Customer checkingCustomer = Customer.findByUserAndAccount(user, checkingAccount)
     Customer savingsCustomer = Customer.findByUserAndAccount(user, savingsAccount)
@@ -96,5 +100,10 @@ class TransactionCreatorService {
       checkingCard: checkingCard,
       savingsCard: savingsCard
     ]
+  }
+
+  Map createCheckingAndSavingsAccount() {
+    createCheckingAndSavingsAccounts(1)
+    getUserAccountInformation(1)
   }
 }

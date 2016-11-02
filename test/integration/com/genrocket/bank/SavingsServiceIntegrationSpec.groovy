@@ -413,20 +413,21 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
   void "test transfer from savings to savings ACCOUNT_NOT_ENABLE"() {
     given:
 
-    transactionCreatorService.createCheckingAndSavingsAccount(2)
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
 
-    User fromUser = User.list().get(0)
-    User toUser = User.list().get(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
-    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
-    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
-    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+    User fromUser = (User) fromInfo['user']
+    User toUser = (User) toInfo['user']
+
+    Customer fromCustomer = (Customer) fromInfo['savingsCustomer']
+
+    Account fromAccount = (Account) fromInfo['savingsAccount']
+    Account toAccount = (Account) toInfo['savingsAccount']
 
     fromCustomer.enabled = false
     fromCustomer.save()
-
-    Account fromAccount = fromCustomer.account
-    Account toAccount = toCustomer.account
 
     fromAccount.balance = 100.00
     fromAccount.save()
@@ -445,17 +446,16 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
   void "test transfer from savings to savings INVALID_AMOUNT_VALUE"() {
     given:
 
-    transactionCreatorService.createCheckingAndSavingsAccount(2)
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
 
-    User fromUser = User.list().get(0)
-    User toUser = User.list().get(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
-    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
-    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
-    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+    User fromUser = (User) fromInfo['user']
+    User toUser = (User) toInfo['user']
 
-    Account fromAccount = fromCustomer.account
-    Account toAccount = toCustomer.account
+    Account fromAccount = (Account) fromInfo['savingsAccount']
+    Account toAccount = (Account) toInfo['savingsAccount']
 
     fromAccount.balance = 100.00
     fromAccount.save()
@@ -474,17 +474,16 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
   void "test transfer from savings to savings AMOUNT_GT_BALANCE"() {
     given:
 
-    transactionCreatorService.createCheckingAndSavingsAccount(2)
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
 
-    User fromUser = User.list().get(0)
-    User toUser = User.list().get(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
-    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
-    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
-    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+    User fromUser = (User) fromInfo['user']
+    User toUser = (User) toInfo['user']
 
-    Account fromAccount = fromCustomer.account
-    Account toAccount = toCustomer.account
+    Account fromAccount = (Account) fromInfo['savingsAccount']
+    Account toAccount = (Account) toInfo['savingsAccount']
 
     fromAccount.balance = 100.00
     fromAccount.save()
@@ -503,20 +502,21 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
   void "test transfer from savings to savings fromUser ACCOUNT_NOT_ENABLE"() {
     given:
 
-    transactionCreatorService.createCheckingAndSavingsAccount(2)
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
 
-    User fromUser = User.list().get(0)
-    User toUser = User.list().get(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
-    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
-    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
-    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+    User fromUser = (User) fromInfo['user']
+    User toUser = (User) toInfo['user']
+
+    Customer fromCustomer = (Customer) fromInfo['savingsCustomer']
+
+    Account fromAccount = (Account) fromInfo['savingsAccount']
+    Account toAccount = (Account) toInfo['savingsAccount']
 
     fromCustomer.enabled = false
     fromCustomer.save()
-
-    Account fromAccount = fromCustomer.account
-    Account toAccount = toCustomer.account
 
     fromAccount.balance = 100.00
     fromAccount.save()
@@ -535,20 +535,21 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
   void "test transfer from savings to savings toUser ACCOUNT_NOT_ENABLE"() {
     given:
 
-    transactionCreatorService.createCheckingAndSavingsAccount(2)
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
 
-    User fromUser = User.list().get(0)
-    User toUser = User.list().get(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
-    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
-    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
-    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+    User fromUser = (User) fromInfo['user']
+    User toUser = (User) toInfo['user']
+
+    Customer toCustomer = (Customer) toInfo['savingsCustomer']
+
+    Account fromAccount = (Account) fromInfo['savingsAccount']
+    Account toAccount = (Account) toInfo['savingsAccount']
 
     toCustomer.enabled = false
     toCustomer.save()
-
-    Account fromAccount = fromCustomer.account
-    Account toAccount = toCustomer.account
 
     fromAccount.balance = 100.00
     fromAccount.save()
@@ -567,17 +568,16 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
   void "test transfer from savings to savings TRANSACTION_COMPLETE"() {
     given:
 
-    transactionCreatorService.createCheckingAndSavingsAccount(2)
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
 
-    User fromUser = User.list().get(0)
-    User toUser = User.list().get(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
-    AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
-    Customer fromCustomer = customerService.findCustomer(fromUser, accountType).get(0)
-    Customer toCustomer = customerService.findCustomer(toUser, accountType).get(0)
+    User fromUser = (User) fromInfo['user']
+    User toUser = (User) toInfo['user']
 
-    Account fromAccount = fromCustomer.account
-    Account toAccount = toCustomer.account
+    Account fromAccount = (Account) fromInfo['savingsAccount']
+    Account toAccount = (Account) toInfo['savingsAccount']
 
     Float balance = 100.00
     Float amount = 50.00
