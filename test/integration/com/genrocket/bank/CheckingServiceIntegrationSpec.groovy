@@ -5,13 +5,11 @@ import grails.test.spock.IntegrationSpec
 import java.text.SimpleDateFormat
 
 class CheckingServiceIntegrationSpec extends IntegrationSpec {
-  def accountService
   def checkingService
-  def customerService
   def accountTestDataService
+  def transactionCreatorService
   def transactionTestDataService
   def transactionTypeTestDataService
-  def transactionCreatorService
 
   void "test deposit INVALID_AMOUNT_VALUE"() {
     given:

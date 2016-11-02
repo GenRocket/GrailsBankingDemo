@@ -9,10 +9,9 @@ import java.text.SimpleDateFormat
  */
 class SavingsServiceIntegrationSpec extends IntegrationSpec {
   def savingsService
-  def customerService
   def accountTestDataService
-  def transactionTypeTestDataService
   def transactionCreatorService
+  def transactionTypeTestDataService
 
   void "test deposit INVALID_AMOUNT_VALUE"() {
     given:

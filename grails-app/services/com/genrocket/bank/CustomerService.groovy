@@ -22,7 +22,7 @@ class CustomerService {
     customer.save()
   }
 
-  List<Customer> findCustomer(User user, AccountType accountType) {
+  List<Customer> findCustomers(User user, AccountType accountType) {
     List<Customer> list = Customer.findAllByUser(user)
     List<Customer> customers = []
 

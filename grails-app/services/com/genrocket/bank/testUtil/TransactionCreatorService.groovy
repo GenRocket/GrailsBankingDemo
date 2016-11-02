@@ -74,6 +74,10 @@ class TransactionCreatorService {
 
     User user = User.list().getAt(index - 1)
 
+    Branch branch = Branch.first()
+    CardType cardType = CardType.first()
+    CustomerLevel customerLevel = CustomerLevel.first()
+
     AccountType checkingType = AccountType.findByName(AccountTypes.CHECKING.value)
     AccountType savingsType = AccountType.findByName(AccountTypes.SAVINGS.value)
 
@@ -91,6 +95,9 @@ class TransactionCreatorService {
 
     return [
       user: user,
+      branch: branch,
+      cardType: cardType,
+      customerLevel: customerLevel,
       checkingAccount: checkingAccount,
       savingsAccount: savingsAccount,
       checkingCustomer: checkingCustomer,
@@ -98,7 +105,9 @@ class TransactionCreatorService {
       checkingCustomerLevel: checkingCustomerLevel,
       savingsCustomerLevel: savingsCustomerLevel,
       checkingCard: checkingCard,
-      savingsCard: savingsCard
+      savingsCard: savingsCard,
+      checkingType: checkingType,
+      savingsType: savingsType
     ]
   }
 

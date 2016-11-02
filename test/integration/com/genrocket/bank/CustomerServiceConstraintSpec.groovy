@@ -1,7 +1,5 @@
 package com.genrocket.bank
 
-import com.genRocket.tdl.LoaderDTO
-import com.genrocket.bank.testDataLoader.CustomerTestDataLoader
 import grails.test.spock.IntegrationSpec
 
 /**

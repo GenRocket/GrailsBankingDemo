@@ -1,7 +1,5 @@
 package com.genrocket.bank
 
-import com.genRocket.tdl.LoaderDTO
-import com.genrocket.bank.testDataLoader.AccountTestDataLoader
 import grails.test.spock.IntegrationSpec
 
 /**
@@ -9,14 +7,15 @@ import grails.test.spock.IntegrationSpec
  */
 class AccountServiceIntegrationSpec extends IntegrationSpec {
   def accountService
-  def accountTypeTestDataService
+  def userTestDataService
+  def customerLevelService
   def branchTestDataService
   def cardTypeTestDataService
-  def customerLevelTestDataService
-  def userTestDataService
   def cardPoolTestDataService
-  def customerLevelService
   def customerTestDataService
+  def transactionCreatorService
+  def accountTypeTestDataService
+  def customerLevelTestDataService
 
   void "create account"() {
     given:
@@ -136,5 +135,53 @@ class AccountServiceIntegrationSpec extends IntegrationSpec {
     then:
 
     !allowed
+  }
+
+  void "test findAccounts one account"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map info = transactionCreatorService.getUserAccountInformation(1)
+
+    User user = (User) info['user']
+    AccountType accountType = (AccountType) info['checkingType']
+    Account account = (Account) info['checkingAccount']
+
+    when:
+
+    List<Account> accounts = accountService.findAccounts(user, accountType)
+
+    then:
+
+    accounts.size() == 1
+    accounts.getAt(0) == account
+  }
+
+  void "test findAccounts multiple accounts"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map info = transactionCreatorService.getUserAccountInformation(1)
+
+    User user = (User) info['user']
+    Branch branch = (Branch) info['branch']
+    CardType cardType = (CardType) info['cardType']
+    AccountType savingsType = (AccountType) info['savingsType']
+    AccountType checkingType = (AccountType) info['checkingType']
+    CustomerLevel customerLevel = (CustomerLevel) info['customerLevel']
+
+    accountService.save(user, branch, cardType, checkingType, customerLevel)
+    accountService.save(user, branch, cardType, savingsType, customerLevel)
+
+    accountService.save(user, branch, cardType, checkingType, customerLevel)
+    accountService.save(user, branch, cardType, savingsType, customerLevel)
+
+    when:
+
+    List<Account> accounts = accountService.findAccounts(user, checkingType)
+
+    then:
+
+    accounts.size() == 3
   }
 }
