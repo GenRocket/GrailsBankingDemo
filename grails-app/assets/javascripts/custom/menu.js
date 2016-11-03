@@ -34,6 +34,11 @@ $(function () {
   $("#change-pin").click(function() {
     window.location.href = contextPath + "/account/changePin"
   });
+
+  $("#history-menu").click(function() {
+    window.location.href = contextPath + "/account/history"
+  });
+
 });
 
 function isValid(val) {
