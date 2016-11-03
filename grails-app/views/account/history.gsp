@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.text.DecimalFormat" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>Welcome to GenRocket Bank ATM</title>
@@ -34,7 +34,7 @@
                 <td>${transaction.account.accountNumber}</td>
                 <td>${transaction.account.accountType.name}</td>
                 <td>${transaction.transactionType.name}</td>
-                <td>${transaction.amount}</td>
+                <td>${new DecimalFormat("#.00").format(transaction.amount)}</td>
                 <td>${transaction.dateCreated.format("MMM dd, yyyy")}</td>
               </tr>
             </g:each>
