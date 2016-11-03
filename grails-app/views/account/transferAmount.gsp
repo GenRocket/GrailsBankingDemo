@@ -21,7 +21,11 @@
           <div class="alert alert-block alert-danger">
             <g:renderErrors bean="${transferAmountCO}" as="list"/>
           </div>
-        </g:if><br/>
+        </g:if><g:if test="${errorMessage}">
+        <div class="alert alert-block alert-danger">
+          <ul><li>${errorMessage}</li></ul>
+        </div>
+      </g:if><br/>
 
         <form action='${createLink(controller: 'account', action: 'doTransfer')}' method='POST' id='transfer'>
           <input type="hidden" name="accountIdTo" value="${accountToTransfer?.id ?: transferAmountCO?.accountIdTo}"/>

@@ -84,10 +84,25 @@ class AccountController {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)
     if (transferAmountCO.validate()) {
+      TransactionStatus transactionStatus = null
       Account fromAccount = card.customer.account
       Account toAccount = transferAmountCO.account
+      if(fromAccount.accountType.name == AccountTypes.CHECKING.getValue() && toAccount.accountType.name == AccountTypes.CHECKING.getValue()) {
+        transactionStatus = checkingService.transferCheckingToChecking(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+      } else if (fromAccount.accountType.name == AccountTypes.CHECKING.getValue() && toAccount.accountType.name == AccountTypes.SAVINGS.getValue()) {
+        transactionStatus = checkingService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+      } else if (fromAccount.accountType.name == AccountTypes.SAVINGS.getValue() && toAccount.accountType.name == AccountTypes.CHECKING.getValue()) {
+        transactionStatus = savingsService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+      } else if (fromAccount.accountType.name == AccountTypes.SAVINGS.getValue() && toAccount.accountType.name == AccountTypes.SAVINGS.getValue()) {
+        transactionStatus = savingsService.transferSavingsToSavings(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+      }
 
-      render(view: "doTransfer", model: [])
+      if (transactionStatus == TransactionStatus.TRANSACTION_COMPLETE) {
+        render(view: "doTransfer", model: [fromAccount: fromAccount, toAccount: toAccount, amount: transferAmountCO.amount])
+      } else {
+        render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, errorMessage: g.message(code: transactionStatus.toString()),
+                                               transferAmountCO: transferAmountCO])
+      }
     } else {
       render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, transferAmountCO: transferAmountCO])
     }

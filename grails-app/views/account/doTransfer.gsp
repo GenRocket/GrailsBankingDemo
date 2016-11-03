@@ -13,13 +13,11 @@
   <div class="row">
     <div class="col-md-12">
       <div class="text-center m-b-md">
-        <h3>Transaction is Complete</h3>
+        <h3>${fromAccount.accountType.name} to ${toAccount.accountType.name} Transfer Completed</h3>
 
-        <h3>Please take money.</h3>
+        <h3>${amount} transferred to ${toAccount.accountType.name} account.</h3>
 
-        <h3>You drew $${withdrawalAmount}.</h3>
-
-        <h3>Adjusted balance $${balance}.</h3>
+        <h3>Balance Amount: $${fromAccount.balance}</h3>
 
         <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
       </div>
