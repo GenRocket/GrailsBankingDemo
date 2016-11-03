@@ -184,4 +184,40 @@ class AccountServiceIntegrationSpec extends IntegrationSpec {
 
     accounts.size() == 3
   }
+
+  void "test hasEnabledCustomer with enabled accounts"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map info = transactionCreatorService.getUserAccountInformation(1)
+    Account account = (Account) info['checkingAccount']
+
+    when:
+
+    Boolean enabled = accountService.hasEnabledCustomer(account)
+
+    then:
+
+    enabled
+  }
+
+  void "test hasEnabledCustomer with !enabled accounts"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map info = transactionCreatorService.getUserAccountInformation(1)
+    Account account = (Account) info['checkingAccount']
+    Customer customer = (Customer) info['checkingCustomer']
+
+    when:
+
+    customer.enabled = false
+    customer.save()
+
+    Boolean enabled = accountService.hasEnabledCustomer(account)
+
+    then:
+
+    !enabled
+  }
 }

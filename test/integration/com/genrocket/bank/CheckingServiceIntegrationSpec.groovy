@@ -507,7 +507,6 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Customer fromCustomer = (Customer) fromInfo['checkingCustomer']
 
@@ -522,7 +521,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, fromAccount, toAccount, (float) 1.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -540,7 +539,6 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Account fromAccount = (Account) fromInfo['checkingAccount']
     Account toAccount = (Account) toInfo['checkingAccount']
@@ -550,7 +548,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, toUser, fromAccount, toAccount, (float) 0.0)
+    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, fromAccount, toAccount, (float) 0.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -568,7 +566,6 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Account fromAccount = (Account) fromInfo['checkingAccount']
     Account toAccount = (Account) toInfo['checkingAccount']
@@ -578,7 +575,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, toUser, fromAccount, toAccount, (float) 100.01)
+    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, fromAccount, toAccount, (float) 100.01)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -596,7 +593,6 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Customer fromCustomer = (Customer) fromInfo['checkingCustomer']
 
@@ -611,7 +607,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, fromAccount, toAccount, (float) 1.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -629,7 +625,6 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Customer toCustomer = (Customer) toInfo['checkingCustomer']
 
@@ -644,7 +639,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, fromAccount, toAccount, (float) 1.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -662,7 +657,6 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Account fromAccount = (Account) fromInfo['checkingAccount']
     Account toAccount = (Account) toInfo['checkingAccount']
@@ -678,7 +672,7 @@ class CheckingServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, toUser, fromAccount, toAccount, amount)
+    TransactionStatus status = checkingService.transferCheckingToChecking(fromUser, fromAccount, toAccount, amount)
     List<Transaction> transactions = Transaction.findAll()
 
     then:

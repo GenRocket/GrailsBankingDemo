@@ -61,5 +61,18 @@ class AccountService {
 
     return accounts
   }
+
+  Boolean hasEnabledCustomer(Account account) {
+    List<Customer> customers = Customer.findAllByAccount(account)
+    Boolean found = false
+
+    customers.each { customer ->
+      if (customer.enabled) {
+        found = true
+      }
+    }
+
+    return found
+  }
 }
     

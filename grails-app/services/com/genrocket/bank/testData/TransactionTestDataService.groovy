@@ -59,7 +59,6 @@ class TransactionTestDataService {
         transaction.transactionType = transactionType
         transaction.user = user
         transactionService.save(transaction)
-        def test = null
       }
     }
   }
