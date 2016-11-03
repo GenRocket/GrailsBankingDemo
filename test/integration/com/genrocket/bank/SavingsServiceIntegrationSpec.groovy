@@ -418,7 +418,6 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Customer fromCustomer = (Customer) fromInfo['savingsCustomer']
 
@@ -433,7 +432,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, fromAccount, toAccount, (float) 1.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -451,7 +450,6 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Account fromAccount = (Account) fromInfo['savingsAccount']
     Account toAccount = (Account) toInfo['savingsAccount']
@@ -461,7 +459,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 0.0)
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, fromAccount, toAccount, (float) 0.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -479,7 +477,6 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Account fromAccount = (Account) fromInfo['savingsAccount']
     Account toAccount = (Account) toInfo['savingsAccount']
@@ -489,7 +486,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 100.01)
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, fromAccount, toAccount, (float) 100.01)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -507,7 +504,6 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Customer fromCustomer = (Customer) fromInfo['savingsCustomer']
 
@@ -522,7 +518,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, fromAccount, toAccount, (float) 1.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -540,7 +536,6 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Customer toCustomer = (Customer) toInfo['savingsCustomer']
 
@@ -555,7 +550,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, (float) 1.0)
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, fromAccount, toAccount, (float) 1.0)
     List<Transaction> transactions = Transaction.findAll()
 
     then:
@@ -573,7 +568,6 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(2)
 
     User fromUser = (User) fromInfo['user']
-    User toUser = (User) toInfo['user']
 
     Account fromAccount = (Account) fromInfo['savingsAccount']
     Account toAccount = (Account) toInfo['savingsAccount']
@@ -589,7 +583,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, toUser, fromAccount, toAccount, amount)
+    TransactionStatus status = savingsService.transferSavingsToSavings(fromUser, fromAccount, toAccount, amount)
     List<Transaction> transactions = Transaction.findAll()
 
     then:

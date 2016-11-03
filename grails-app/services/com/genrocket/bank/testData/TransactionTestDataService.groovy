@@ -57,7 +57,7 @@ class TransactionTestDataService {
 
         transaction.account = account
         transaction.transactionType = transactionType
-        transaction.transactedBy = user
+        transaction.user = user
         transactionService.save(transaction)
       }
     }

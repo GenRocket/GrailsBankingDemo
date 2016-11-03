@@ -20,9 +20,7 @@ class SavingsService {
       return TransactionStatus.ACCOUNT_NOT_SAVINGS
     }
 
-    Customer customer = Customer.findByUserAndAccount(user, account)
-
-    if (!customer.enabled) {
+    if (!accountService.hasEnabledCustomer(account)) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
     }
 
@@ -32,7 +30,7 @@ class SavingsService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_SAVINGS.value)
 
     Transaction transaction = new Transaction(
-      transactedBy: user,
+      user: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),
@@ -55,9 +53,7 @@ class SavingsService {
       return TransactionStatus.ACCOUNT_NOT_SAVINGS
     }
 
-    Customer customer = Customer.findByUserAndAccount(user, account)
-
-    if (!customer.enabled) {
+    if (!accountService.hasEnabledCustomer(account)) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
     }
 
@@ -73,7 +69,7 @@ class SavingsService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_SAVINGS.value)
 
     Transaction transaction = new Transaction(
-      transactedBy: user,
+      user: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),
@@ -113,7 +109,7 @@ class SavingsService {
     }
   }
 
-  TransactionStatus transferSavingsToSavings(User fromUser, User toUser, Account fromSavings, Account toSavings, Float amount) {
+  TransactionStatus transferSavingsToSavings(User user, Account fromSavings, Account toSavings, Float amount) {
     if (!amount) {
       return TransactionStatus.INVALID_AMOUNT_VALUE
     }
@@ -123,10 +119,10 @@ class SavingsService {
     }
 
     Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
-      TransactionStatus status = withdrawal(fromUser, fromSavings, amount)
+      TransactionStatus status = withdrawal(user, fromSavings, amount)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
-        status = deposit(toUser, toSavings, amount)
+        status = deposit(user, toSavings, amount)
       }
 
       if (status != TransactionStatus.TRANSACTION_COMPLETE) {

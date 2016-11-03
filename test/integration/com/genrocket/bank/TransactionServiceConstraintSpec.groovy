@@ -66,7 +66,7 @@ class TransactionServiceConstraintSpec extends IntegrationSpec {
 
     transactionTestDataService.loadData()
     Transaction transaction = Transaction.first()
-    transaction.transactedBy = null
+    transaction.user = null
 
     when:
 

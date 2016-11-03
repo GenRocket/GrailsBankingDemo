@@ -20,9 +20,7 @@ class CheckingService {
       return TransactionStatus.ACCOUNT_NOT_CHECKING
     }
 
-    Customer customer = Customer.findByUserAndAccount(user, account)
-
-    if (!customer.enabled) {
+    if (!accountService.hasEnabledCustomer(account)) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
     }
 
@@ -32,7 +30,7 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.DEPOSIT_CHECKING.value)
 
     Transaction transaction = new Transaction(
-      transactedBy: user,
+      user: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),
@@ -55,9 +53,7 @@ class CheckingService {
       return TransactionStatus.ACCOUNT_NOT_CHECKING
     }
 
-    Customer customer = Customer.findByUserAndAccount(user, account)
-
-    if (!customer.enabled) {
+    if (!accountService.hasEnabledCustomer(account)) {
       return TransactionStatus.ACCOUNT_NOT_ENABLED
     }
 
@@ -77,7 +73,7 @@ class CheckingService {
     TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
 
     Transaction transaction = new Transaction(
-      transactedBy: user,
+      user: user,
       amount: amount,
       account: account,
       dateCreated: new Date(),
@@ -113,7 +109,7 @@ class CheckingService {
     }
   }
 
-  TransactionStatus transferCheckingToChecking(User fromUser, User toUser, Account fromChecking, Account toChecking, Float amount) {
+  TransactionStatus transferCheckingToChecking(User user, Account fromChecking, Account toChecking, Float amount) {
     if (!amount) {
       return TransactionStatus.INVALID_AMOUNT_VALUE
     }
@@ -123,10 +119,10 @@ class CheckingService {
     }
 
     Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
-      TransactionStatus status = withdrawal(fromUser, fromChecking, amount)
+      TransactionStatus status = withdrawal(user, fromChecking, amount)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
-        status = deposit(toUser, toChecking, amount)
+        status = deposit(user, toChecking, amount)
       }
 
       if (status != TransactionStatus.TRANSACTION_COMPLETE) {
