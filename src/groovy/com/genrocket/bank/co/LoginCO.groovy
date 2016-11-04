@@ -6,7 +6,7 @@ import grails.validation.Validateable
 @Validateable
 class LoginCO {
   String cardNumber
-  String pinNumber
+  String pin
 
   static constraints = {
     cardNumber(nullable: false, blank: false, validator: { value, object ->
@@ -18,15 +18,15 @@ class LoginCO {
           return "card.expired"
         } else if (card.dateDeactivated) {
           return "card.deactivated"
-        } else if (object.pinNumber && !object.pinNumber) {
+        } else if (object.pin && !object.pin) {
           return "invalid.pin.number"
-        } else if (object.pinNumber != card.pin) {
+        } else if (object.pin != card.pin) {
           return "invalid.pin.number"
         }
       } else {
         return "invalid.card.number"
       }
     })
-    pinNumber(nullable: false, blank: false)
+    pin(nullable: false, blank: false)
   }
 }

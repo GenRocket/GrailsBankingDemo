@@ -51,17 +51,17 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.first()
     String cardNumber = '9999999999999999'
-    Integer pinNumber = 123456
+    String pin = '123456'
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
-      pinNumber: pinNumber
+      pin: pin
     )
 
     when:
 
     card.enabled = true
-    card.pin = pinNumber
+    card.pin = pin
     card.dateDeactivated = null
 
     HomeController controller = new HomeController()
@@ -81,17 +81,17 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.first()
     String cardNumber = card.cardNumber
-    Integer pinNumber = 123456
+    String pin = '123456'
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
-      pinNumber: pinNumber
+      pin: pin
     )
 
     when:
 
     card.enabled = false
-    card.pin = pinNumber
+    card.pin = pin
     card.dateDeactivated = null
 
     HomeController controller = new HomeController()
@@ -111,17 +111,17 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.first()
     String cardNumber = card.cardNumber
-    Integer pinNumber = 123456
+    String pin = '123456'
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
-      pinNumber: pinNumber
+      pin: pin
     )
 
     when:
 
     card.enabled = true
-    card.pin = pinNumber
+    card.pin = pin
     card.dateExpired = new Date() - 10
     card.dateDeactivated = null
 
@@ -142,17 +142,17 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.first()
     String cardNumber = card.cardNumber
-    Integer pinNumber = 123456
+    String pin = '123456'
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
-      pinNumber: pinNumber
+      pin: pin
     )
 
     when:
 
     card.enabled = true
-    card.pin = pinNumber
+    card.pin = pin
     card.dateDeactivated = new Date()
 
     HomeController controller = new HomeController()
@@ -172,11 +172,11 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.first()
     String cardNumber = card.cardNumber
-    Integer pinNumber = 123456
+    String pin = '123456'
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
-      pinNumber: pinNumber
+      pin: pin
     )
 
     when:
@@ -204,16 +204,16 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = Card.first()
     String cardNumber = card.cardNumber
-    Integer pinNumber = 123456
+    String pin = '123456'
 
     LoginCO loginCO = new LoginCO(
       cardNumber: cardNumber,
-      pinNumber: pinNumber
+      pin: pin
     )
 
     when:
 
-    card.pin = pinNumber
+    card.pin = pin
     card.enabled = true
     card.dateDeactivated = null
     card.save()
