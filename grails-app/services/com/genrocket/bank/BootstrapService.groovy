@@ -43,7 +43,7 @@ class BootstrapService {
         customer.enabled = true
         customer.save()
 
-        customer.customerLevel.dailyWithdrawalLimit = 500
+        customer.customerLevel.dailyWithdrawalLimit = 5000
         customer.customerLevel.monthlyMaxTransfersAllowed = 3
         customer.customerLevel.overdraftAllowed = true
         customer.customerLevel.save()
