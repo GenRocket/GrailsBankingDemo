@@ -181,7 +181,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    card.pinNumber = 999999
+    card.pinNumber = '999999'
     card.save()
 
     card.enabled = true

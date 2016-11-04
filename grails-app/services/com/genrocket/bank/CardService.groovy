@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class CardService {
   def cardPoolService
 
-  Card changePin(Card card, Integer newPinNumber) {
+  Card changePin(Card card, String newPinNumber) {
     card.pinNumber = newPinNumber
     card.save()
   }
@@ -42,12 +42,12 @@ class CardService {
     }
   }
 
-  TransactionStatus activateCard(Card card, Integer pinNumber) {
+  TransactionStatus activateCard(Card card, String pinNumber) {
     if (!pinNumber) {
       return TransactionStatus.INVALID_PIN_NUMBER
     }
 
-    if (pinNumber.toString().size() != 6) {
+    if (pinNumber.size() != 6) {
       return TransactionStatus.INVALID_PIN_NUMBER
     }
 

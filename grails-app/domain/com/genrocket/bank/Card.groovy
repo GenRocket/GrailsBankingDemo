@@ -4,7 +4,7 @@ class Card {
   String nameOnCard
   String cardNumber
   Integer securityCode
-  Integer pinNumber
+  String pinNumber
   Boolean enabled = Boolean.TRUE
   Date dateIssued
   Date dateExpired
@@ -20,7 +20,7 @@ class Card {
     nameOnCard nullable: false, blank: false, maxSize: 50
     cardNumber nullable: false, blank: false, maxSize: 16, unique: true
     securityCode nullable: false
-    pinNumber nullable: true
+    pinNumber nullable: true, blank: false, maxSize: 25
     enabled nullable: false
     dateIssued nullable: false
     dateExpired nullable: false

@@ -53,7 +53,7 @@ class TransactionCreatorService {
         customer.customerLevel.save()
 
         Card card = Card.findByCustomer(customer)
-        cardService.activateCard(card, 123456)
+        cardService.activateCard(card, '123456')
       }
     }
   }

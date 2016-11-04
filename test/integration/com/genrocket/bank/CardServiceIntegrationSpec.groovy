@@ -110,7 +110,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = cardService.activateCard(card, 12345)
+    TransactionStatus status = cardService.activateCard(card, '12345')
 
     then:
 
@@ -126,7 +126,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = cardService.activateCard(card, 1234567)
+    TransactionStatus status = cardService.activateCard(card, '1234567')
 
     then:
 
@@ -141,12 +141,12 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     Card card = Card.first()
 
     card.dateActivated = new Date()
-    card.pinNumber = 123456
+    card.pinNumber = '123456'
     card.save()
 
     when:
 
-    TransactionStatus status = cardService.activateCard(card, 123456)
+    TransactionStatus status = cardService.activateCard(card, '123456')
 
     then:
 
@@ -165,7 +165,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = cardService.activateCard(card, 123456)
+    TransactionStatus status = cardService.activateCard(card, '123456')
 
     then:
 
@@ -184,7 +184,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = cardService.activateCard(card, 123456)
+    TransactionStatus status = cardService.activateCard(card, '123456')
 
     then:
 
@@ -200,7 +200,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = cardService.activateCard(card, 123456)
+    TransactionStatus status = cardService.activateCard(card, '123456')
 
     then:
 
@@ -215,7 +215,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     cardTestDataService.loadData()
     Card card = Card.first()
 
-    TransactionStatus status = cardService.activateCard(card, 123456)
+    TransactionStatus status = cardService.activateCard(card, '123456')
 
     assert card.dateActivated
     assert status == TransactionStatus.TRANSACTION_COMPLETE
@@ -239,7 +239,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = cardService.activateCard(oldCard, 123456)
+    TransactionStatus status = cardService.activateCard(oldCard, '123456')
     Card activeCard = cardService.findActiveCard(customer, cardType)
 
     then:
@@ -258,7 +258,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    TransactionStatus status = cardService.activateCard(oldCard, 123456)
+    TransactionStatus status = cardService.activateCard(oldCard, '123456')
 
     assert oldCard.dateActivated
     assert status == TransactionStatus.TRANSACTION_COMPLETE

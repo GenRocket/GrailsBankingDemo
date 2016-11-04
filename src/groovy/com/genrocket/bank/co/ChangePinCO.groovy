@@ -5,10 +5,10 @@ import grails.validation.Validateable
 @Validateable
 class ChangePinCO {
 
-  Integer oldPinNumber
-  Integer newPinNumber
-  Integer confirmPinNumber
-  Integer actualPinNumber
+  String oldPinNumber
+  String newPinNumber
+  String confirmPinNumber
+  String actualPinNumber
 
   static constraints = {
     oldPinNumber(nullable: false, blank: false, validator: { value, object ->
