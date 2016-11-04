@@ -11,6 +11,8 @@ class BootstrapService {
     Integer accountNumber = 1000000000
     List<User> users = User.findAll()
 
+    accountService.hasEnabledCustomer()
+
     Branch branch = Branch.first()
     CardType cardType = CardType.first()
     AccountType checking = AccountType.findByName('Checking')
