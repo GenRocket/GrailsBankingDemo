@@ -20,7 +20,7 @@ class LoginCO {
           return "card.deactivated"
         } else if (object.pinNumber && !object.pinNumber) {
           return "invalid.pin.number"
-        } else if (object.pinNumber != card.pinNumber) {
+        } else if (object.pinNumber != card.pin) {
           return "invalid.pin.number"
         }
       } else {

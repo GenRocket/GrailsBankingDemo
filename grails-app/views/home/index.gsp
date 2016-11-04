@@ -25,9 +25,9 @@
                         <input type="text" placeholder="**** **** **** ****" title="Please enter you card number"
                                name="cardNumber" id="cardNumber" class="form-control" value="${loginCO?.cardNumber}">
                     </div>
-                    <div class="form-group"><label class="col-sm-5 control-label">Pin Number:</label>
-                        <input type="password" placeholder="****" title="Please enter you pin number"
-                               name="pinNumber" id="pinNumber" class="form-control">
+                    <div class="form-group"><label class="col-sm-5 control-label">Pin:</label>
+                        <input type="password" placeholder="****" title="Please enter you pin"
+                               name="pin" id="pin" class="form-control">
                     </div>
 
 

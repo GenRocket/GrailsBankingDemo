@@ -46,7 +46,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
       card.dateExpired == card.dateIssued + 3.years
     }
 
-    !card.pinNumber
+    !card.pin
     !card.dateActivated
     !card.dateDeactivated
 
@@ -141,7 +141,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     Card card = Card.first()
 
     card.dateActivated = new Date()
-    card.pinNumber = '123456'
+    card.pin = '123456'
     card.save()
 
     when:

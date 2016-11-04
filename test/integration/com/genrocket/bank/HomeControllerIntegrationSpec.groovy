@@ -61,7 +61,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     when:
 
     card.enabled = true
-    card.pinNumber = pinNumber
+    card.pin = pinNumber
     card.dateDeactivated = null
 
     HomeController controller = new HomeController()
@@ -91,7 +91,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     when:
 
     card.enabled = false
-    card.pinNumber = pinNumber
+    card.pin = pinNumber
     card.dateDeactivated = null
 
     HomeController controller = new HomeController()
@@ -121,7 +121,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     when:
 
     card.enabled = true
-    card.pinNumber = pinNumber
+    card.pin = pinNumber
     card.dateExpired = new Date() - 10
     card.dateDeactivated = null
 
@@ -152,7 +152,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     when:
 
     card.enabled = true
-    card.pinNumber = pinNumber
+    card.pin = pinNumber
     card.dateDeactivated = new Date()
 
     HomeController controller = new HomeController()
@@ -181,7 +181,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    card.pinNumber = '999999'
+    card.pin = '999999'
     card.save()
 
     card.enabled = true
@@ -213,7 +213,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
 
     when:
 
-    card.pinNumber = pinNumber
+    card.pin = pinNumber
     card.enabled = true
     card.dateDeactivated = null
     card.save()

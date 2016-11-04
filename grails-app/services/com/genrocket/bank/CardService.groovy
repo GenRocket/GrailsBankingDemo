@@ -12,7 +12,7 @@ class CardService {
   def cardPoolService
 
   Card changePin(Card card, String newPinNumber) {
-    card.pinNumber = newPinNumber
+    card.pin = newPinNumber
     card.save()
   }
 
@@ -42,12 +42,12 @@ class CardService {
     }
   }
 
-  TransactionStatus activateCard(Card card, String pinNumber) {
-    if (!pinNumber) {
+  TransactionStatus activateCard(Card card, String pin) {
+    if (!pin) {
       return TransactionStatus.INVALID_PIN_NUMBER
     }
 
-    if (pinNumber.size() != 6) {
+    if (pin.size() != 6) {
       return TransactionStatus.INVALID_PIN_NUMBER
     }
 
@@ -63,7 +63,7 @@ class CardService {
       return TransactionStatus.CARD_NOT_ENABLED
     }
 
-    card.pinNumber = pinNumber
+    card.pin = pin
     card.dateActivated = new Date()
     card.save()
 
