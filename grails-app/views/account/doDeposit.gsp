@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.text.DecimalFormat" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>Welcome to GenRocket Bank ATM</title>
@@ -15,9 +15,9 @@
       <div class="text-center m-b-md">
         <h3>Transaction is Complete</h3>
 
-        <h3>You deposited $${depositAmount}.</h3>
+        <h3>You deposited $${new DecimalFormat("#.00").format(depositAmount)}</h3>
 
-        <h3>Adjusted balance $${balance}.</h3>
+        <h3>Adjusted balance $${new DecimalFormat("#.00").format(balance)}</h3>
 
         <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
       </div>
