@@ -83,17 +83,31 @@ class AccountController {
   def doTransfer(TransferAmountCO transferAmountCO) {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)
+
+    String CHECKING = AccountTypes.CHECKING.value
+    String SAVINGS = AccountTypes.SAVINGS.value
+
     if (transferAmountCO.validate()) {
       TransactionStatus transactionStatus = null
       Account fromAccount = card.customer.account
       Account toAccount = transferAmountCO.account
-      if(fromAccount.accountType.name == AccountTypes.CHECKING.getValue() && toAccount.accountType.name == AccountTypes.CHECKING.getValue()) {
+
+      String fromAccountType = fromAccount.accountType.name
+      String toAccountType = toAccount.accountType.name
+
+      if(fromAccountType == CHECKING && toAccountType == CHECKING) {
         transactionStatus = checkingService.transferCheckingToChecking(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
-      } else if (fromAccount.accountType.name == AccountTypes.CHECKING.getValue() && toAccount.accountType.name == AccountTypes.SAVINGS.getValue()) {
+      }
+
+      else if (fromAccountType == CHECKING && toAccountType == SAVINGS) {
         transactionStatus = checkingService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
-      } else if (fromAccount.accountType.name == AccountTypes.SAVINGS.getValue() && toAccount.accountType.name == AccountTypes.CHECKING.getValue()) {
+      }
+
+      else if (fromAccountType == SAVINGS && toAccountType == CHECKING) {
         transactionStatus = savingsService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
-      } else if (fromAccount.accountType.name == AccountTypes.SAVINGS.getValue() && toAccount.accountType.name == AccountTypes.SAVINGS.getValue()) {
+      }
+
+      else if (fromAccountType == SAVINGS && toAccountType == SAVINGS) {
         transactionStatus = savingsService.transferSavingsToSavings(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
       }
 
