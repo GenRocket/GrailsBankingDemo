@@ -33,6 +33,7 @@ class AccountController {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
     String depositMessage = checkingService.deposit(card.customer.user, card.customer.account, amount)
+
     if (depositMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
       render(view: "doDeposit", model: [depositAmount: amount, balance: card.customer.account.balance])
     } else {
@@ -57,6 +58,7 @@ class AccountController {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
     String withdrawalMessage = checkingService.withdrawal(card.customer.user, card.customer.account, amount)
+
     if (withdrawalMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
       render(view: "doWithdrawal", model: [withdrawalAmount: amount, balance: card.customer.account.balance])
     } else {
@@ -89,6 +91,7 @@ class AccountController {
 
     if (transferAmountCO.validate()) {
       TransactionStatus transactionStatus = null
+
       Account fromAccount = card.customer.account
       Account toAccount = transferAmountCO.account
 
@@ -125,6 +128,7 @@ class AccountController {
   def savePin(ChangePinCO changePinCO) {
     Card card = bankingService.selectedCard
     changePinCO.actualPinNumber = card.pinNumber
+
       if(changePinCO.validate()) {
         card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
         cardService.changePin(card, changePinCO.newPinNumber)
