@@ -16,7 +16,7 @@ class ChangePinCO {
         return "incorrect.pin"
       }
     })
-    newPinNumber(nullable: false, blank: false, max: 6, min: 6)
+    newPinNumber(nullable: false, blank: false)
     confirmPinNumber(nullable: false, blank: false, validator: { value, object ->
       if (value && value != object.newPinNumber) {
         return "old.pin.not.match"
