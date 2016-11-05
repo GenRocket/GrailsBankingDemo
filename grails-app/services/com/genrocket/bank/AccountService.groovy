@@ -63,21 +63,11 @@ class AccountService {
   }
 
   Boolean hasEnabledCustomer(Account account) {
-    List<Customer> customers = Customer.findAllByAccount(account)
-    Boolean found = false
-
-    customers.each { customer ->
-      if (customer.enabled) {
-        found = true
-      }
+    def customers = Customer.where {
+      account == account && enabled
     }
 
-    return found
+    return customers.size() > 0
   }
-
-//  Boolean hasEnabledCustomer(Account account) {
-//    account.refresh()
-//    return account.customers.any { it.enabled }
-//  }
 }
     
