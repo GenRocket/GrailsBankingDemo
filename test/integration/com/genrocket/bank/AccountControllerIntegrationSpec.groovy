@@ -32,45 +32,13 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     balance
   }
 
-  void "test deposit accountType EQ CHECKING"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['checkingCard']
-
+  void "test deposit"() {
     when:
-
     AccountController controller = new AccountController()
-    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-
     controller.deposit()
 
     then:
-
     controller.modelAndView.viewName == '/account/deposit'
-  }
-
-  void "test deposit accountType NOT EQ CHECKING"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['savingsCard']
-
-    when:
-
-    AccountController controller = new AccountController()
-    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-
-    controller.deposit()
-
-    then:
-
-    controller.flash.error != null
-    controller.response.redirectedUrl == '/home/menu'
   }
 
   void "test deposit TRANSACTION_COMPLETE"() {
@@ -127,45 +95,14 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
   // ------------------- WITHDRAWAL ----------------------
 
-  void "test withdrawal accountType EQ CHECKING"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['checkingCard']
-
+  void "test withdrawal"() {
     when:
-
     AccountController controller = new AccountController()
-    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-
     controller.withdrawal()
 
     then:
 
     controller.modelAndView.viewName == '/account/withdrawal'
-  }
-
-  void "test withdrawal accountType NOT EQ CHECKING"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['savingsCard']
-
-    when:
-
-    AccountController controller = new AccountController()
-    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-
-    controller.withdrawal()
-
-    then:
-
-    controller.flash.error != null
-    controller.response.redirectedUrl == '/home/menu'
   }
 
   void "test withdrawal TRANSACTION_COMPLETE"() {

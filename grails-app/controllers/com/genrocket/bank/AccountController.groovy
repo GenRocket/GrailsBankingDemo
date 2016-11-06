@@ -17,6 +17,7 @@ class AccountController {
   }
 
   def deposit() {
+    render(view: 'deposit')
   }
 
   def doDeposit(Float amount) {
