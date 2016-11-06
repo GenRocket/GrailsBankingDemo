@@ -364,7 +364,8 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
     then:
     controller.modelAndView.viewName == '/account/transfer'
-    println controller.modelAndView.model.get("transferCO").errors.allErrors.contains("invalid.account.number")
+    controller.modelAndView.model.get("transferCO") == transferCO
+    controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "invalid.account.number"
   }
 
   void "test doTransfer not getTransfer()"() {
