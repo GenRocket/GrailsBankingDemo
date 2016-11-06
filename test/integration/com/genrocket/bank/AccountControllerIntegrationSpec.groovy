@@ -419,4 +419,8 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.response.redirectedUrl == '/home/menu'
   }
 
+  void "test doTransfer CHECKING to CHECKING TRANSACTION_COMPLETE"() {
+
+  }
+
 }
