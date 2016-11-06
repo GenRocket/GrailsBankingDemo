@@ -29,7 +29,7 @@ class AccountController {
     }
   }
 
-  def deDeposit(Float amount) {
+  def doDeposit(Float amount) {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
     String depositMessage = checkingService.deposit(card.customer.user, card.customer.account, amount)
