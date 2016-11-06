@@ -368,6 +368,33 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "invalid.account.number"
   }
 
+  void "test transferAmount same account number"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    Account account = fromInfo['checkingAccount']
+
+    account.accountNumber = 9999999999
+    account.save(flush: true)
+
+    TransferCO transferCO = new TransferCO()
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    transferCO.accountNumber = account.accountNumber
+    controller.transferAmount(transferCO)
+
+    then:
+    controller.modelAndView.viewName == '/account/transfer'
+    controller.modelAndView.model.get("transferCO") == transferCO
+    controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "same.account.number"
+  }
+
   void "test doTransfer not getTransfer()"() {
     given:
 
