@@ -1,10 +1,14 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.co.TransferAmountCO
+import com.genrocket.bank.co.TransferCO
 import grails.test.spock.IntegrationSpec
 
 class AccountControllerIntegrationSpec  extends IntegrationSpec {
   def bankingService
   def transactionCreatorService
+
+  // ------------------- BALANCE ----------------------
 
   void "test balance"() {
     given:
@@ -32,6 +36,8 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     accountType
     balance
   }
+
+  // ------------------- DEPOSIT ----------------------
 
   void "test deposit"() {
     when:
@@ -332,4 +338,56 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.viewName == '/account/withdrawal'
     controller.modelAndView.model.get('errorMessage') != null
   }
+
+  // ------------------- TRANSFER ----------------------
+
+  void "test transferAmount invalid card number"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    Account account = fromInfo['checkingAccount']
+
+    account.accountNumber = 9999999999
+    account.save()
+
+    TransferCO transferCO = new TransferCO()
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    controller.transferAmount(transferCO)
+
+    then:
+
+    true
+
+  }
+
+  void "test doTransfer not getTransfer()"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+
+    bankingService.setTransfer(false)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    controller.response.redirectedUrl == '/home/menu'
+  }
+
 }
