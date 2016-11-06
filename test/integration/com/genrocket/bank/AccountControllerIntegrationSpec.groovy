@@ -45,6 +45,27 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.viewName == '/account/deposit'
   }
 
+  void "test doDeposit not getDeposit()"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    bankingService.setDeposit(false)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.doDeposit((float) 100.00)
+
+    then:
+
+    controller.response.redirectedUrl == '/home/menu'
+  }
+
   void "test doDeposit checking TRANSACTION_COMPLETE"() {
     given:
 
@@ -173,6 +194,27 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
     bankingService.getWithdrawal()
     controller.modelAndView.viewName == '/account/withdrawal'
+  }
+
+  void "test doWithdrawal not getWithdrawal()"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    bankingService.setWithdrawal(false)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.doDeposit((float) 100.00)
+
+    then:
+
+    controller.response.redirectedUrl == '/home/menu'
   }
 
   void "test doWithdrawal checking TRANSACTION_COMPLETE"() {
