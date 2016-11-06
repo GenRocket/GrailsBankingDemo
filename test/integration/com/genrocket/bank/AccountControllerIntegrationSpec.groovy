@@ -348,21 +348,22 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
 
     Card card = (Card) fromInfo['checkingCard']
-    Account account = fromInfo['checkingAccount']
+    Account account = (Account) fromInfo['checkingAccount']
 
     account.accountNumber = 9999999999
     account.save()
 
     TransferCO transferCO = new TransferCO()
+    transferCO.accountNumber = 12345
 
     when:
 
     AccountController controller = new AccountController()
     controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-    transferCO.accountNumber = 12345
     controller.transferAmount(transferCO)
 
     then:
+
     controller.modelAndView.viewName == '/account/transfer'
     controller.modelAndView.model.get("transferCO") == transferCO
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "invalid.account.number"
@@ -375,7 +376,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
 
     Card card = (Card) fromInfo['checkingCard']
-    Account account = fromInfo['checkingAccount']
+    Account account = (Account) fromInfo['checkingAccount']
 
     account.accountNumber = 9999999999
     account.save(flush: true)
@@ -390,6 +391,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.transferAmount(transferCO)
 
     then:
+
     controller.modelAndView.viewName == '/account/transfer'
     controller.modelAndView.model.get("transferCO") == transferCO
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "same.account.number"
