@@ -359,13 +359,12 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
     AccountController controller = new AccountController()
     controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-
+    transferCO.accountNumber = 12345
     controller.transferAmount(transferCO)
 
     then:
-
-    true
-
+    controller.modelAndView.viewName == '/account/transfer'
+    println controller.modelAndView.model.get("transferCO").errors.allErrors.contains("invalid.account.number")
   }
 
   void "test doTransfer not getTransfer()"() {
