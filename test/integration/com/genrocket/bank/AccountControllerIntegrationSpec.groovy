@@ -35,14 +35,17 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
   void "test deposit"() {
     when:
+
     AccountController controller = new AccountController()
     controller.deposit()
 
     then:
+
+    bankingService.getDeposit()
     controller.modelAndView.viewName == '/account/deposit'
   }
 
-  void "test deposit checking TRANSACTION_COMPLETE"() {
+  void "test doDeposit checking TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -74,7 +77,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('balance') == balance + depositAmount
   }
 
-  void "test deposit savings TRANSACTION_COMPLETE"() {
+  void "test doDeposit savings TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -106,7 +109,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('balance') == balance + depositAmount
   }
 
-  void "test deposit checking not TRANSACTION_COMPLETE"() {
+  void "test doDeposit checking not TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -132,7 +135,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('errorMessage') != null
   }
 
-  void "test deposit savings not TRANSACTION_COMPLETE"() {
+  void "test doDeposit savings not TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -162,15 +165,17 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
   void "test withdrawal"() {
     when:
+
     AccountController controller = new AccountController()
     controller.withdrawal()
 
     then:
 
+    bankingService.getWithdrawal()
     controller.modelAndView.viewName == '/account/withdrawal'
   }
 
-  void "test withdrawal checking TRANSACTION_COMPLETE"() {
+  void "test doWithdrawal checking TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -202,7 +207,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('balance') == balance - withdrawalAmount
   }
 
-  void "test withdrawal savings TRANSACTION_COMPLETE"() {
+  void "test doWithdrawal savings TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -234,7 +239,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('balance') == balance - withdrawalAmount
   }
 
-  void "test withdrawal checking not TRANSACTION_COMPLETE"() {
+  void "test doWithdrawal checking not TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -260,7 +265,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('errorMessage') != null
   }
 
-  void "test withdrawal savings not TRANSACTION_COMPLETE"() {
+  void "test doWithdrawal savings not TRANSACTION_COMPLETE"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
