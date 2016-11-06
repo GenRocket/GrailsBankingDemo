@@ -34,7 +34,7 @@
                 <td>${transaction.account.accountNumber}</td>
                 <td>${transaction.account.accountType.name}</td>
                 <td>${transaction.transactionType.name}</td>
-                <td>${new DecimalFormat("#.00").format(transaction.amount)}</td>
+                <td>$${transaction.amount.format()}</td>
                 <td>${transaction.dateCreated.format("MMM dd, yyyy")}</td>
               </tr>
             </g:each>

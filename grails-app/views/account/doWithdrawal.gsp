@@ -17,9 +17,9 @@
 
         <h3>Please take money.</h3>
 
-        <h3>You drew $${new DecimalFormat("#.00").format(withdrawalAmount)}</h3>
+        <h3>You drew $${withdrawalAmount.format()}</h3>
 
-        <h3>Adjusted balance $${new DecimalFormat("#.00").format(balance)}</h3>
+        <h3>Adjusted balance $${balance.format()}</h3>
 
         <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
       </div>

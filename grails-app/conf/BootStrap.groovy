@@ -1,3 +1,5 @@
+import com.genrocket.bank.MetaClassHelper
+
 class BootStrap {
   def bootstrapService
   def userTestDataService
@@ -10,6 +12,7 @@ class BootStrap {
   def transactionManager
 
   def init = { servletContext ->
+    MetaClassHelper.initialize()
     transactionManager.setNestedTransactionAllowed(true)
 
     environments {

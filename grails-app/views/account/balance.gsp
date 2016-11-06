@@ -14,7 +14,7 @@
     <div class="col-md-12">
       <div class="text-center m-b-md">
         <h2>Your ${accountType?.name} Balance</h2>
-        <h3>$${new DecimalFormat("#.00").format(balance)}</h3>
+        <h3>$${balance.format()}</h3>
       </div>
       <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
     </div>
