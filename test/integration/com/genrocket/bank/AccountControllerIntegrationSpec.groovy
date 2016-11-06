@@ -430,11 +430,11 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
     CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
     customerLevel.dailyWithdrawalLimit = 2000
-    customerLevel.save(flush: true)
+    customerLevel.save()
 
     Account account = (Account) fromInfo['checkingAccount']
     account.balance = 5000
-    account.save(flush: true)
+    account.save()
 
     Account toAccount = (Account) toInfo['checkingAccount']
 
@@ -453,9 +453,135 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
     then:
 
+    !bankingService.getTransfer()
     controller.modelAndView.viewName == '/account/doTransfer'
     controller.modelAndView.model.get('fromAccount') == account
     controller.modelAndView.model.get('toAccount') == toAccount
     controller.modelAndView.model.get('amount') == transferAmountCO.amount
   }
+
+  void "test doTransfer CHECKING to SAVINGS TRANSACTION_COMPLETE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['checkingAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['savingsAccount']
+
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+    transferAmountCO.amount = 1000
+    transferAmountCO.accountIdTo = toAccount?.id
+
+    bankingService.setTransfer(true)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    !bankingService.getTransfer()
+    controller.modelAndView.viewName == '/account/doTransfer'
+    controller.modelAndView.model.get('fromAccount') == account
+    controller.modelAndView.model.get('toAccount') == toAccount
+    controller.modelAndView.model.get('amount') == transferAmountCO.amount
+  }
+
+  void "test doTransfer SAVINGS to CHECKING TRANSACTION_COMPLETE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['savingsCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['savingsCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['savingsAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+    transferAmountCO.amount = 1000
+    transferAmountCO.accountIdTo = toAccount?.id
+
+    bankingService.setTransfer(true)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    !bankingService.getTransfer()
+    controller.modelAndView.viewName == '/account/doTransfer'
+    controller.modelAndView.model.get('fromAccount') == account
+    controller.modelAndView.model.get('toAccount') == toAccount
+    controller.modelAndView.model.get('amount') == transferAmountCO.amount
+  }
+
+  void "test doTransfer SAVINGS to SAVINGS TRANSACTION_COMPLETE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['savingsCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['savingsCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['savingsAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['savingsAccount']
+
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+    transferAmountCO.amount = 1000
+    transferAmountCO.accountIdTo = toAccount?.id
+
+    bankingService.setTransfer(true)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    !bankingService.getTransfer()
+    controller.modelAndView.viewName == '/account/doTransfer'
+    controller.modelAndView.model.get('fromAccount') == account
+    controller.modelAndView.model.get('toAccount') == toAccount
+    controller.modelAndView.model.get('amount') == transferAmountCO.amount
+  }
+
+
 }
