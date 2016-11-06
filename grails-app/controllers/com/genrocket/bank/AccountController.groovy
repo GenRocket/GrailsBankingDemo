@@ -84,6 +84,7 @@ class AccountController {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)
     transferCO.currentAccountNumber = card.customer.account.accountNumber
+
     if (transferCO.validate()) {
       bankingService.setTransfer(true)
       render(view: "transferAmount", model: [currentAccountType: card.customer?.account?.accountType,
