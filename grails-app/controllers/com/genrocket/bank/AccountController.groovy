@@ -28,6 +28,7 @@ class AccountController {
 
     if(bankingService.getDeposit()) {
       AccountType accountType = card.customer?.account?.accountType
+
       if (accountType.name == AccountTypes.CHECKING.getValue()) {
         depositMessage = checkingService.deposit(card.customer.user, card.customer.account, amount)
       } else {
@@ -57,6 +58,7 @@ class AccountController {
 
     if(bankingService.getWithdrawal()) {
       AccountType accountType = card.customer?.account?.accountType
+
       if (accountType.name == AccountTypes.CHECKING.getValue()) {
         withdrawalMessage = checkingService.withdrawal(card.customer.user, card.customer.account, amount)
       } else {
