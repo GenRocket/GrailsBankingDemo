@@ -397,6 +397,45 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "same.account.number"
   }
 
+  void "test doTransfer CHECKING to CHECKING TRANSACTION_COMPLETE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save(flush: true)
+
+    Account account = (Account) fromInfo['checkingAccount']
+
+    account.balance = 5000
+    account.save(flush: true)
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+
+    AccountType checkingType = AccountType.findByName(AccountTypes.CHECKING.value)
+    Account toAccount = Account.findByAccountTypeAndIdNotEqual(checkingType, card.customer.account.id)
+
+    bankingService.setTransfer(true)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    transferAmountCO.amount = 1000
+    transferAmountCO.accountIdTo = toAccount?.id
+
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    controller.modelAndView.viewName == '/account/doTransfer'
+    controller.modelAndView.model.get('fromAccount') == account
+    controller.modelAndView.model.get('toAccount') == toAccount
+    controller.modelAndView.model.get('amount') == transferAmountCO.amount
+  }
+
   void "test doTransfer not getTransfer()"() {
     given:
 
