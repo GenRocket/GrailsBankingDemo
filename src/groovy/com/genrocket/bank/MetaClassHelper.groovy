@@ -6,6 +6,7 @@ class MetaClassHelper {
 
   public static void initialize() {
     Float.metaClass.format = { -> new DecimalFormat("#.00").format(delegate) }
-
+    Long.metaClass.format = { -> new DecimalFormat("#.00").format(delegate) }
+    Integer.metaClass.format = { -> new DecimalFormat("#.00").format(delegate) }
   }
 }

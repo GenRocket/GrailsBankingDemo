@@ -17,6 +17,7 @@ class AccountController {
   }
 
   def deposit() {
+    bankingService.setDeposit(true)
     render(view: 'deposit')
   }
 
@@ -25,21 +26,27 @@ class AccountController {
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
     String depositMessage
 
-    AccountType accountType = card.customer?.account?.accountType
-    if (accountType.name == AccountTypes.CHECKING.getValue()) {
-      depositMessage = checkingService.deposit(card.customer.user, card.customer.account, amount)
-    } else {
-      depositMessage = savingsService.deposit(card.customer.user, card.customer.account, amount)
-    }
+    if(bankingService.getDeposit()) {
+      AccountType accountType = card.customer?.account?.accountType
+      if (accountType.name == AccountTypes.CHECKING.getValue()) {
+        depositMessage = checkingService.deposit(card.customer.user, card.customer.account, amount)
+      } else {
+        depositMessage = savingsService.deposit(card.customer.user, card.customer.account, amount)
+      }
 
-    if (depositMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
-      render(view: "doDeposit", model: [depositAmount: amount, balance: card.customer.account.balance])
+      if (depositMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
+        bankingService.setDeposit(false)
+        render(view: "doDeposit", model: [depositAmount: amount, balance: card.customer.account.balance])
+      } else {
+        render(view: 'deposit', model: [errorMessage: g.message(code: depositMessage.toString())])
+      }
     } else {
-      render(view: 'deposit', model: [errorMessage: g.message(code: depositMessage.toString())])
+      redirect(controller: 'home', action: 'menu')
     }
   }
 
   def withdrawal() {
+    bankingService.setWithdrawal(true)
     render(view: 'withdrawal')
   }
 
@@ -48,17 +55,22 @@ class AccountController {
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
     String withdrawalMessage
 
-    AccountType accountType = card.customer?.account?.accountType
-    if (accountType.name == AccountTypes.CHECKING.getValue()) {
-      withdrawalMessage = checkingService.withdrawal(card.customer.user, card.customer.account, amount)
-    } else {
-      withdrawalMessage = savingsService.withdrawal(card.customer.user, card.customer.account, amount)
-    }
+    if(bankingService.getWithdrawal()) {
+      AccountType accountType = card.customer?.account?.accountType
+      if (accountType.name == AccountTypes.CHECKING.getValue()) {
+        withdrawalMessage = checkingService.withdrawal(card.customer.user, card.customer.account, amount)
+      } else {
+        withdrawalMessage = savingsService.withdrawal(card.customer.user, card.customer.account, amount)
+      }
 
-    if (withdrawalMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
-      render(view: "doWithdrawal", model: [withdrawalAmount: amount, balance: card.customer.account.balance])
+      if (withdrawalMessage == TransactionStatus.TRANSACTION_COMPLETE.toString()) {
+        bankingService.setWithdrawal(false)
+        render(view: "doWithdrawal", model: [withdrawalAmount: amount, balance: card.customer.account.balance])
+      } else {
+        render(view: 'withdrawal', model: [errorMessage: g.message(code: withdrawalMessage.toString())])
+      }
     } else {
-      render(view: 'withdrawal', model: [errorMessage: g.message(code: withdrawalMessage.toString())])
+      redirect(controller: 'home', action: 'menu')
     }
   }
 
@@ -71,6 +83,7 @@ class AccountController {
     card = Card.get(card.id)
     transferCO.currentAccountNumber = card.customer.account.accountNumber
     if (transferCO.validate()) {
+      bankingService.setTransfer(true)
       render(view: "transferAmount", model: [currentAccountType: card.customer?.account?.accountType,
                                              accountToTransfer : Account.findByAccountNumber(transferCO.accountNumber)])
     } else {
@@ -85,33 +98,38 @@ class AccountController {
     String CHECKING = AccountTypes.CHECKING.value
     String SAVINGS = AccountTypes.SAVINGS.value
 
-    if (transferAmountCO.validate()) {
-      TransactionStatus transactionStatus = null
+    if(bankingService.getTransfer()) {
+      if (transferAmountCO.validate()) {
+        TransactionStatus transactionStatus = null
 
-      Account fromAccount = card.customer.account
-      Account toAccount = transferAmountCO.account
+        Account fromAccount = card.customer.account
+        Account toAccount = transferAmountCO.account
 
-      String fromAccountType = fromAccount.accountType.name
-      String toAccountType = toAccount.accountType.name
+        String fromAccountType = fromAccount.accountType.name
+        String toAccountType = toAccount.accountType.name
 
-      if (fromAccountType == CHECKING && toAccountType == CHECKING) {
-        transactionStatus = checkingService.transferCheckingToChecking(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
-      } else if (fromAccountType == CHECKING && toAccountType == SAVINGS) {
-        transactionStatus = checkingService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
-      } else if (fromAccountType == SAVINGS && toAccountType == CHECKING) {
-        transactionStatus = savingsService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
-      } else if (fromAccountType == SAVINGS && toAccountType == SAVINGS) {
-        transactionStatus = savingsService.transferSavingsToSavings(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
-      }
+        if (fromAccountType == CHECKING && toAccountType == CHECKING) {
+          transactionStatus = checkingService.transferCheckingToChecking(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+        } else if (fromAccountType == CHECKING && toAccountType == SAVINGS) {
+          transactionStatus = checkingService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+        } else if (fromAccountType == SAVINGS && toAccountType == CHECKING) {
+          transactionStatus = savingsService.transfer(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+        } else if (fromAccountType == SAVINGS && toAccountType == SAVINGS) {
+          transactionStatus = savingsService.transferSavingsToSavings(card.customer.user, fromAccount, toAccount, transferAmountCO.amount)
+        }
 
-      if (transactionStatus == TransactionStatus.TRANSACTION_COMPLETE) {
-        render(view: "doTransfer", model: [fromAccount: fromAccount, toAccount: toAccount, amount: transferAmountCO.amount])
+        if (transactionStatus == TransactionStatus.TRANSACTION_COMPLETE) {
+          bankingService.setTransfer(false)
+          render(view: "doTransfer", model: [fromAccount: fromAccount, toAccount: toAccount, amount: transferAmountCO.amount])
+        } else {
+          render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, errorMessage: g.message(code: transactionStatus.toString()),
+                                                 transferAmountCO: transferAmountCO])
+        }
       } else {
-        render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, errorMessage: g.message(code: transactionStatus.toString()),
-                                               transferAmountCO: transferAmountCO])
+        render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, transferAmountCO: transferAmountCO])
       }
     } else {
-      render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, transferAmountCO: transferAmountCO])
+      redirect(controller: 'home', action: 'menu')
     }
   }
 
