@@ -341,6 +341,28 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
   // ------------------- TRANSFER ----------------------
 
+  void "test doTransfer not getTransfer()"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+
+    bankingService.setTransfer(false)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    controller.response.redirectedUrl == '/home/menu'
+  }
+
   void "test transferAmount invalid card number"() {
     given:
 
@@ -401,21 +423,24 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(2)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
 
     Card card = (Card) fromInfo['checkingCard']
+
     CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
     customerLevel.dailyWithdrawalLimit = 2000
     customerLevel.save(flush: true)
 
     Account account = (Account) fromInfo['checkingAccount']
-
     account.balance = 5000
     account.save(flush: true)
-    TransferAmountCO transferAmountCO = new TransferAmountCO()
 
-    AccountType checkingType = AccountType.findByName(AccountTypes.CHECKING.value)
-    Account toAccount = Account.findByAccountTypeAndIdNotEqual(checkingType, card.customer.account.id)
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+    transferAmountCO.amount = 1000
+    transferAmountCO.accountIdTo = toAccount?.id
 
     bankingService.setTransfer(true)
 
@@ -423,8 +448,6 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
 
     AccountController controller = new AccountController()
     controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-    transferAmountCO.amount = 1000
-    transferAmountCO.accountIdTo = toAccount?.id
 
     controller.doTransfer(transferAmountCO)
 
@@ -435,31 +458,4 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('toAccount') == toAccount
     controller.modelAndView.model.get('amount') == transferAmountCO.amount
   }
-
-  void "test doTransfer not getTransfer()"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['checkingCard']
-    TransferAmountCO transferAmountCO = new TransferAmountCO()
-
-    bankingService.setTransfer(false)
-
-    when:
-
-    AccountController controller = new AccountController()
-    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-    controller.doTransfer(transferAmountCO)
-
-    then:
-
-    controller.response.redirectedUrl == '/home/menu'
-  }
-
-  void "test doTransfer CHECKING to CHECKING TRANSACTION_COMPLETE"() {
-
-  }
-
 }
