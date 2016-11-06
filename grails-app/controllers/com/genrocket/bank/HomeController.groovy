@@ -23,8 +23,12 @@ class HomeController {
 
   def menu() {
     Card card = bankingService.getSelectedCard()
-    card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
-    [accountType: card.customer.account.accountType]
+    card = card ? Card.get(card.id) : null   // To fix : could not initialize proxy - no Session
+    if (card) {
+      [accountType: card.customer.account.accountType]
+    } else {
+      redirect(action: 'index')
+    }
   }
 
   def exit() {
