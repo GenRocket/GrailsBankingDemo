@@ -42,7 +42,7 @@ class CheckingService {
     return TransactionStatus.TRANSACTION_COMPLETE
   }
 
-  TransactionStatus withdrawal(User user, Account account, Float amount) {
+  TransactionStatus withdrawal(User user, Account account, Float amount, TransactionTypes defaultTransactionType = TransactionTypes.WITHDRAWAL_CHECKING) {
     if (!amount) {
       return TransactionStatus.INVALID_AMOUNT_VALUE
     }
@@ -70,7 +70,7 @@ class CheckingService {
     account.balance -= amount
     account.save(flush: true)
 
-    TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_CHECKING.value)
+    TransactionType transactionType = TransactionType.findByName(defaultTransactionType.value)
 
     Transaction transaction = new Transaction(
       user: user,
@@ -95,7 +95,7 @@ class CheckingService {
     }
 
     Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
-      TransactionStatus status = withdrawal(user, fromChecking, amount)
+      TransactionStatus status = withdrawal(user, fromChecking, amount, TransactionTypes.TRANSFER_CHECKING_SAVINGS)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
         status = savingsService.deposit(user, toSavings, amount)
@@ -119,7 +119,7 @@ class CheckingService {
     }
 
     Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
-      TransactionStatus status = withdrawal(user, fromChecking, amount)
+      TransactionStatus status = withdrawal(user, fromChecking, amount, TransactionTypes.TRANSFER_CHECKING_CHECKING)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
         status = deposit(user, toChecking, amount)

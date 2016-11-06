@@ -42,7 +42,7 @@ class SavingsService {
     return TransactionStatus.TRANSACTION_COMPLETE
   }
 
-  TransactionStatus withdrawal(User user, Account account, Float amount) {
+  TransactionStatus withdrawal(User user, Account account, Float amount, TransactionTypes defaultTransactionType = TransactionTypes.WITHDRAWAL_SAVINGS) {
     if (!amount) {
       return TransactionStatus.INVALID_AMOUNT_VALUE
     }
@@ -66,7 +66,7 @@ class SavingsService {
     account.balance -= amount
     account.save()
 
-    TransactionType transactionType = TransactionType.findByName(TransactionTypes.WITHDRAWAL_SAVINGS.value)
+    TransactionType transactionType = TransactionType.findByName(defaultTransactionType.value)
 
     Transaction transaction = new Transaction(
       user: user,
@@ -95,7 +95,7 @@ class SavingsService {
     }
 
     Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
-      TransactionStatus status = withdrawal(user, fromSavings, amount)
+      TransactionStatus status = withdrawal(user, fromSavings, amount, TransactionTypes.TRANSFER_SAVINGS_CHECKING)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
         status = checkingService.deposit(user, toChecking, amount)
@@ -119,7 +119,7 @@ class SavingsService {
     }
 
     Account.withTransaction ([propagationBehavior: TransactionDefinition.PROPAGATION_NESTED]){ controlledTransaction ->
-      TransactionStatus status = withdrawal(user, fromSavings, amount)
+      TransactionStatus status = withdrawal(user, fromSavings, amount, TransactionTypes.TRANSFER_SAVINGS_SAVINGS)
 
       if (status == TransactionStatus.TRANSACTION_COMPLETE) {
         status = deposit(user, toSavings, amount)
@@ -152,8 +152,10 @@ class SavingsService {
     firstDayOfMonth = sdf.parse(sdf.format(firstDayOfMonth))
     lastDayOfMonth = sdf.parse(sdf.format(lastDayOfMonth))
 
+    List<TransactionType> transactionTypes = TransactionType.findAllByNameOrName(TransactionTypes.TRANSFER_SAVINGS_SAVINGS.value, TransactionTypes.TRANSFER_SAVINGS_CHECKING.value)
+
     List<Transaction> transactions =
-      Transaction.findAllByAccountAndDateCreatedBetween(account, firstDayOfMonth, lastDayOfMonth)
+      Transaction.findAllByAccountAndTransactionTypeInListAndDateCreatedBetween(account, transactionTypes, firstDayOfMonth, lastDayOfMonth)
 
     return transactions.size() >= monthlyMaxTransfersAllowed
   }
