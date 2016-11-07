@@ -4,7 +4,7 @@ import com.genrocket.bank.co.TransferAmountCO
 import com.genrocket.bank.co.TransferCO
 import grails.test.spock.IntegrationSpec
 
-class AccountControllerIntegrationSpec  extends IntegrationSpec {
+class AccountControllerIntegrationSpec extends IntegrationSpec {
   def bankingService
   def transactionCreatorService
 
@@ -339,31 +339,9 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get('errorMessage') != null
   }
 
-  // ------------------- TRANSFER ----------------------
+  // ------------------- TRANSFER CO ----------------------
 
-  void "test doTransfer not getTransfer()"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['checkingCard']
-    TransferAmountCO transferAmountCO = new TransferAmountCO()
-
-    bankingService.setTransfer(false)
-
-    when:
-
-    AccountController controller = new AccountController()
-    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
-    controller.doTransfer(transferAmountCO)
-
-    then:
-
-    controller.response.redirectedUrl == '/home/menu'
-  }
-
-  void "test transferAmount invalid card number"() {
+  void "test TransferCO invalid account number"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -391,7 +369,7 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "invalid.account.number"
   }
 
-  void "test transferAmount same account number"() {
+  void "test TransferCO same account number"() {
     given:
 
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
@@ -417,6 +395,161 @@ class AccountControllerIntegrationSpec  extends IntegrationSpec {
     controller.modelAndView.viewName == '/account/transfer'
     controller.modelAndView.model.get("transferCO") == transferCO
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "same.account.number"
+  }
+
+  // ------------------- TRANSFER -------------------
+
+  void "test transferAmount invalid account number"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    Account account = (Account) fromInfo['checkingAccount']
+
+    account.accountNumber = 9999999999
+    account.save()
+
+    TransferCO transferCO = new TransferCO()
+    transferCO.accountNumber = 12345
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.transferAmount(transferCO)
+
+    then:
+
+    controller.modelAndView.viewName == '/account/transfer'
+    controller.modelAndView.model.get("transferCO") == transferCO
+    controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "invalid.account.number"
+  }
+
+  void "test doTransfer not getTransfer()"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+
+    bankingService.setTransfer(false)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    controller.response.redirectedUrl == '/home/menu'
+  }
+
+  void "test doTransfer transferAmountCO invalid account id"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    AccountType accountType = (AccountType) fromInfo['checkingType']
+
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+    transferAmountCO.amount = 1.00
+    transferAmountCO.accountIdTo = 9999999
+
+    bankingService.setTransfer(true)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    bankingService.getTransfer()
+    controller.modelAndView.viewName == '/account/transferAmount'
+    controller.modelAndView.model.get('currentAccountType') == accountType
+    controller.modelAndView.model.get("transferAmountCO").errors.getFieldError("accountIdTo").code == "invalid.account.id"
+  }
+
+  void "test doTransfer transferAmountCO invalid amount"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    AccountType accountType = (AccountType) fromInfo['checkingType']
+
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+    transferAmountCO.amount = null
+    transferAmountCO.accountIdTo = toAccount?.id
+
+    bankingService.setTransfer(true)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    bankingService.getTransfer()
+    controller.modelAndView.viewName == '/account/transferAmount'
+    controller.modelAndView.model.get('currentAccountType') == accountType
+    controller.modelAndView.model.get("transferAmountCO").errors.getFieldError("amount").code == "nullable"
+  }
+
+  void "test doTransfer NOT TRANSACTION_COMPLETE"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 500
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['checkingAccount']
+    account.balance = 5000
+    account.save()
+
+    AccountType checkingType = (AccountType) fromInfo['checkingType']
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    TransferAmountCO transferAmountCO = new TransferAmountCO()
+    transferAmountCO.amount = 1000
+    transferAmountCO.accountIdTo = toAccount?.id
+
+    bankingService.setTransfer(true)
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    controller.doTransfer(transferAmountCO)
+
+    then:
+
+    bankingService.getTransfer()
+    controller.modelAndView.viewName == '/account/transferAmount'
+    controller.modelAndView.model.get('currentAccountType') == checkingType
+    controller.modelAndView.model.get('errorMessage')
   }
 
   void "test doTransfer CHECKING to CHECKING TRANSACTION_COMPLETE"() {
