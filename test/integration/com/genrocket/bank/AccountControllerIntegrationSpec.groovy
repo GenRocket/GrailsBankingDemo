@@ -7,6 +7,7 @@ import grails.test.spock.IntegrationSpec
 
 class AccountControllerIntegrationSpec extends IntegrationSpec {
   def bankingService
+  def checkingService
   def transactionCreatorService
 
   // ------------------- BALANCE ----------------------
@@ -864,6 +865,39 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     controller.modelAndView.viewName == '/account/changePin'
     controller.modelAndView.model.get('changePinCO') == changePinCO
+  }
+
+  void "test history"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map infoMap = transactionCreatorService.getUserAccountInformation(0)
+
+    Account account = (Account) infoMap['checkingAccount']
+    User user = (User) infoMap['user']
+    Card card = (Card) infoMap['checkingCard']
+    CustomerLevel customerLevel = (CustomerLevel) infoMap['customerLevel']
+
+    customerLevel.monthlyMaxTransfersAllowed = 10000
+
+    when:
+
+    checkingService.deposit(user, account, (float) 100.00)
+    checkingService.deposit(user, account, (float) 100.00)
+    checkingService.deposit(user, account, (float) 100.00)
+    checkingService.deposit(user, account, (float) 100.00)
+    checkingService.deposit(user, account, (float) 100.00)
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    Map map = controller.history()
+
+    then:
+
+    Transaction[] transactions = map['transactions']
+
+    transactions.size() == 5
   }
 
 }
