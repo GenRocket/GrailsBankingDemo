@@ -76,8 +76,6 @@ class AccountController {
     }
   }
 
-  def changePin() {}
-
   def transfer() {}
 
   def transferAmount(TransferCO transferCO) {
@@ -136,7 +134,7 @@ class AccountController {
     }
   }
 
-  def savePin(ChangePinCO changePinCO) {
+  def changePin(ChangePinCO changePinCO) {
     Card card = bankingService.selectedCard
     changePinCO.actualPinNumber = card.pin
 

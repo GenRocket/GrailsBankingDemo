@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.co.ChangePinCO
 import com.genrocket.bank.co.TransferAmountCO
 import com.genrocket.bank.co.TransferCO
 import grails.test.spock.IntegrationSpec
@@ -397,7 +398,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "same.account.number"
   }
 
-  // ------------------- TRANSFER -------------------
+  // ------------------- TRANSFER AMOUNT -------------------
 
   void "test transferAmount invalid account number"() {
     given:
@@ -426,6 +427,8 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     controller.modelAndView.model.get("transferCO") == transferCO
     controller.modelAndView.model.get("transferCO").errors.getFieldError("accountNumber").code == "invalid.account.number"
   }
+
+  // ------------------- DO TRANSFER -------------------
 
   void "test doTransfer not getTransfer()"() {
     given:
@@ -715,4 +718,152 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     controller.modelAndView.model.get('toAccount') == toAccount
     controller.modelAndView.model.get('amount') == transferAmountCO.amount
   }
+
+  // ------------------- CHANGE PIN CO -------------------
+
+  void "test incorrect pin"() {
+    given:
+
+    ChangePinCO changePinCO = new ChangePinCO(
+      oldPinNumber: '123456',
+      actualPinNumber: '1234567',
+      newPinNumber: '654321',
+      confirmPinNumber: '654321'
+    )
+
+    when:
+
+    Boolean match = changePinCO.validate()
+
+    then:
+
+    !match
+    changePinCO.errors.getFieldError('oldPinNumber').code == 'incorrect.pin'
+  }
+
+  void "test old pin not match"() {
+    given:
+
+    ChangePinCO changePinCO = new ChangePinCO(
+      oldPinNumber: '123456',
+      actualPinNumber: '123456',
+      newPinNumber: '654321',
+      confirmPinNumber: '654322'
+    )
+
+    when:
+
+    Boolean match = changePinCO.validate()
+
+    then:
+
+    !match
+    changePinCO.errors.getFieldError('confirmPinNumber').code == 'old.pin.not.match'
+  }
+
+  void "test newPinNumber minSize 6"() {
+    given:
+
+    ChangePinCO changePinCO = new ChangePinCO(
+      oldPinNumber: '123456',
+      actualPinNumber: '123456',
+      newPinNumber: '12345',
+      confirmPinNumber: '12345'
+    )
+
+    when:
+
+    Boolean match = changePinCO.validate()
+
+    then:
+
+    !match
+    changePinCO.errors.getFieldError('newPinNumber').code == 'minSize.notmet'
+  }
+
+  void "test newPinNumber maxSize 25"() {
+    given:
+
+    ChangePinCO changePinCO = new ChangePinCO(
+      oldPinNumber: '123456',
+      actualPinNumber: '123456',
+      newPinNumber: '123451234512345123451234512345',
+      confirmPinNumber: '123451234512345123451234512345'
+    )
+
+    when:
+
+    Boolean match = changePinCO.validate()
+
+    then:
+
+    !match
+    changePinCO.errors.getFieldError('newPinNumber').code == 'maxSize.exceeded'
+  }
+
+  // -------------- CHANGE PIN -----------------
+
+  void "test savePin valid"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+
+    Card card = (Card) fromInfo['checkingCard']
+    card.pin = '123456'
+    card.save()
+
+    ChangePinCO changePinCO = new ChangePinCO(
+      oldPinNumber: '123456',
+      actualPinNumber: '123456',
+      newPinNumber: '654321',
+      confirmPinNumber: '654321'
+    )
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    controller.changePin(changePinCO)
+    Card changedCard = bankingService.selectedCard
+    String message = controller.flash.message
+
+    then:
+
+    changedCard.pin == changePinCO.newPinNumber
+    message == 'Your pin has been updated.'
+    controller.response.redirectedUrl == '/home/menu'
+  }
+
+  void "test savePin not valid"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+
+    Card card = (Card) fromInfo['checkingCard']
+    card.pin = '123456'
+    card.save()
+
+    ChangePinCO changePinCO = new ChangePinCO(
+      oldPinNumber: '123456',
+      actualPinNumber: '123456',
+      newPinNumber: '65432!',
+      confirmPinNumber: '654321'
+    )
+
+    when:
+
+    AccountController controller = new AccountController()
+    controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
+
+    controller.changePin(changePinCO)
+
+    then:
+
+    controller.modelAndView.viewName == '/account/changePin'
+    controller.modelAndView.model.get('changePinCO') == changePinCO
+  }
+
 }
