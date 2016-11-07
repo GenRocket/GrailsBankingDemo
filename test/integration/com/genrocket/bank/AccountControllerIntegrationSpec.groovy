@@ -715,6 +715,4 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     controller.modelAndView.model.get('toAccount') == toAccount
     controller.modelAndView.model.get('amount') == transferAmountCO.amount
   }
-
-
 }
