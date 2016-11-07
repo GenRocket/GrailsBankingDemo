@@ -825,7 +825,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     AccountController controller = new AccountController()
     controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
 
-    controller.changePin(changePinCO)
+    controller.savePin(changePinCO)
     Card changedCard = bankingService.selectedCard
     String message = controller.flash.message
 
@@ -858,7 +858,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     AccountController controller = new AccountController()
     controller.session.setAttribute(BankingService.SELECTED_CARD_SESSION, card)
 
-    controller.changePin(changePinCO)
+    controller.savePin(changePinCO)
 
     then:
 

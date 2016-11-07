@@ -23,16 +23,16 @@
           </div>
         </g:if>
 
-        <form action='${createLink(controller: 'account', action: 'changePin')}' method='POST' id='changePinForm'>
-          <div class="form-group"><label class="col-sm-5 control-label">Old Pin:</label>
+        <form action='${createLink(controller: 'account', action: 'savePin')}' method='POST' id='changePinForm'>
+          <div class="form-group"><label class="col-sm-5 control-label">Old Pin Number:</label>
             <input type="password" name="oldPinNumber" id="oldPinNumber" class="form-control">
           </div>
 
-          <div class="form-group"><label class="col-sm-5 control-label">New Pin:</label>
+          <div class="form-group"><label class="col-sm-5 control-label">New Pin Number:</label>
             <input type="password" name="newPinNumber" id="newPinNumber" class="form-control">
           </div>
 
-          <div class="form-group"><label class="col-sm-7 control-label">Confirm New Pin:</label>
+          <div class="form-group"><label class="col-sm-7 control-label">Confirm New Pin Number:</label>
             <input type="password" name="confirmPinNumber" id="confirmPinNumber" class="form-control">
           </div>
           <br/>
