@@ -1,6 +1,7 @@
 package com.genrocket.bank.co
 
 import com.genrocket.bank.Card
+import com.genrocket.bank.Encrypt
 import grails.validation.Validateable
 
 @Validateable
@@ -20,7 +21,7 @@ class LoginCO {
           return "card.deactivated"
         } else if (object.pin && !object.pin) {
           return "invalid.pin.number"
-        } else if (object.pin != card.pin) {
+        } else if (object.pin != Encrypt.decrypt(card.pin)) {
           return "invalid.pin.number"
         }
       } else {

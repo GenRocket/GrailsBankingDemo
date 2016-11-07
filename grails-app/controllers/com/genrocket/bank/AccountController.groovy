@@ -138,7 +138,7 @@ class AccountController {
 
   def savePin(ChangePinCO changePinCO) {
     Card card = bankingService.selectedCard
-    changePinCO.actualPinNumber = card.pin
+    changePinCO.actualPinNumber = Encrypt.decrypt(card.pin)
 
     if (changePinCO.validate()) {
       card = Card.get(card.id)    // To fix : could not initialize proxy - no Session

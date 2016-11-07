@@ -27,4 +27,18 @@ class Card {
     dateActivated nullable: true
     dateDeactivated nullable: true
   }
+
+  def beforeInsert() {
+    encodePin()
+  }
+
+  def beforeUpdate() {
+    if (isDirty('pin')) {
+      encodePin()
+    }
+  }
+
+  protected void encodePin() {
+    pin = Encrypt.encrypt(pin)
+  }
 }
