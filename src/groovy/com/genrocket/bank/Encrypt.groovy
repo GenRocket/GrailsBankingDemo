@@ -10,13 +10,6 @@ import java.security.spec.InvalidKeySpecException
 
 class Encrypt {
 
-  static String decrypt(text) {
-    String textData = text
-    byte[] encodedBytes = textData.getBytes()
-    String decrypted = new String(Base64.decodeBase64(encodedBytes))
-    return decrypted;
-  }
-
   public
   static String generateStrongPasswordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
     if (password) {
