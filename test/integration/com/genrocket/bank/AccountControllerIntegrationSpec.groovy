@@ -727,7 +727,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     ChangePinCO changePinCO = new ChangePinCO(
       oldPinNumber: '123456',
-      actualPinNumber: '1234567',
+      actualPinNumber: Encrypt.generateStrongPasswordHash('1234567'),
       newPinNumber: '654321',
       confirmPinNumber: '654321'
     )
@@ -747,7 +747,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     ChangePinCO changePinCO = new ChangePinCO(
       oldPinNumber: '123456',
-      actualPinNumber: '123456',
+      actualPinNumber: Encrypt.generateStrongPasswordHash('123456'),
       newPinNumber: '654321',
       confirmPinNumber: '654322'
     )
@@ -767,7 +767,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     ChangePinCO changePinCO = new ChangePinCO(
       oldPinNumber: '123456',
-      actualPinNumber: '123456',
+      actualPinNumber: Encrypt.generateStrongPasswordHash('123456'),
       newPinNumber: '12345',
       confirmPinNumber: '12345'
     )
@@ -787,7 +787,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     ChangePinCO changePinCO = new ChangePinCO(
       oldPinNumber: '123456',
-      actualPinNumber: '123456',
+      actualPinNumber: Encrypt.generateStrongPasswordHash('123456'),
       newPinNumber: '123451234512345123451234512345',
       confirmPinNumber: '123451234512345123451234512345'
     )
@@ -816,7 +816,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     ChangePinCO changePinCO = new ChangePinCO(
       oldPinNumber: '123456',
-      actualPinNumber: '123456',
+      actualPinNumber: Encrypt.generateStrongPasswordHash('123456'),
       newPinNumber: '654321',
       confirmPinNumber: '654321'
     )
@@ -832,7 +832,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     then:
 
-    Encrypt.decrypt(changedCard.pin) == changePinCO.newPinNumber
+    Encrypt.validate(changePinCO.newPinNumber, changedCard.pin)
     message == 'Your pin has been updated.'
     controller.response.redirectedUrl == '/home/menu'
   }
@@ -845,11 +845,11 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = (Card) fromInfo['checkingCard']
     card.pin = '123456'
-    card.save()
+    card.save(flush: true)
 
     ChangePinCO changePinCO = new ChangePinCO(
       oldPinNumber: '123456',
-      actualPinNumber: '123456',
+      actualPinNumber: Encrypt.generateStrongPasswordHash('123456'),
       newPinNumber: '65432!',
       confirmPinNumber: '654321'
     )

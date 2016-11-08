@@ -21,7 +21,7 @@ class LoginCO {
           return "card.deactivated"
         } else if (object.pin && !object.pin) {
           return "invalid.pin.number"
-        } else if (object.pin != Encrypt.decrypt(card.pin)) {
+        } else if (!Encrypt.validate(object.pin, card.pin)) {
           return "invalid.pin.number"
         }
       } else {
