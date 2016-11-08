@@ -1,5 +1,6 @@
 package com.genrocket.bank.co
 
+import com.genrocket.bank.Encrypt
 import grails.validation.Validateable
 
 @Validateable
@@ -12,7 +13,7 @@ class ChangePinCO {
 
   static constraints = {
     oldPinNumber(nullable: false, blank: false, validator: { value, object ->
-      if (value && value != object.actualPinNumber) {
+      if (value && !Encrypt.validate(value, object.actualPinNumber)) {
         return "incorrect.pin"
       }
     })

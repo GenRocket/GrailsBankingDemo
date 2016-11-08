@@ -182,7 +182,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     when:
 
     card.pin = '999999'
-    card.save()
+    card.save(flush: true)
 
     card.enabled = true
     card.dateDeactivated = null

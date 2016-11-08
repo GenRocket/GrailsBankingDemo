@@ -20,7 +20,7 @@ class Card {
     nameOnCard nullable: false, blank: false, maxSize: 50
     cardNumber nullable: false, blank: false, maxSize: 16, unique: true
     securityCode nullable: false
-    pin nullable: true, blank: false, maxSize: 25
+    pin nullable: true, blank: false, maxSize: 255
     enabled nullable: false
     dateIssued nullable: false
     dateExpired nullable: false
@@ -39,6 +39,6 @@ class Card {
   }
 
   protected void encodePin() {
-    pin = Encrypt.encrypt(pin)
+    pin = Encrypt.generateStrongPasswordHash(pin)
   }
 }
