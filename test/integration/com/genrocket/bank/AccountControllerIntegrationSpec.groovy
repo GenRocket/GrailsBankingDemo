@@ -812,7 +812,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     Card card = (Card) fromInfo['checkingCard']
     card.pin = '123456'
-    card.save()
+    card.save(flush: true)
 
     ChangePinCO changePinCO = new ChangePinCO(
       oldPinNumber: '123456',
@@ -832,7 +832,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     then:
 
-    changedCard.pin == changePinCO.newPinNumber
+    Encrypt.decrypt(changedCard.pin) == changePinCO.newPinNumber
     message == 'Your pin has been updated.'
     controller.response.redirectedUrl == '/home/menu'
   }

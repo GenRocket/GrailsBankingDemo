@@ -216,7 +216,7 @@ class HomeControllerIntegrationSpec extends IntegrationSpec {
     card.pin = pin
     card.enabled = true
     card.dateDeactivated = null
-    card.save()
+    card.save(flush: true)
 
     HomeController controller = new HomeController()
     controller.login(loginCO)
