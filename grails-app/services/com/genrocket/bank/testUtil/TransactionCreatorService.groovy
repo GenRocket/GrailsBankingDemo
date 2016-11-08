@@ -17,7 +17,7 @@ class TransactionCreatorService {
 
   void createCheckingAndSavingsAccounts(Integer count) {
     userTestDataService.loadData(count)
-    cardPoolTestDataService.loadData(100)
+    cardPoolTestDataService.loadData(100 + count)
     transactionTypeTestDataService.loadData()
 
     accountTypeTestDataService.loadData()
@@ -85,20 +85,20 @@ class TransactionCreatorService {
     Card savingsCard = Card.findByCustomer(savingsCustomer)
 
     return [
-      user: user,
-      branch: branch,
-      cardType: cardType,
-      customerLevel: customerLevel,
-      checkingAccount: checkingAccount,
-      savingsAccount: savingsAccount,
-      checkingCustomer: checkingCustomer,
-      savingsCustomer: savingsCustomer,
+      user                 : user,
+      branch               : branch,
+      cardType             : cardType,
+      customerLevel        : customerLevel,
+      checkingAccount      : checkingAccount,
+      savingsAccount       : savingsAccount,
+      checkingCustomer     : checkingCustomer,
+      savingsCustomer      : savingsCustomer,
       checkingCustomerLevel: checkingCustomerLevel,
-      savingsCustomerLevel: savingsCustomerLevel,
-      checkingCard: checkingCard,
-      savingsCard: savingsCard,
-      checkingType: checkingType,
-      savingsType: savingsType
+      savingsCustomerLevel : savingsCustomerLevel,
+      checkingCard         : checkingCard,
+      savingsCard          : savingsCard,
+      checkingType         : checkingType,
+      savingsType          : savingsType
     ]
   }
 
