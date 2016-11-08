@@ -1,7 +1,5 @@
 package com.genrocket.bank
 
-import org.apache.commons.codec.binary.Base64
-
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 import java.security.NoSuchAlgorithmException
