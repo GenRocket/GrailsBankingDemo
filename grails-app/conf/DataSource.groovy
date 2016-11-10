@@ -47,7 +47,7 @@ environments {
     dataSource {
       logSql = false
       username = "root"
-      password = "admin"
+      password = "adminadmin"
       dbCreate = "update"
       driverClassName = "com.mysql.jdbc.Driver"
       url = "jdbc:mysql://genrocketbank1-cluster-1.cluster-cfdg3cgk3ajh.us-west-2.rds.amazonaws.com:3306/genrocket_bank"
