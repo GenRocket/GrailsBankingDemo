@@ -26,6 +26,7 @@ class BootStrap {
         userTestDataService.loadData(100)
         bootstrapService.createAccounts()
       }
+
       production {
         accountTypeTestDataService.loadData()
         transactionTypeTestDataService.loadData()
