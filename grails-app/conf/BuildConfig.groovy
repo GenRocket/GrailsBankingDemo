@@ -47,11 +47,21 @@ grails.project.dependency.resolution = {
     //mavenRepo "http://repository.jboss.com/maven2/"
   }
 
+  def gebVersion = "1.0"
+  def seleniumVersion = "2.51.0"
+
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
     runtime 'mysql:mysql-connector-java:5.1.29'
     // runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
     test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
+    test("org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion")
+
+    // You usually only need one of these, but this project uses both
+    test "org.gebish:geb-spock:$gebVersion"
+    test "org.gebish:geb-junit4:$gebVersion"
+    compile 'org.apache.httpcomponents:httpcore:4.3'
+    compile 'org.apache.httpcomponents:httpclient:4.3'
   }
 
   plugins {
@@ -70,6 +80,7 @@ grails.project.dependency.resolution = {
     runtime ":jquery:1.11.1"
 
     test "org.grails.plugins:code-coverage:2.0.3-3"
+    test ":geb:$gebVersion"
     // Uncomment these to enable additional asset-pipeline capabilities
     //compile ":sass-asset-pipeline:1.9.0"
     //compile ":less-asset-pipeline:1.10.0"
