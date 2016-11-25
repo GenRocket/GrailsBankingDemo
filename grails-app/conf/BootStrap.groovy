@@ -26,6 +26,17 @@ class BootStrap {
         userTestDataService.loadData(100)
         bootstrapService.createAccounts()
       }
+
+      production {
+        accountTypeTestDataService.loadData()
+        transactionTypeTestDataService.loadData()
+        customerLevelTestDataService.loadData()
+        cardTypeTestDataService.loadData()
+        cardPoolTestDataService.loadData(1000)
+        branchTestDataService.loadData(10)
+        userTestDataService.loadData(100)
+        bootstrapService.createAccounts()
+      }
     }
   }
 

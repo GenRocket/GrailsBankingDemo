@@ -6,7 +6,7 @@ import grails.validation.Validateable
 @Validateable
 class TransferAmountCO {
   Long accountIdTo
-  Long amount
+  Float amount
 
   static constraints = {
     amount(nullable: false, blank: false)
