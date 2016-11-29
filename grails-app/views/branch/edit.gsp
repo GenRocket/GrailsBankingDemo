@@ -81,7 +81,7 @@
                 </div>
               </div>
 
-              <div class="col-lg-3 control-label">
+              <div class="col-lg-5 control-label">
                 <g:submitButton name="save" class="btn btn-info" value="Save"/>
               </div>
             </g:form>
