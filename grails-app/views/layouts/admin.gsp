@@ -13,10 +13,10 @@
   <asset:stylesheet src="vendor/fontawesome/css/font-awesome.css"/>
   <asset:stylesheet src="vendor/metisMenu/dist/metisMenu.css"/>
   <asset:stylesheet src="vendor/animate/animate.css"/>
-  <asset:stylesheet src="vendor/bootstrap/dist/css/bootstrap.css"/>
+  <asset:stylesheet src="vendor/bootstrap/dist/css/adminBootstrap.css"/>
   <asset:stylesheet src="fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css"/>
   <asset:stylesheet src="fonts/pe-icon-7-stroke/css/helper.css"/>
-  <asset:stylesheet src="styles/style.css"/>
+  <asset:stylesheet src="styles/admin.css"/>
   <asset:javascript src="vendor/jquery/dist/jquery.min.js"/>
   <asset:javascript src="vendor/jquery-ui/jquery-ui.min.js"/>
   <asset:javascript src="vendor/bootstrap/dist/js/bootstrap.min.js"/>
@@ -27,7 +27,41 @@
 </head>
 
 <body class="fixed-navbar fixed-sidebar">
-<g:link controller="admin" action="dashboard" class="adminLink">Manage</g:link>
+<div id="header">
+  <div class="color-line">
+  </div>
+
+  <div id="logo" class="light-version">
+    <span>
+      ATM Admin
+    </span>
+  </div>
+  <nav role="navigation">
+    <div class="navbar-right">
+      <ul class="nav navbar-nav no-borders">
+        <li class="dropdown">
+          <g:link controller="home" action="menu">
+            <i class="pe-7s-upload pe-rotate-90"></i>
+          </g:link>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<!-- Navigation -->
+<aside id="menu">
+  <div id="navigation">
+    <ul class="nav" id="side-menu">
+      <li class="active">
+        <g:link controller="admin" action="dashboard"><span class="nav-label">Dashboard</span></g:link>
+      </li>
+      <li>
+        <g:link controller="branch" action="list"><span class="nav-label">Branches</span></g:link>
+      </li>
+    </ul>
+  </div>
+</aside>
 <g:layoutBody/>
 </body>
 </html>
