@@ -18,7 +18,9 @@
               <div class="alert alert-success">
                 <a class="close" data-dismiss="alert">×</a>
                 ${flash.message}
-              </div><p></p>
+              </div>
+
+              <p></p>
             </g:if>
             <table id="branchTable" class="table table-bordered table-striped table-condensed">
               <thead>
@@ -49,6 +51,10 @@
               </g:each>
               </tbody>
             </table>
+          </div>
+
+          <div class="panel-footer text-center">
+            <g:link controller="branch" action="edit" class="btn btn-info">Add New Branch</g:link>
           </div>
         </div>
 

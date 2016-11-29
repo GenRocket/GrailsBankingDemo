@@ -12,7 +12,7 @@ class BranchController {
   }
 
   def edit(Long id) {
-    [branch: id ? Branch.get(id) : null]
+    [branch: id ? Branch.get(id) : new Branch()]
   }
 
   def save(Branch branch) {
