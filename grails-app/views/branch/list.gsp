@@ -14,6 +14,12 @@
       <div class="col-lg-12">
         <div class="hpanel">
           <div class="panel-body">
+            <g:if test="${flash.message}">
+              <div class="alert alert-success">
+                <a class="close" data-dismiss="alert">×</a>
+                ${flash.message}
+              </div><p></p>
+            </g:if>
             <table id="branchTable" class="table table-bordered table-striped table-condensed">
               <thead>
               <tr>
@@ -30,7 +36,8 @@
               <tbody>
               <g:each in="${branches}" var="branch">
                 <tr>
-                  <td>${branch.name}</td>
+                  <td>${branch.name}<g:link controller="branch" action="edit" id="${branch.id}" class="fl-rt"><i
+                      class="fa fa-edit"></i></g:link></td>
                   <td>${branch.branchCode}</td>
                   <td>${branch.address}</td>
                   <td>${branch.city}</td>

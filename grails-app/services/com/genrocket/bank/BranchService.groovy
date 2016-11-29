@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 class BranchService {
 
   def save(Branch branch) {
-    branch.save()
+    branch.save(flush: true)
   }
 
   def update(Branch branch) {
