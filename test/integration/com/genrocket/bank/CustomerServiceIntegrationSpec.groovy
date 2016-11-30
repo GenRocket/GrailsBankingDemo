@@ -15,7 +15,7 @@ class CustomerServiceIntegrationSpec extends IntegrationSpec {
   def transactionCreatorService
   def customerLevelTestDataService
 
-  void "create customer"() {
+  void "save customer"() {
     given:
 
     accountTestDataService.loadData()
@@ -91,6 +91,25 @@ class CustomerServiceIntegrationSpec extends IntegrationSpec {
     then:
 
     customers.size() == 3
+  }
+
+  void "test create customer"() {
+    given:
+    userTestDataService.loadData(2)
+    User user = User.last()
+
+    accountTestDataService.loadData()
+    Account account = Account.first()
+    CustomerLevel customerLevel = CustomerLevel.first()
+    CardType cardType = CardType.first()
+
+    when:
+    Customer customer = customerService.createCustomer(user, account, customerLevel, cardType)
+
+    then:
+    customer.id
+    Customer.count() == 2
+    Customer.countByUser(user)
   }
 }
     

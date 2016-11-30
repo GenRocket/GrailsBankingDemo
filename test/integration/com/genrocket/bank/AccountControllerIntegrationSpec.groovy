@@ -1,6 +1,7 @@
 package com.genrocket.bank
 
 import com.genrocket.bank.co.AccountCO
+import com.genrocket.bank.co.AssociateAccountCO
 import com.genrocket.bank.co.ChangePinCO
 import com.genrocket.bank.co.TransferAmountCO
 import com.genrocket.bank.co.TransferCO
@@ -11,6 +12,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
   def checkingService
   def transactionCreatorService
   def accountTestDataService
+  def userTestDataService
 
   // ------------------- BALANCE ----------------------
 
@@ -970,6 +972,96 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
 
     then:
     Account.count() == 2
+    controller.response.redirectedUrl == '/user/accounts/' + user.id
+  }
+
+  void "test account join for null user id passed"() {
+    given:
+
+    when:
+    AccountController controller = new AccountController()
+    Map map = controller.join(null)
+
+    then:
+    map.user == null
+    map.customerLevels.isEmpty()
+    map.cardTypes.isEmpty()
+  }
+
+  void "test account join"() {
+    given:
+    accountTestDataService.loadData()
+    User user = User.first()
+
+    when:
+    AccountController controller = new AccountController()
+    Map map = controller.join(user.id)
+
+    then:
+    map.user == user
+    map.customerLevels == CustomerLevel.list([sort: 'name'])
+    map.cardTypes == CardType.list([sort: 'name'])
+  }
+
+  void "test validation error on Account associate"() {
+    given:
+
+    when:
+    AccountController controller = new AccountController()
+    AssociateAccountCO accountCO = new AssociateAccountCO()
+    controller.associate(accountCO)
+
+    then:
+    accountCO.errors.allErrors.size() > 1
+    controller.modelAndView.viewName == '/account/join'
+  }
+
+  void "test Account associate with already associated"() {
+    given:
+    accountTestDataService.loadData(1)
+    CardType cardType = CardType.first()
+    User user = User.first()
+    CustomerLevel customerLevel = CustomerLevel.first()
+    Account account = Account.first()
+
+    when:
+    AccountController controller = new AccountController()
+    AssociateAccountCO accountCO = new AssociateAccountCO()
+    accountCO.with {
+      accountNumber = account.accountNumber
+      userId = user?.id
+      customerLevelId = customerLevel?.id
+      cardTypeId = cardType?.id
+    }
+    controller.associate(accountCO)
+
+    then:
+    controller.modelAndView.viewName == '/account/join'
+    accountCO.errors.getFieldError('accountNumber').code == 'already.associated.account'
+  }
+
+  void "test Account associate"() {
+    given:
+    userTestDataService.loadData(2)
+    User user = User.last()
+
+    accountTestDataService.loadData(1)
+    CardType cardType = CardType.first()
+    CustomerLevel customerLevel = CustomerLevel.first()
+    Account account = Account.first()
+
+    when:
+    AccountController controller = new AccountController()
+    AssociateAccountCO accountCO = new AssociateAccountCO()
+    accountCO.with {
+      accountNumber = account.accountNumber
+      userId = user?.id
+      customerLevelId = customerLevel?.id
+      cardTypeId = cardType?.id
+    }
+    controller.associate(accountCO)
+
+    then:
     controller.response.redirectedUrl == '/user/accounts/' + user.id
   }
 
