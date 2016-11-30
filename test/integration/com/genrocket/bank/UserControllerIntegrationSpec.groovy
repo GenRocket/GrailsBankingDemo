@@ -4,9 +4,6 @@ import com.genRocket.tdl.LoaderDTO
 import com.genrocket.bank.testDataLoader.UserTestDataLoader
 import grails.test.spock.IntegrationSpec
 
-/**
- * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
- */
 class UserControllerIntegrationSpec extends IntegrationSpec {
 
   def userTestDataService
@@ -142,5 +139,55 @@ class UserControllerIntegrationSpec extends IntegrationSpec {
     then:
     map.user == user
     map.customers == Customer.findAllByUser(user)
+  }
+
+  def "test user enable"() {
+    given:
+    customerTestDataService.loadData(1)
+    Customer customer = Customer.first()
+    customer.enabled = false
+    customer.save(flush: true)
+
+    when:
+    UserController controller = new UserController()
+    controller.enable(customer.id)
+
+    then:
+    customer.enabled
+    controller.response.redirectedUrl == '/user/accounts/' + customer.user.id
+  }
+
+  def "test user enable for no id passed"() {
+    when:
+    UserController controller = new UserController()
+    controller.enable(null)
+
+    then:
+    controller.response.redirectedUrl == '/user/list'
+  }
+
+  def "test user disable"() {
+    given:
+    customerTestDataService.loadData(1)
+    Customer customer = Customer.first()
+    customer.enabled = true
+    customer.save(flush: true)
+
+    when:
+    UserController controller = new UserController()
+    controller.disable(customer.id)
+
+    then:
+    !customer.enabled
+    controller.response.redirectedUrl == '/user/accounts/' + customer.user.id
+  }
+
+  def "test user disable with null id"() {
+    when:
+    UserController controller = new UserController()
+    controller.disable(null)
+
+    then:
+    controller.response.redirectedUrl == '/user/list'
   }
 }

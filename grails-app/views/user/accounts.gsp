@@ -50,7 +50,13 @@
                   <td>${customer.customerLevel.dailyWithdrawalLimit}</td>
                   <td>${customer.customerLevel.monthlyMaxTransfersAllowed}</td>
                   <td>${customer.customerLevel.overdraftAllowed ? "Yes" : "No"}</td>
-                  <td>${customer.enabled ? "Yes" : "No"}</td>
+                  <td>${customer.enabled ? "Yes" : "No"}&nbsp;&nbsp;<g:if test="${customer.enabled}">
+                    <g:link controller="user" action="disable" id="${customer?.id}"
+                            class="btn btn-default btn-mini">Disable</g:link></g:if>
+                    <g:else>
+                      <g:link controller="user" action="enable" id="${customer?.id}"
+                              class="btn btn-default btn-mini">Enable</g:link>
+                    </g:else></td>
                 </tr>
               </g:each>
               </tbody>

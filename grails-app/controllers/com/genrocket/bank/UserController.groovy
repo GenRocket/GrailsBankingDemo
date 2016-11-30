@@ -2,6 +2,7 @@ package com.genrocket.bank
 
 class UserController {
   def userService
+  def customerService
 
   def list() {
     params.max = Math.min(params.max ? params.max.toInteger() : 15, 100)
@@ -32,4 +33,23 @@ class UserController {
     [customers: customers, user: user]
   }
 
+  def enable(Long id) {
+    Customer customer = id ? Customer.get(id) : null
+    if (customer) {
+      customerService.enableCustomer(customer)
+      redirect(action: 'accounts', params: [id: customer.user.id])
+    } else {
+      redirect(action: 'list')
+    }
+  }
+
+  def disable(Long id) {
+    Customer customer = id ? Customer.get(id) : null
+    if (customer) {
+      customerService.disableCustomer(customer)
+      redirect(action: 'accounts', params: [id: customer.user.id])
+    } else {
+      redirect(action: 'list')
+    }
+  }
 }
