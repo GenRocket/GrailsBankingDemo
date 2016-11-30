@@ -19,7 +19,7 @@
               <div class="alert alert-block alert-danger">
                 <a class="close" data-dismiss="alert">×</a>
                 <g:renderErrors bean="${branch}" as="list"/>
-              </div>
+              </div><p></p>
             </g:hasErrors>
 
             <g:form action="save" class="form-horizontal">

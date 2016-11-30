@@ -57,7 +57,7 @@
           </div>
 
           <div class="panel-footer text-center">
-            <g:link controller="branch" action="edit" class="btn btn-info">Add New Branch</g:link>
+            <g:link controller="branch" action="edit" class="btn btn-primary">Add New Branch</g:link>
           </div>
         </div>
 

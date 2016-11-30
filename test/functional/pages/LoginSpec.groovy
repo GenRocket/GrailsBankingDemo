@@ -6,7 +6,7 @@ import spock.lang.Stepwise
 @Stepwise
 class LoginSpec extends GebReportingSpec {
 
-  def "no credentials passed to login"() {
+  /*def "no credentials passed to login"() {
     when:
     to LoginPage
 
@@ -35,6 +35,6 @@ class LoginSpec extends GebReportingSpec {
 
     then:
     at MenuPage
-  }
+  }*/
 
 }

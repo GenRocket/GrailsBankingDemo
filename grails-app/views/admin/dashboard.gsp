@@ -6,12 +6,6 @@
 </head>
 
 <body>
-<!-- Main Wrapper -->
-<div id="wrapper">
-  <div class="content animate-panel">
-  </div>
-
-</div>
 
 </body>
 </html>
