@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.co.AccountCO
 import com.genrocket.bank.co.ChangePinCO
 import com.genrocket.bank.co.TransferAmountCO
 import com.genrocket.bank.co.TransferCO
@@ -9,6 +10,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
   def bankingService
   def checkingService
   def transactionCreatorService
+  def accountTestDataService
 
   // ------------------- BALANCE ----------------------
 
@@ -898,6 +900,77 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     Transaction[] transactions = map['transactions']
 
     transactions.size() == 5
+  }
+
+  void "test account create for null id passed"() {
+    given:
+
+    when:
+    AccountController controller = new AccountController()
+    Map map = controller.create(null)
+
+    then:
+    map.user == null
+    map.branches.isEmpty()
+    map.accountTypes.isEmpty()
+    map.customerLevels.isEmpty()
+    map.cardTypes.isEmpty()
+  }
+
+  void "test account create"() {
+    given:
+    accountTestDataService.loadData()
+    User user = User.first()
+
+    when:
+    AccountController controller = new AccountController()
+    Map map = controller.create(user.id)
+
+    then:
+    map.user == user
+    map.branches == Branch.list([sort: 'name'])
+    map.accountTypes == AccountType.list()
+    map.customerLevels == CustomerLevel.list([sort: 'name'])
+    map.cardTypes == CardType.list([sort: 'name'])
+  }
+
+  void "test validation error on Account save"() {
+    given:
+
+    when:
+    AccountController controller = new AccountController()
+    AccountCO accountCO = new AccountCO()
+    controller.save(accountCO)
+
+    then:
+    accountCO.errors.allErrors.size() > 1
+    controller.modelAndView.viewName == '/account/create'
+  }
+
+  void "test Account save"() {
+    given:
+    accountTestDataService.loadData(1)
+    Branch branch = Branch.first()
+    CardType cardType = CardType.first()
+    User user = User.first()
+    AccountType accountType = AccountType.first()
+    CustomerLevel customerLevel = CustomerLevel.first()
+
+    when:
+    AccountController controller = new AccountController()
+    AccountCO accountCO = new AccountCO()
+    accountCO.with {
+      branchId = branch?.id
+      userId = user?.id
+      accountTypeId = accountType?.id
+      customerLevelId = customerLevel?.id
+      cardTypeId = cardType?.id
+    }
+    controller.save(accountCO)
+
+    then:
+    Account.count() == 2
+    controller.response.redirectedUrl == '/user/accounts/' + user.id
   }
 
 }
