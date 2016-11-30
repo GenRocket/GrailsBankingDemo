@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserService {
 
   def save(User user) {
-    user.save()
+    user.save(flush: true)
   }
 
   def update(User user) {

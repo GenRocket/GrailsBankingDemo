@@ -7,7 +7,7 @@
 
 <body>
 <div id="wrapper">
-  <g:render template="/layouts/adminNavigation" model="[text: 'Edit Branch']"/>
+  <g:render template="/layouts/adminNavigation" model="[text: branch.id ? 'Edit Branch' : 'Add Branch']"/>
 
   <div class="content animate-panel">
     <div class="row">
@@ -19,7 +19,9 @@
               <div class="alert alert-block alert-danger">
                 <a class="close" data-dismiss="alert">×</a>
                 <g:renderErrors bean="${branch}" as="list"/>
-              </div><p></p>
+              </div>
+
+              <p></p>
             </g:hasErrors>
 
             <g:form action="save" class="form-horizontal">

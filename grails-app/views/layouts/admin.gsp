@@ -45,6 +45,9 @@
       <li>
         <g:link controller="branch" action="list"><span class="nav-label">Branches</span></g:link>
       </li>
+      <li>
+        <g:link controller="user" action="list"><span class="nav-label">Users</span></g:link>
+      </li>
     </ul>
   </div>
 </aside>

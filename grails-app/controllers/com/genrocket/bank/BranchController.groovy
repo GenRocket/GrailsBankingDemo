@@ -16,9 +16,10 @@ class BranchController {
   }
 
   def save(Branch branch) {
+    boolean isNewBranch = !branch.id
     if (branch.validate()) {
       branchService.save(branch)
-      flash.message = message(message: "branch.successfully.edited")
+      flash.message = isNewBranch ? message(message: "branch.successfully.added") : message(message: "branch.successfully.edited")
       redirect(action: 'list')
     } else {
       render(view: 'edit', model: [branch: branch])
