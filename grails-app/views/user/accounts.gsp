@@ -67,6 +67,8 @@
           <div class="panel-footer text-center">
             <g:link controller="account" action="create" params="[userId: user.id]"
                     class="btn btn-primary">New Account</g:link>
+            <g:link controller="account" action="join" params="[userId: user.id]"
+                    class="btn btn-success">Join Account</g:link>
           </div>
         </div>
 

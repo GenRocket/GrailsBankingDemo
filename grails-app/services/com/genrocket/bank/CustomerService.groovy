@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Transactional
 class CustomerService {
+  def cardService
 
   def save(Customer customer) {
     customer.save()
@@ -33,6 +34,22 @@ class CustomerService {
     }
 
     return customers
+  }
+
+  Customer createCustomer(User user, Account account, CustomerLevel customerLevel, CardType cardType) {
+    Customer customer = new Customer(
+        enabled: false,
+        user: user,
+        account: account,
+        customerLevel: customerLevel
+    )
+
+    save(customer)
+
+    if (!customer.hasErrors()) {
+      cardService.save(cardType, customer)
+    }
+    return customer
   }
 }
     

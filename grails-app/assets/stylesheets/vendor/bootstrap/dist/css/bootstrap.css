@@ -3250,7 +3250,7 @@ fieldset[disabled] .btn-success.focus {
 .btn-info.active,
 .open > .dropdown-toggle.btn-info {
   color: #fff;
-  background-color: #31b0d5;
+  background-color: #86c1d5;
   border-color: #269abc;
 }
 .btn-info:active:hover,

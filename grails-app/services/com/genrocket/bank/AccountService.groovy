@@ -9,30 +9,18 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AccountService {
   def customerService
-  def cardService
 
   Account save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
     Account account = new Account(
-      accountNumber: AccountUtil.generateAccountNumber(),
-      branch: branch,
-      accountType: accountType
+        accountNumber: AccountUtil.generateAccountNumber(),
+        branch: branch,
+        accountType: accountType
     )
 
     account.save()
 
     if (!account.hasErrors()) {
-      Customer customer = new Customer(
-        enabled: false,
-        user: user,
-        account: account,
-        customerLevel: customerLevel
-      )
-
-      customerService.save(customer)
-
-      if (!customer.hasErrors()) {
-        cardService.save(cardType, customer)
-      }
+      customerService.createCustomer(user, account, customerLevel, cardType)
     }
 
     return account

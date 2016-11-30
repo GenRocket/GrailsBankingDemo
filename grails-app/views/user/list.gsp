@@ -49,9 +49,11 @@
                   <td>${user.emailAddress}</td>
                   <td>${user.phoneNumber}</td>
                   <td><g:link controller="user" action="accounts" id="${user?.id}"
-                              class="btn btn-default btn-mini">Accounts</g:link>
+                              class="btn btn-primary2 btn-mini">Accounts</g:link>
                     <g:link controller="account" action="create" params="[userId: user.id]"
-                            class="btn btn-primary btn-mini">New Account</g:link></td>
+                            class="btn btn-info btn-mini">New Account</g:link>
+                    <g:link controller="account" action="join" params="[userId: user.id]"
+                            class="btn btn-success btn-mini">Join Account</g:link></td>
                 </tr>
               </g:each>
               </tbody>

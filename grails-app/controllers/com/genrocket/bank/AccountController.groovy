@@ -1,6 +1,7 @@
 package com.genrocket.bank
 
 import com.genrocket.bank.co.AccountCO
+import com.genrocket.bank.co.AssociateAccountCO
 import com.genrocket.bank.co.ChangePinCO
 import com.genrocket.bank.co.TransferAmountCO
 import com.genrocket.bank.co.TransferCO
@@ -11,6 +12,7 @@ class AccountController {
   def savingsService
   def cardService
   def accountService
+  def customerService
 
   def balance() {
     Card card = bankingService.selectedCard
@@ -157,6 +159,22 @@ class AccountController {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)
     [transactions: Transaction.findAllByAccount(card?.customer?.account, [sort: 'dateCreated', order: 'desc'])]
+  }
+
+  def join(Long userId) {
+    [user     : userId ? User.get(userId) : null, customerLevels: CustomerLevel.list([sort: 'name']),
+     cardTypes: CardType.list([sort: 'name'])]
+  }
+
+  def associate(AssociateAccountCO associateAccountCO) {
+    if (associateAccountCO.validate()) {
+      Account account = Account.findByAccountNumber(associateAccountCO.accountNumber)
+      customerService.createCustomer(associateAccountCO.user, account, associateAccountCO.customerLevel, associateAccountCO.cardType)
+      redirect(controller: 'user', action: 'accounts', id: associateAccountCO.userId)
+    } else {
+      render(view: 'join', model: [user     : associateAccountCO.user, customerLevels: CustomerLevel.list([sort: 'name']),
+                                   cardTypes: CardType.list([sort: 'name']), associateAccountCO: associateAccountCO])
+    }
   }
 
   def create(Long userId) {
