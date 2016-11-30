@@ -51,8 +51,11 @@
               </g:each>
               </tbody>
             </table>
-            <div class="pagination pull-right">
-              <g:paginate total="${count ?: 0}"/>
+
+            <div class="grailsPagination">
+              <div class="pagination pull-right">
+                <g:paginate total="${count ?: 0}"/>
+              </div>
             </div>
           </div>
 

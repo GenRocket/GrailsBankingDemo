@@ -3796,7 +3796,8 @@ ul.h-list li:hover a {
 .fl-rt {
   float: right;
 }
-.pagination .disabled, .pagination .currentStep, .pagination .step, .pagination .nextLink, .pagination .prevLink {
+
+.grailsPagination .pagination .disabled, .grailsPagination .pagination .currentStep, .grailsPagination .pagination .step, .grailsPagination .pagination .nextLink, .grailsPagination .pagination .prevLink {
   display: inline-block;
   padding: 6px 12px;
   margin-bottom: 0;
@@ -3818,7 +3819,7 @@ ul.h-list li:hover a {
   border-radius: 4px;
 }
 
-.pagination .currentStep {
+.grailsPagination .pagination .currentStep {
   color: #fafcff;
   background-color: #90add0;
   border-color: #c2c2c2;
