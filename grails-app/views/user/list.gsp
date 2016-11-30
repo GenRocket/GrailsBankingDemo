@@ -33,6 +33,7 @@
                 <th>User Name</th>
                 <th>Email Address</th>
                 <th>Phone Number</th>
+                <th>Accounts</th>
               </tr>
               </thead>
               <tbody>
@@ -47,6 +48,10 @@
                   <td>${user.username}</td>
                   <td>${user.emailAddress}</td>
                   <td>${user.phoneNumber}</td>
+                  <td><g:link controller="user" action="accounts" id="${user?.id}"
+                              class="btn btn-default btn-mini">Accounts</g:link>
+                    <g:link controller="account" action="create" params="[userId: user.id]"
+                            class="btn btn-primary btn-mini">New Account</g:link></td>
                 </tr>
               </g:each>
               </tbody>

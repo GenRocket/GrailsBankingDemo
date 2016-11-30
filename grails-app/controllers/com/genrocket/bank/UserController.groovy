@@ -25,4 +25,11 @@ class UserController {
       render(view: 'edit', model: [user: user])
     }
   }
+
+  def accounts(Long id) {
+    User user = id ? User.get(id) : null
+    List<Customer> customers = user ? Customer.findAllByUser(user) : []
+    [customers: customers, user: user]
+  }
+
 }

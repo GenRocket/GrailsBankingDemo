@@ -19,7 +19,9 @@
               <div class="alert alert-block alert-danger">
                 <a class="close" data-dismiss="alert">×</a>
                 <g:renderErrors bean="${user}" as="list"/>
-              </div><p></p>
+              </div>
+
+              <p></p>
             </g:hasErrors>
             <g:form action="save" class="form-horizontal">
               <g:hiddenField name="id" value="${user?.id}"/>
@@ -29,6 +31,12 @@
                 <div class="col-lg-5">
                   <g:textField name="title" value="${user?.title}" class="form-control" maxlength="5"/>
                 </div>
+                <g:if test="${user.id}">
+                  <div class="col-lg-1">
+                    <g:link controller="user" action="accounts" id="${user?.id}"
+                            class="btn btn-default btn-mini">Accounts</g:link>
+                  </div>
+                </g:if>
               </div>
 
               <div class="form-group"><label class="col-sm-3 control-label">First Name:</label>

@@ -1010,6 +1010,10 @@ body.blank {
 .float-e-margins .btn {
   margin-bottom: 5px;
 }
+.btn-mini {
+  height: 28px !important;
+  padding: 2px 12px;
+}
 .btn-primary.btn-outline {
   color: #34495e;
 }
@@ -2506,7 +2510,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: #34495e;
+  color: rgba(250, 252, 255, 0.2);
   text-decoration: none;
 }
 .no-padding {

@@ -1,5 +1,6 @@
 package com.genrocket.bank
 
+import com.genrocket.bank.co.AccountCO
 import com.genrocket.bank.co.ChangePinCO
 import com.genrocket.bank.co.TransferAmountCO
 import com.genrocket.bank.co.TransferCO
@@ -9,6 +10,7 @@ class AccountController {
   def checkingService
   def savingsService
   def cardService
+  def accountService
 
   def balance() {
     Card card = bankingService.selectedCard
@@ -26,7 +28,7 @@ class AccountController {
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
     String depositMessage
 
-    if(bankingService.getDeposit()) {
+    if (bankingService.getDeposit()) {
       AccountType accountType = card.customer?.account?.accountType
 
       if (accountType.name == AccountTypes.CHECKING.getValue()) {
@@ -56,7 +58,7 @@ class AccountController {
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session
     String withdrawalMessage
 
-    if(bankingService.getWithdrawal()) {
+    if (bankingService.getWithdrawal()) {
       AccountType accountType = card.customer?.account?.accountType
 
       if (accountType.name == AccountTypes.CHECKING.getValue()) {
@@ -101,7 +103,7 @@ class AccountController {
     String CHECKING = AccountTypes.CHECKING.value
     String SAVINGS = AccountTypes.SAVINGS.value
 
-    if(bankingService.getTransfer()) {
+    if (bankingService.getTransfer()) {
       if (transferAmountCO.validate()) {
         TransactionStatus transactionStatus = null
 
@@ -126,7 +128,7 @@ class AccountController {
           render(view: "doTransfer", model: [fromAccount: fromAccount, toAccount: toAccount, amount: transferAmountCO.amount])
         } else {
           render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, errorMessage: g.message(code: transactionStatus.toString()),
-                                                 transferAmountCO: transferAmountCO])
+                                                 transferAmountCO  : transferAmountCO])
         }
       } else {
         render(view: 'transferAmount', model: [currentAccountType: card.customer?.account?.accountType, transferAmountCO: transferAmountCO])
@@ -155,5 +157,23 @@ class AccountController {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)
     [transactions: Transaction.findAllByAccount(card?.customer?.account, [sort: 'dateCreated', order: 'desc'])]
+  }
+
+  def create(Long userId) {
+    obtainAccountModel(new AccountCO(userId: userId))
+  }
+
+  def save(AccountCO accountCO) {
+    if (accountCO.validate()) {
+      accountService.save(accountCO.user, accountCO.branch, accountCO.cardType, accountCO.accountType, accountCO.customerLevel)
+      redirect(controller: 'user', action: 'accounts', params: [id: accountCO.user.id])
+    } else {
+      render(view: 'create', model: obtainAccountModel(accountCO))
+    }
+  }
+
+  private Map obtainAccountModel(AccountCO accountCO) {
+    [user          : accountCO.user, branches: Branch.list([sort: 'name']), accountTypes: AccountType.list([sort: 'name']),
+     customerLevels: CustomerLevel.list([sort: 'name']), cardTypes: CardType.list([sort: 'name']), accountCO: accountCO]
   }
 }
