@@ -63,10 +63,27 @@ class BranchControllerIntegrationSpec extends IntegrationSpec {
     !map.branch.id
   }
 
-  void "test Branch save"() {
+  void "test Branch save for newly added"() {
     given:
     List<LoaderDTO> branchList = (List<LoaderDTO>) BranchTestDataLoader.load()
     Branch branch = (Branch) branchList.first().object
+
+    when:
+    BranchController controller = new BranchController()
+    controller.save(branch)
+
+    then:
+    branch.id
+    Branch.count()
+    controller.flash.message == messageSource.getMessage("branch.successfully.added", null, null)
+    controller.response.redirectedUrl == '/branch/list'
+  }
+
+  void "test Branch save for edited"() {
+    given:
+    List<LoaderDTO> branchList = (List<LoaderDTO>) BranchTestDataLoader.load()
+    Branch branch = (Branch) branchList.first().object
+    branch.save(flush: true)
 
     when:
     BranchController controller = new BranchController()
