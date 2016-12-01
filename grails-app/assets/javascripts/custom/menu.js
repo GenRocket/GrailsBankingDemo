@@ -3,6 +3,10 @@ $(function () {
     window.location.href = contextPath + "/home/exit"
   });
 
+  $("#manage-menu").click(function () {
+    window.location.href = contextPath + "/branch/list"
+  });
+
   $("#withdrawal-menu").click(function () {
     window.location.href = contextPath + "/account/withdrawal"
   });

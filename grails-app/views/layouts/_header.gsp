@@ -49,6 +49,14 @@
   </div>
 
   <div class="col-sm-12">
+    <div class="hpanel plan-box hred" id="manage-menu">
+      <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold h-bg-navy-blue">Manage</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
     <div class="hpanel plan-box hred" id="exit-menu">
       <div class="panel-heading hbuilt text-center">
         <h4 class="font-bold h-bg-navy-blue">Exit</h4>

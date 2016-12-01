@@ -40,9 +40,6 @@
         <g:link controller="home" action="menu"><span class="nav-label">ATM</span></g:link>
       </li>
       <li>
-        <g:link controller="admin" action="dashboard"><span class="nav-label">Dashboard</span></g:link>
-      </li>
-      <li>
         <g:link controller="branch" action="list"><span class="nav-label">Branches</span></g:link>
       </li>
       <li>

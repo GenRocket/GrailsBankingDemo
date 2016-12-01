@@ -27,9 +27,6 @@
 </head>
 
 <body class="fixed-navbar fixed-sidebar">
-<b:ifLoggedIn>
-  <g:link controller="admin" action="dashboard" class="adminLink">Manage</g:link>
-</b:ifLoggedIn>
 <g:layoutBody/>
 </body>
 </html>

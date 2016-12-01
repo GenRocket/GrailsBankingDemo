@@ -4,7 +4,7 @@ class ApplicationFilters {
     def bankingService
 
     def filters = {
-        all(controller:'account|branch|admin|user', action:'*') {
+        all(controller:'account|branch|user', action:'*') {
             before = {
                 Card card = bankingService.selectedCard
                 if (!card) {
