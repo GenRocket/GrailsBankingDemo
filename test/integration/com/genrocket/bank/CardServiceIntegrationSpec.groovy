@@ -19,10 +19,10 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     cardPoolTestDataService.loadData(100)
 
     cardTypeTestDataService.loadData()
-    def cardType = CardType.first()
+    CardType cardType = CardType.first()
 
     customerTestDataService.loadData()
-    def customer = Customer.first()
+    Customer customer = Customer.first()
 
     when:
 
@@ -56,8 +56,8 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def id = card.id
+    Card card = Card.first()
+    Long id = card.id
 
     when:
 
@@ -66,7 +66,7 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
 
     then:
 
-    def temp = Card.get(id)
+    Card temp = Card.get(id)
     temp.nameOnCard == 'TEST'
   }
 
@@ -74,8 +74,8 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     given:
 
     cardTestDataService.loadData()
-    def card = Card.first()
-    def id = card.id
+    Card card = Card.first()
+    Long id = card.id
 
     when:
 
@@ -270,5 +270,39 @@ class CardServiceIntegrationSpec extends IntegrationSpec {
     oldCard.dateDeactivated
     newCard
   }
+
+  void "enable card"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+    Long id = card.id
+
+    when:
+    cardService.enableCard(card)
+
+    then:
+
+    Card temp = Card.get(id)
+    temp.enabled
+  }
+
+  void "disable card"() {
+    given:
+
+    cardTestDataService.loadData()
+    Card card = Card.first()
+    Long id = card.id
+
+    when:
+    cardService.disableCard(card)
+
+    then:
+
+    Card temp = Card.get(id)
+    !temp.enabled
+  }
+
+
 }
     

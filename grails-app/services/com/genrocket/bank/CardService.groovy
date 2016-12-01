@@ -11,6 +11,16 @@ import org.springframework.transaction.annotation.Transactional
 class CardService {
   def cardPoolService
 
+  void enableCard(Card card) {
+    card.enabled = true
+    card.save()
+  }
+
+  void disableCard(Card card) {
+    card.enabled = false
+    card.save()
+  }
+
   Card changePin(Card card, String newPinNumber) {
     card.pin = newPinNumber
     card.save()

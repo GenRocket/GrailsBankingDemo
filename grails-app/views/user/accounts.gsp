@@ -35,6 +35,7 @@
                 <th>Monthly Max Transfers Allowed</th>
                 <th>Overdraft Allowed</th>
                 <th>Enabled</th>
+                <th>Cards</th>
               </tr>
               </thead>
               <tbody>
@@ -52,11 +53,13 @@
                   <td>${customer.customerLevel.overdraftAllowed ? "Yes" : "No"}</td>
                   <td>${customer.enabled ? "Yes" : "No"}&nbsp;&nbsp;<g:if test="${customer.enabled}">
                     <g:link controller="user" action="disable" id="${customer?.id}"
-                            class="btn btn-default btn-mini">Disable</g:link></g:if>
+                            class="btn btn-success btn-mini">Disable</g:link></g:if>
                     <g:else>
                       <g:link controller="user" action="enable" id="${customer?.id}"
-                              class="btn btn-default btn-mini">Enable</g:link>
+                              class="btn btn-success btn-mini">Enable</g:link>
                     </g:else></td>
+                  <td><g:link controller="card" action="list" params="[customerId: customer?.id]"
+                              class="btn btn-primary2 btn-mini">Cards</g:link></td>
                 </tr>
               </g:each>
               </tbody>
