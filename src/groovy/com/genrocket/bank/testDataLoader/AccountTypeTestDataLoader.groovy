@@ -10,7 +10,7 @@ import com.genrocket.bank.AccountType
  */
 class AccountTypeTestDataLoader {
   static SCENARIO_PATH = 'GENROCKET_BANK_SCENARIOS'
-  static SCENARIO = 'AccontTypeScenario'
+  static SCENARIO = 'AccountTypeScenario'
   static SCENARIO_DOMAIN = 'AccountType'
 
   static load(Integer loopCount = 1) {
