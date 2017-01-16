@@ -12,7 +12,7 @@ class SavingsService {
   def transactionService
 
   TransactionStatus deposit(User user, Account account, Float amount) {
-    if (!amount) {
+    if (!amount || amount < 0) {
       return TransactionStatus.INVALID_AMOUNT_VALUE
     }
 

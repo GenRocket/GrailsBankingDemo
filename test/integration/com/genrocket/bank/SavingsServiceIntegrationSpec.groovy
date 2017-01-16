@@ -32,7 +32,7 @@ class SavingsServiceIntegrationSpec extends IntegrationSpec {
     customer.enabled = true
     customer.save()
 
-    TransactionStatus status = savingsService.deposit(user, account, null)
+    TransactionStatus status = savingsService.deposit(user, account, -1)
 
     then:
 
