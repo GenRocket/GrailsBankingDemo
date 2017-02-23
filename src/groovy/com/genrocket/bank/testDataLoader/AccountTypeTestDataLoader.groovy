@@ -21,8 +21,6 @@ class AccountTypeTestDataLoader {
     data.each { node ->
       LoaderDTO dto = new LoaderDTO()
 
-
-
       dto.object = new AccountType(node)
       testData.add(dto)
     }
