@@ -9,12 +9,34 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AccountService {
   def customerService
+  def accountService
+  def checkingService
+  def savingsService
+  def userService
+
+  public void openAccountWithDeposit(User user, Branch branch, CustomerLevel customerLevel, Float checking, Float savings) {
+    userService.save(user)
+
+    CardType cardType = CardType.findByName('Visa Debit')
+
+    if (checking) {
+      AccountType accountType = AccountType.findByName('Checking')
+      Account account = accountService.save(user, branch, cardType, accountType, customerLevel)
+      checkingService.deposit(user, account, checking)
+    }
+
+    if (savings) {
+      AccountType accountType = AccountType.findByName('Savings')
+      Account account = accountService.save(user, branch, cardType, accountType, customerLevel)
+      savingsService.deposit(user, account, savings)
+    }
+  }
 
   Account save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
     Account account = new Account(
-        accountNumber: AccountUtil.generateAccountNumber(),
-        branch: branch,
-        accountType: accountType
+      accountNumber: AccountUtil.generateAccountNumber(),
+      branch: branch,
+      accountType: accountType
     )
 
     account.save()
