@@ -15,7 +15,7 @@ class BootStrap {
     MetaClassHelper.initialize()
     transactionManager.setNestedTransactionAllowed(true)
 
-    environments {
+    /*environments {
       development {
         accountTypeTestDataService.loadData()
         transactionTypeTestDataService.loadData()
@@ -37,7 +37,7 @@ class BootStrap {
         userTestDataService.loadData(100)
         bootstrapService.createAccounts()
       }
-    }
+    }*/
   }
 
   def destroy = {

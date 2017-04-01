@@ -1,6 +1,15 @@
 package com.genrocket.bank
 
-class RestController {
+import grails.converters.JSON
 
-  def index() {}
+class RestController {
+  def branchService
+
+  def createBranch() {
+    Map branchMap = request.JSON as Map
+    Branch branch = new Branch()
+    branch.properties = branchMap.branch
+    branchService.save(branch)
+    render ([success: true] as JSON)
+  }
 }
