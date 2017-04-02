@@ -21,7 +21,7 @@ class RestController {
 
     accountTypeService.save(accountType)
 
-    render ([success: true] as JSON)
+    render([success: true] as JSON)
   }
 
   def createCardPool() {
@@ -31,7 +31,7 @@ class RestController {
 
     cardPoolService.save(cardPool)
 
-    render ([success: true] as JSON)
+    render([success: true] as JSON)
   }
 
   def createCardType() {
@@ -41,7 +41,7 @@ class RestController {
 
     cardTypeService.save(cardType)
 
-    render ([success: true] as JSON)
+    render([success: true] as JSON)
   }
 
   def createCustomerLevel() {
@@ -51,7 +51,7 @@ class RestController {
 
     customerLevelService.save(customerLevel)
 
-    render ([success: true] as JSON)
+    render([success: true] as JSON)
   }
 
   def createTransactionType() {
@@ -61,7 +61,7 @@ class RestController {
 
     transactionTypeService.save(transactionType)
 
-    render ([success: true] as JSON)
+    render([success: true] as JSON)
   }
 
   def createBranch() {
@@ -71,7 +71,7 @@ class RestController {
 
     branchService.save(branch)
 
-    render ([success: true] as JSON)
+    render([success: true] as JSON)
   }
 
   def makeDeposit() {
@@ -100,7 +100,7 @@ class RestController {
       }
     }
 
-    render ([trasactionStatus: transactionStatus] as JSON)
+    render([trasactionStatus: transactionStatus] as JSON)
   }
 
   def makeWithdrawal() {
@@ -129,7 +129,7 @@ class RestController {
       }
     }
 
-    render ([trasactionStatus: transactionStatus] as JSON)
+    render([trasactionStatus: transactionStatus] as JSON)
   }
 
   def makeTransfer() {
@@ -140,28 +140,24 @@ class RestController {
     Map map = request.JSON as Map
 
     String pin = map.pin
-    String cardNumber = map.cardNumber
-    LoginCO loginCO = new LoginCO(pin: pin, cardNumber: cardNumber)
 
-    if (loginCO.validate()) {
-      CustomerLevel customerLevel = CustomerLevel.findByName(map.customer)
-      Float checking = Float.parseFloat(map.checking)
-      Float savings = Float.parseFloat(map.savings)
-      Branch branch = Branch.findByBranchCode(map.branchCode)
+    CustomerLevel customerLevel = CustomerLevel.findByName(map.customer)
+    Float checking = Float.parseFloat(map.checking)
+    Float savings = Float.parseFloat(map.savings)
+    Branch branch = Branch.findByBranchCode(map.branchCode)
 
-      User user = new User()
-      user.title = map.title
-      user.firstName = map.firstName
-      user.lastName = map.lastName
-      user.middleInitial = map.middleInitial
-      user.suffix = map.suffix
-      user.username = map.username
-      user.emailAddress = map.emailAddress
-      user.phoneNumber = map.phoneNumber
+    User user = new User()
+    user.title = map.title
+    user.firstName = map.firstName
+    user.lastName = map.lastName
+    user.middleInitial = map.middleInitial
+    user.suffix = map.suffix
+    user.username = map.username
+    user.emailAddress = map.emailAddress
+    user.phoneNumber = map.phoneNumber
 
-      accountService.openAccountWithDeposit(user, branch, customerLevel, checking, savings, pin)
+    accountService.openAccountWithDeposit(user, branch, customerLevel, checking, savings, pin)
 
-      render([success: true] as JSON)
-    }
+    render([success: true] as JSON)
   }
 }
