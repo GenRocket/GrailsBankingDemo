@@ -9,6 +9,7 @@ enum TransactionStatus {
   ACCOUNT_NOT_CHECKING('account.not.checking'),
   INVALID_AMOUNT_VALUE('invalid.amount.value'),
   INVALID_PIN_NUMBER('invalid.pin.number'),
+  INVALID_ACCOUNT_TYPE('invalid.account.type'),
   TRANSACTION_COMPLETE('transaction.complete'),
   OVERDRAFT_NOT_ALLOWED('overdraft.not.allowed'),
   MAX_TRANSFERS_EXCEEDED('max.transfers.exceeded'),
