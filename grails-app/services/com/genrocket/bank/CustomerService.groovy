@@ -49,6 +49,7 @@ class CustomerService {
     if (!customer.hasErrors()) {
       cardService.save(cardType, customer)
     }
+
     return customer
   }
 }
