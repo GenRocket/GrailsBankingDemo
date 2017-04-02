@@ -14,22 +14,29 @@ class AccountService {
   def savingsService
   def userService
 
-  public void openAccountWithDeposit(User user, Branch branch, CustomerLevel customerLevel, Float checking, Float savings) {
+  public void openAccountWithDeposit(User user, Branch branch, CustomerLevel customerLevel, Float checking, Float savings, String pen) {
     userService.save(user)
 
     CardType cardType = CardType.findByName('Visa Debit')
+    Account account = null
 
     if (checking) {
-      AccountType accountType = AccountType.findByName('Checking')
-      Account account = accountService.save(user, branch, cardType, accountType, customerLevel)
+      AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
+      account = accountService.save(user, branch, cardType, accountType, customerLevel)
       checkingService.deposit(user, account, checking)
     }
 
     if (savings) {
-      AccountType accountType = AccountType.findByName('Savings')
-      Account account = accountService.save(user, branch, cardType, accountType, customerLevel)
+      AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
+      account = accountService.save(user, branch, cardType, accountType, customerLevel)
       savingsService.deposit(user, account, savings)
     }
+
+    Customer customer = Customer.findByAccount(account)
+    Card card = Card.findByCustomer(customer)
+
+    card.pin = pen
+    card.save()
   }
 
   Account save(User user, Branch branch, CardType cardType, AccountType accountType, CustomerLevel customerLevel) {
