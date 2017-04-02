@@ -136,7 +136,7 @@ class RestController {
 
   }
 
-  def openAccountWithDeposit() {
+  def openAccount() {
     Map map = request.JSON as Map
 
     String pin = map.pin
