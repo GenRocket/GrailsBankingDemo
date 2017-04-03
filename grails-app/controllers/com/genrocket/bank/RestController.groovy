@@ -133,7 +133,42 @@ class RestController {
   }
 
   def makeTransfer() {
+    String pin = map.transfer.Pin
+    String fromCardNumber = map.transfer.fromCardNumber
+    String toCardNumber = map.transfer.toCardNumber
+    Float amount = Float.parseFloat(map.transfer.amount)
+    LoginCO loginCO = new LoginCO(pin: pin, cardNumber: fromCardNumber)
 
+    TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
+
+    if (loginCO.validate()) {
+      Card fromCard = Card.findByCardNumber(fromCardNumber)
+      Card toCard = Card.findByCardNumber(toCardNumber)
+
+      Customer fromCustomer = fromCard.customer
+      Customer toCustomer = toCard.customer
+
+      Account fromAccount = fromCustomer.account
+      Account toAccount = toCustomer.account
+
+      User user = fromCustomer.user
+
+      if (fromAccount.accountType.name == AccountTypes.CHECKING.value) {
+        if (toAccount.accountType.name == AccountTypes.CHECKING.value) {
+          transactionStatus = checkingService.transferCheckingToChecking(user, fromAccount, toAccount, amount)
+        } else {
+          transactionStatus = checkingService.transfer(user, fromAccount, toAccount, amount)
+        }
+      } else {
+        if (toAccount.accountType.name == AccountTypes.CHECKING.value) {
+          transactionStatus = savingsService.transferSavingsToSavings(user, fromAccount, toAccount, amount)
+        } else {
+          transactionStatus = savingsService.transfer(user, fromAccount, toAccount, amount)
+        }
+      }
+    }
+
+    render([trasactionStatus: transactionStatus] as JSON)
   }
 
   def openAccount() {
