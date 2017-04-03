@@ -181,17 +181,17 @@ class RestController {
 
     String pin = map.openAccount.pin
     CustomerLevel customerLevel = CustomerLevel.findByName(map.openAccount.customerLevel)
-    Float checking = Float.parseFloat(map.openAccount.checking)
-    Float savings = Float.parseFloat(map.openAccount.savings)
+    Float checking = map.openAccount.checking?.toFloat()
+    Float savings = map.openAccount.savings?.toFloat()
     Branch branch = Branch.findByBranchCode(map.openAccount.branchCode)
-    String suffix = map.openAccount.suffix.trim()
+    String suffix = map.openAccount.suffix?.trim()
 
     User user = new User()
     user.title = map.openAccount.title
     user.firstName = map.openAccount.firstName
     user.lastName = map.openAccount.lastName
     user.middleInitial = map.openAccount.middleInitial
-    user.suffix = suffix.size() == 0 ? null : suffix
+    user.suffix = suffix
     user.username = map.openAccount.username
     user.emailAddress = map.openAccount.emailAddress
     user.phoneNumber = map.openAccount.phoneNumber
