@@ -75,7 +75,7 @@ class CardService {
 
     card.pin = pin
     card.dateActivated = new Date()
-    card.save()
+    card.save(flush: true)
 
     TransactionStatus.TRANSACTION_COMPLETE
   }

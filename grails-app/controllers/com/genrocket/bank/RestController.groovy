@@ -79,7 +79,7 @@ class RestController {
 
     String pin = map.pin
     String cardNumber = map.cardNumber
-    Float amount = Float.parseFloat(map.amount)
+    Float amount = map.amount?.toFloat()
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: cardNumber)
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
@@ -100,7 +100,7 @@ class RestController {
       }
     }
 
-    render([trasactionStatus: transactionStatus] as JSON)
+    render([transactionStatus: message(code: "${transactionStatus}")] as JSON)
   }
 
   def makeWithdrawal() {

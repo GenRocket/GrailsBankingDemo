@@ -10,6 +10,8 @@ import com.genrocket.bank.testDataLoader.TransactionTypeTestDataLoader
 import grails.test.spock.IntegrationSpec
 
 class RestControllerIntegrationSpec extends IntegrationSpec {
+  def transactionCreatorService
+  def messageSource
 
   def "test createAccountType"() {
     given:
@@ -105,5 +107,47 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     then:
     Branch.count() == 10
+  }
+
+  def "test makeDeposit for TRANSACTION_COMPLETE"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+    Card card = (Card) fromInfo['checkingCard']
+
+    Account account = (Account) fromInfo['checkingAccount']
+
+    Float balance = 500.00
+    Float depositAmount = 100.00
+
+    account.balance = balance
+    account.save()
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.makeDeposit()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
+    card.customer.account.balance == balance + depositAmount
+  }
+
+  def "test makeDeposit not TRANSACTION_COMPLETE"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['savingsCard']
+
+    Float depositAmount = 0.00
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.makeDeposit()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("invalid.amount.value", null, null)
   }
 }

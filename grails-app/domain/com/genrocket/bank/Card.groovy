@@ -39,6 +39,6 @@ class Card {
   }
 
   protected void encodePin() {
-    pin = Encrypt.generateStrongPasswordHash(pin)
+    pin = pin ? Encrypt.generateStrongPasswordHash(pin) : null
   }
 }
