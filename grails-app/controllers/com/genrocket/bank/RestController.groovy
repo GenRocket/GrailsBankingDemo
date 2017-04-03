@@ -139,25 +139,25 @@ class RestController {
   def openAccount() {
     Map map = request.JSON as Map
 
-    String pin = map.pin
-
-    CustomerLevel customerLevel = CustomerLevel.findByName(map.customer)
-    Float checking = Float.parseFloat(map.checking)
-    Float savings = Float.parseFloat(map.savings)
-    Branch branch = Branch.findByBranchCode(map.branchCode)
+    String pin = map.openAccount.pin
+    CustomerLevel customerLevel = CustomerLevel.findByName(map.openAccount.customerLevel)
+    Float checking = Float.parseFloat(map.openAccount.checking)
+    Float savings = Float.parseFloat(map.openAccount.savings)
+    Branch branch = Branch.findByBranchCode(map.openAccount.branchCode)
+    String suffix = map.openAccount.suffix.trim()
 
     User user = new User()
-    user.title = map.title
-    user.firstName = map.firstName
-    user.lastName = map.lastName
-    user.middleInitial = map.middleInitial
-    user.suffix = map.suffix
-    user.username = map.username
-    user.emailAddress = map.emailAddress
-    user.phoneNumber = map.phoneNumber
+    user.title = map.openAccount.title
+    user.firstName = map.openAccount.firstName
+    user.lastName = map.openAccount.lastName
+    user.middleInitial = map.openAccount.middleInitial
+    user.suffix = suffix.size() == 0 ? null : suffix
+    user.username = map.openAccount.username
+    user.emailAddress = map.openAccount.emailAddress
+    user.phoneNumber = map.openAccount.phoneNumber
 
-    accountService.openAccountWithDeposit(user, branch, customerLevel, checking, savings, pin)
+    TransactionStatus transactionStatus = accountService.openAccountWithDeposit(user, branch, customerLevel, checking, savings, pin)
 
-    render([success: true] as JSON)
+    render([transactionStatus: transactionStatus] as JSON)
   }
 }

@@ -14,31 +14,45 @@ class AccountService {
   def savingsService
   def userService
 
-  public TransactionStatus openAccountWithDeposit(User user, Branch branch, CustomerLevel customerLevel, Float checking, Float savings, String pen) {
+  private setPinAndEnable(Account account, String pin) {
+    Customer customer = Customer.findByAccount(account)
+    Card card = Card.findByCustomer(customer)
+
+    customer.enabled = true
+    customer.save()
+
+    card.pin = pin
+    card.enabled = true
+    card.save()
+
+    println()
+  }
+
+  public TransactionStatus openAccountWithDeposit(User user, Branch branch, CustomerLevel customerLevel, Float checking, Float savings, String pin) {
     userService.save(user)
 
     CardType cardType = CardType.findByName('Visa Debit')
-    Account account = null
-    TransactionStatus transactionStatus = null
+    Account account
+    TransactionStatus transactionStatus = TransactionStatus.UNABLE_TO_CREATE_ACCOUNT
 
     if (checking) {
       AccountType accountType = AccountType.findByName(AccountTypes.CHECKING.value)
       account = accountService.save(user, branch, cardType, accountType, customerLevel)
-      transactionStatus = checkingService.deposit(user, account, checking)
+
+      if (account) {
+        setPinAndEnable(account, pin)
+        transactionStatus = checkingService.deposit(user, account, checking)
+      }
     }
 
     if (savings) {
       AccountType accountType = AccountType.findByName(AccountTypes.SAVINGS.value)
       account = accountService.save(user, branch, cardType, accountType, customerLevel)
-      transactionStatus = savingsService.deposit(user, account, savings)
-    }
 
-    if (transactionStatus == TransactionStatus.TRANSACTION_COMPLETE) {
-      Customer customer = Customer.findByAccount(account)
-      Card card = Card.findByCustomer(customer)
-
-      card.pin = pen
-      card.save()
+      if (account) {
+        setPinAndEnable(account, pin)
+        transactionStatus = savingsService.deposit(user, account, savings)
+      }
     }
 
     return transactionStatus
