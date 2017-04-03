@@ -109,7 +109,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     Branch.count() == 10
   }
 
-  def "test makeDeposit for TRANSACTION_COMPLETE"() {
+  def "test makeDeposit checking TRANSACTION_COMPLETE"() {
     given:
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
     Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
@@ -133,7 +133,49 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     card.customer.account.balance == balance + depositAmount
   }
 
-  def "test makeDeposit not TRANSACTION_COMPLETE"() {
+  def "test makeDeposit savings TRANSACTION_COMPLETE"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Account account = (Account) fromInfo['savingsAccount']
+    Card card = (Card) fromInfo['savingsCard']
+
+    Float balance = 500.00
+    Float depositAmount = 100.00
+
+    account.balance = balance
+    account.save()
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.makeDeposit()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
+    card.customer.account.balance == balance + depositAmount
+  }
+
+  def "test makeDeposit checking not TRANSACTION_COMPLETE"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    Float depositAmount = 0.00
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.makeDeposit()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("invalid.amount.value", null, null)
+  }
+
+  def "test makeDeposit savings not TRANSACTION_COMPLETE"() {
     given:
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
     Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
@@ -151,7 +193,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     restController.response.json.transactionStatus == messageSource.getMessage("invalid.amount.value", null, null)
   }
 
-  def "test makeWithdrawal for checking TRANSACTION_COMPLETE"() {
+  def "test makeWithdrawal checking TRANSACTION_COMPLETE"() {
     given:
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
     Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
@@ -174,7 +216,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     card.customer.account.balance == balance - withdrawalAmount
   }
 
-  def "test makeWithdrawal for savings TRANSACTION_COMPLETE"() {
+  def "test makeWithdrawal savings TRANSACTION_COMPLETE"() {
     given:
     transactionCreatorService.createCheckingAndSavingsAccounts(1)
     Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
