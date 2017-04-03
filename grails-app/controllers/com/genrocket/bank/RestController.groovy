@@ -1,6 +1,7 @@
 package com.genrocket.bank
 
 import com.genrocket.bank.co.LoginCO
+import com.genrocket.bank.co.TransferCO
 import grails.converters.JSON
 
 class RestController {
@@ -133,42 +134,46 @@ class RestController {
   }
 
   def makeTransfer() {
-    String pin = map.transfer.Pin
+    Map map = request.JSON as Map
+
+    String pin = map.transfer.pin
     String fromCardNumber = map.transfer.fromCardNumber
-    String toCardNumber = map.transfer.toCardNumber
-    Float amount = Float.parseFloat(map.transfer.amount)
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: fromCardNumber)
+
+    Long toAccountNumber = map.transfer.toAccountNumber?.toLong()
+    Float amount = map.amount?.toFloat()
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
 
     if (loginCO.validate()) {
       Card fromCard = Card.findByCardNumber(fromCardNumber)
-      Card toCard = Card.findByCardNumber(toCardNumber)
-
       Customer fromCustomer = fromCard.customer
-      Customer toCustomer = toCard.customer
 
       Account fromAccount = fromCustomer.account
-      Account toAccount = toCustomer.account
+      Account toAccount = Account.findByAccountNumber(toAccountNumber)
+      TransferCO transferCO = new TransferCO(accountNumber: toAccount?.accountNumber, currentAccountNumber: fromAccount?.accountNumber)
 
-      User user = fromCustomer.user
-
-      if (fromAccount.accountType.name == AccountTypes.CHECKING.value) {
-        if (toAccount.accountType.name == AccountTypes.CHECKING.value) {
-          transactionStatus = checkingService.transferCheckingToChecking(user, fromAccount, toAccount, amount)
+      if (transferCO.validate()) {
+        User user = fromCustomer.user
+        if (fromAccount.accountType.name == AccountTypes.CHECKING.value) {
+          if (toAccount.accountType.name == AccountTypes.CHECKING.value) {
+            transactionStatus = checkingService.transferCheckingToChecking(user, fromAccount, toAccount, amount)
+          } else {
+            transactionStatus = checkingService.transfer(user, fromAccount, toAccount, amount)
+          }
         } else {
-          transactionStatus = checkingService.transfer(user, fromAccount, toAccount, amount)
+          if (toAccount.accountType.name == AccountTypes.CHECKING.value) {
+            transactionStatus = savingsService.transferSavingsToSavings(user, fromAccount, toAccount, amount)
+          } else {
+            transactionStatus = savingsService.transfer(user, fromAccount, toAccount, amount)
+          }
         }
       } else {
-        if (toAccount.accountType.name == AccountTypes.CHECKING.value) {
-          transactionStatus = savingsService.transferSavingsToSavings(user, fromAccount, toAccount, amount)
-        } else {
-          transactionStatus = savingsService.transfer(user, fromAccount, toAccount, amount)
-        }
+        transactionStatus = TransactionStatus.INVALID_ACCOUNT_NUMBER
       }
     }
 
-    render([trasactionStatus: transactionStatus] as JSON)
+    render([transactionStatus: message(code: "${transactionStatus}")] as JSON)
   }
 
   def openAccount() {

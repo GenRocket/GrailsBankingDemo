@@ -272,4 +272,66 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     then:
     restController.response.json.transactionStatus == messageSource.getMessage("invalid.amount.value", null, null)
   }
+
+  void "test invalid account number for transfer"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    Account account = (Account) fromInfo['checkingAccount']
+
+    account.accountNumber = 9999999999
+    account.save()
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: 12345, amount: 100]]
+    restController.makeTransfer()
+
+    then:
+     restController.response.json.transactionStatus == messageSource.getMessage("invalid.account.number", null, null)
+  }
+
+  void "test same account number for transfer"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(1)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    Account account = (Account) fromInfo['checkingAccount']
+
+    account.accountNumber = 9999999999
+    account.save(flush: true)
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: account.accountNumber, amount: 100]]
+    restController.makeTransfer()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("invalid.account.number", null, null)
+  }
+
+  void "test invalid amount for transfer"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: null]]
+    restController.makeTransfer()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("invalid.amount.value", null, null)
+  }
+
 }
