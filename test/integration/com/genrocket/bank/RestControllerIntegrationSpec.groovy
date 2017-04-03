@@ -334,4 +334,140 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     restController.response.json.transactionStatus == messageSource.getMessage("invalid.amount.value", null, null)
   }
 
+  void "test transfer not complete because of withdrawal limit"() {
+    given:
+
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 500
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['checkingAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.makeTransfer()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("withdrawal.limit.reached", null, null)
+  }
+
+  void "test transfer from Checking to Checking"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['checkingAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.makeTransfer()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
+  }
+
+  void "test transfer from Checking to Savings"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['checkingCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['checkingCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['checkingAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['savingsAccount']
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.makeTransfer()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
+  }
+
+  void "test transfer from Savings to Checking"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['savingsCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['savingsCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['savingsAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['checkingAccount']
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.makeTransfer()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
+  }
+
+  void "test transfer from Savings to Savings"() {
+    given:
+    transactionCreatorService.createCheckingAndSavingsAccounts(2)
+    Map fromInfo = transactionCreatorService.getUserAccountInformation(0)
+    Map toInfo = transactionCreatorService.getUserAccountInformation(1)
+
+    Card card = (Card) fromInfo['savingsCard']
+
+    CustomerLevel customerLevel = (CustomerLevel) fromInfo['savingsCustomerLevel']
+    customerLevel.dailyWithdrawalLimit = 2000
+    customerLevel.save()
+
+    Account account = (Account) fromInfo['savingsAccount']
+    account.balance = 5000
+    account.save()
+
+    Account toAccount = (Account) toInfo['savingsAccount']
+
+    when:
+    RestController restController = new RestController()
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.makeTransfer()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
+  }
+
 }

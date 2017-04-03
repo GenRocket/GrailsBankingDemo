@@ -141,7 +141,7 @@ class RestController {
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: fromCardNumber)
 
     Long toAccountNumber = map.transfer.toAccountNumber?.toLong()
-    Float amount = map.amount?.toFloat()
+    Float amount = map.transfer.amount?.toFloat()
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
 
@@ -163,9 +163,9 @@ class RestController {
           }
         } else {
           if (toAccount.accountType.name == AccountTypes.CHECKING.value) {
-            transactionStatus = savingsService.transferSavingsToSavings(user, fromAccount, toAccount, amount)
-          } else {
             transactionStatus = savingsService.transfer(user, fromAccount, toAccount, amount)
+          } else {
+            transactionStatus = savingsService.transferSavingsToSavings(user, fromAccount, toAccount, amount)
           }
         }
       } else {
