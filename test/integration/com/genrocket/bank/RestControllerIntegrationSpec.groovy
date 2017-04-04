@@ -7,11 +7,17 @@ import com.genrocket.bank.testDataLoader.CardPoolTestDataLoader
 import com.genrocket.bank.testDataLoader.CardTypeTestDataLoader
 import com.genrocket.bank.testDataLoader.CustomerLevelTestDataLoader
 import com.genrocket.bank.testDataLoader.TransactionTypeTestDataLoader
+import com.genrocket.bank.testDataLoader.UserTestDataLoader
 import grails.test.spock.IntegrationSpec
 
 class RestControllerIntegrationSpec extends IntegrationSpec {
   def transactionCreatorService
   def messageSource
+  def branchTestDataService
+  def accountTypeTestDataService
+  def customerLevelTestDataService
+  def cardPoolTestDataService
+  def cardTypeTestDataService
 
   def "test createAccountType"() {
     given:
@@ -291,7 +297,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     restController.makeTransfer()
 
     then:
-     restController.response.json.transactionStatus == messageSource.getMessage("invalid.account.number", null, null)
+    restController.response.json.transactionStatus == messageSource.getMessage("invalid.account.number", null, null)
   }
 
   void "test same account number for transfer"() {
@@ -470,4 +476,34 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
   }
 
+  def "test openCheckingAccount"() {
+    given:
+    branchTestDataService.loadData()
+    accountTypeTestDataService.loadData()
+    customerLevelTestDataService.loadData()
+    cardPoolTestDataService.loadData(10)
+    cardTypeTestDataService.loadData()
+
+    List<LoaderDTO> loaderDTO = (LoaderDTO[]) UserTestDataLoader.load(1)
+    User user = (User) loaderDTO.first()?.object
+
+    Branch branch = Branch.first()
+    CustomerLevel customerLevel = CustomerLevel.first()
+
+    when:
+    RestController restController = new RestController()
+    Map openAccount = [openAccount: [pin: "123456", customerLevel: customerLevel.name, checking: 1000, branchCode: branch.branchCode]]
+    openAccount["openAccount"].putAll(toMap(user))
+    restController.request.json = openAccount
+    restController.openAccount()
+
+    then:
+    restController.response.json.transactionStatus == messageSource.getMessage("transaction.complete", null, null)
+  }
+
+  private Map toMap(object) {
+    return object?.properties.findAll { (it.key != 'class') }.collectEntries {
+      it.value == null || it.value instanceof Serializable ? [it.key, it.value] : [it.key, toMap(it.value)]
+    }
+  }
 }
