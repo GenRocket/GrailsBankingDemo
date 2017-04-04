@@ -191,7 +191,7 @@ class RestController {
     user.firstName = map.openAccount.firstName
     user.lastName = map.openAccount.lastName
     user.middleInitial = map.openAccount.middleInitial
-    user.suffix = suffix
+    user.suffix = suffix.size() == 0 ? null : suffix
     user.username = map.openAccount.username
     user.emailAddress = map.openAccount.emailAddress
     user.phoneNumber = map.openAccount.phoneNumber
