@@ -78,9 +78,9 @@ class RestController {
   def makeDeposit() {
     Map map = request.JSON as Map
 
-    String pin = map.pin
-    String cardNumber = map.cardNumber
-    Float amount = map.amount?.toFloat()
+    String pin = map.deposit.pin
+    String cardNumber = map.deposit.cardNumber
+    Float amount = map.deposit.amount?.toFloat()
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: cardNumber)
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
@@ -107,9 +107,9 @@ class RestController {
   def makeWithdrawal() {
     Map map = request.JSON as Map
 
-    String pin = map.pin
-    String cardNumber = map.cardNumber
-    Float amount = map.amount?.toFloat()
+    String pin = map.withdrawal.pin
+    String cardNumber = map.withdrawal.cardNumber
+    Float amount = map.withdrawal.amount?.toFloat()
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: cardNumber)
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
@@ -140,12 +140,12 @@ class RestController {
     String fromCardNumber = map.transfer.fromCardNumber
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: fromCardNumber)
 
-    Long toAccountNumber = map.transfer.toAccountNumber?.toLong()
-    Float amount = map.transfer.amount?.toFloat()
-
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
 
     if (loginCO.validate()) {
+      Long toAccountNumber = map.transfer.toAccountNumber?.toLong()
+      Float amount = map.transfer.amount?.toFloat()
+
       Card fromCard = Card.findByCardNumber(fromCardNumber)
       Customer fromCustomer = fromCard.customer
 
