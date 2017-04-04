@@ -138,19 +138,22 @@ class RestController {
 
     String pin = map.transfer.pin
     String fromCardNumber = map.transfer.fromCardNumber
-    LoginCO loginCO = new LoginCO(pin: pin, cardNumber: fromCardNumber)
-
-    Long toAccountNumber = map.transfer.toAccountNumber?.toLong()
+    String toCardNumber = map.transfer.toCardNumber
     Float amount = map.transfer.amount?.toFloat()
+    LoginCO loginCO = new LoginCO(pin: pin, cardNumber: fromCardNumber)
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
 
     if (loginCO.validate()) {
       Card fromCard = Card.findByCardNumber(fromCardNumber)
+      Card toCard = Card.findByCardNumber(toCardNumber)
+
       Customer fromCustomer = fromCard.customer
+      Customer toCustomer = toCard.customer
 
       Account fromAccount = fromCustomer.account
-      Account toAccount = Account.findByAccountNumber(toAccountNumber)
+      Account toAccount = toCustomer.account
+
       TransferCO transferCO = new TransferCO(accountNumber: toAccount?.accountNumber, currentAccountNumber: fromAccount?.accountNumber)
 
       if (transferCO.validate()) {
