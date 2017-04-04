@@ -78,9 +78,9 @@ class RestController {
   def makeDeposit() {
     Map map = request.JSON as Map
 
-    String pin = map.pin
-    String cardNumber = map.cardNumber
-    Float amount = map.amount?.toFloat()
+    String pin = map.deposit.pin
+    String cardNumber = map.deposit.cardNumber
+    Float amount = map.deposit.amount?.toFloat()
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: cardNumber)
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
@@ -107,9 +107,9 @@ class RestController {
   def makeWithdrawal() {
     Map map = request.JSON as Map
 
-    String pin = map.pin
-    String cardNumber = map.cardNumber
-    Float amount = map.amount?.toFloat()
+    String pin = map.withdrawal.pin
+    String cardNumber = map.withdrawal.cardNumber
+    Float amount = map.withdrawal.amount?.toFloat()
     LoginCO loginCO = new LoginCO(pin: pin, cardNumber: cardNumber)
 
     TransactionStatus transactionStatus = TransactionStatus.INVALID_PIN_NUMBER
@@ -194,7 +194,7 @@ class RestController {
     user.firstName = map.openAccount.firstName
     user.lastName = map.openAccount.lastName
     user.middleInitial = map.openAccount.middleInitial
-    user.suffix = suffix
+    user.suffix = suffix.size() == 0 ? null : suffix
     user.username = map.openAccount.username
     user.emailAddress = map.openAccount.emailAddress
     user.phoneNumber = map.openAccount.phoneNumber
