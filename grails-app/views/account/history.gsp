@@ -35,7 +35,7 @@
                 <td>${transaction.account.accountType.name}</td>
                 <td>${transaction.transactionType.name}</td>
                 <td>$${transaction.amount.format()}</td>
-                <td>${transaction.dateCreated.format("MMM dd, yyyy")}</td>
+                <td>${transaction.dateCreated.format("MMM dd, yyyy - HH:mm:ss")}</td>
               </tr>
             </g:each>
             </tbody>
