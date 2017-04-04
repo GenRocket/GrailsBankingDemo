@@ -131,7 +131,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.request.json = [deposit: [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]]
     restController.makeDeposit()
 
     then:
@@ -155,7 +155,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.request.json =  [deposit:[pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]]
     restController.makeDeposit()
 
     then:
@@ -174,7 +174,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.request.json =  [deposit:[pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]]
     restController.makeDeposit()
 
     then:
@@ -192,7 +192,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]
+    restController.request.json =  [deposit:[pin: "123456", cardNumber: card.cardNumber, amount: depositAmount]]
     restController.makeDeposit()
 
     then:
@@ -214,7 +214,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]
+    restController.request.json = [withdrawal:[pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]]
     restController.makeWithdrawal()
 
     then:
@@ -237,7 +237,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]
+    restController.request.json = [withdrawal:[pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]]
     restController.makeWithdrawal()
 
     then:
@@ -255,7 +255,7 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]
+    restController.request.json = [withdrawal:[pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]]
     restController.makeWithdrawal()
 
     then:
@@ -272,53 +272,11 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]
+    restController.request.json = [withdrawal:[pin: "123456", cardNumber: card.cardNumber, amount: withdrawalAmount]]
     restController.makeWithdrawal()
 
     then:
     restController.response.json.transactionStatus == messageSource.getMessage("invalid.amount.value", null, null)
-  }
-
-  void "test invalid account number for transfer"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['checkingCard']
-    Account account = (Account) fromInfo['checkingAccount']
-
-    account.accountNumber = 9999999999
-    account.save()
-
-    when:
-    RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: 12345, amount: 100]]
-    restController.makeTransfer()
-
-    then:
-    restController.response.json.transactionStatus == messageSource.getMessage("invalid.account.number", null, null)
-  }
-
-  void "test same account number for transfer"() {
-    given:
-
-    transactionCreatorService.createCheckingAndSavingsAccounts(1)
-    Map fromInfo = transactionCreatorService.getUserAccountInformation(1)
-
-    Card card = (Card) fromInfo['checkingCard']
-    Account account = (Account) fromInfo['checkingAccount']
-
-    account.accountNumber = 9999999999
-    account.save(flush: true)
-
-    when:
-    RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: account.accountNumber, amount: 100]]
-    restController.makeTransfer()
-
-    then:
-    restController.response.json.transactionStatus == messageSource.getMessage("invalid.account.number", null, null)
   }
 
   void "test invalid amount for transfer"() {
@@ -329,11 +287,11 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     Map toInfo = transactionCreatorService.getUserAccountInformation(1)
 
     Card card = (Card) fromInfo['checkingCard']
-    Account toAccount = (Account) toInfo['checkingAccount']
+    Card toCard = (Card) toInfo['checkingCard']
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: null]]
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toCardNumber: toCard?.cardNumber, amount: null]]
     restController.makeTransfer()
 
     then:
@@ -357,11 +315,11 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     account.balance = 5000
     account.save()
 
-    Account toAccount = (Account) toInfo['checkingAccount']
+    Card toCard = (Card) toInfo['checkingCard']
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toCardNumber: toCard.cardNumber, amount: 1000]]
     restController.makeTransfer()
 
     then:
@@ -384,11 +342,11 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     account.balance = 5000
     account.save()
 
-    Account toAccount = (Account) toInfo['checkingAccount']
+    Card toCard = (Card) toInfo['checkingCard']
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toCardNumber: toCard.cardNumber, amount: 1000]]
     restController.makeTransfer()
 
     then:
@@ -411,11 +369,11 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     account.balance = 5000
     account.save()
 
-    Account toAccount = (Account) toInfo['savingsAccount']
+    Card toCard = (Card) toInfo['savingsCard']
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toCardNumber: toCard.cardNumber, amount: 1000]]
     restController.makeTransfer()
 
     then:
@@ -438,11 +396,11 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     account.balance = 5000
     account.save()
 
-    Account toAccount = (Account) toInfo['checkingAccount']
+    Card toCard = (Card) toInfo['checkingCard']
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toCardNumber: toCard.cardNumber, amount: 1000]]
     restController.makeTransfer()
 
     then:
@@ -465,11 +423,11 @@ class RestControllerIntegrationSpec extends IntegrationSpec {
     account.balance = 5000
     account.save()
 
-    Account toAccount = (Account) toInfo['savingsAccount']
+    Card toCard = (Card) toInfo['savingsCard']
 
     when:
     RestController restController = new RestController()
-    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toAccountNumber: toAccount.accountNumber, amount: 1000]]
+    restController.request.json = [transfer: [pin: "123456", fromCardNumber: card.cardNumber, toCardNumber: toCard.cardNumber, amount: 1000]]
     restController.makeTransfer()
 
     then:
