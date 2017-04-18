@@ -62,6 +62,7 @@ grails.project.dependency.resolution = {
     test "org.gebish:geb-junit4:$gebVersion"
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpclient:4.3'
+    compile group: 'com.github.groovy-wslite', name: 'groovy-wslite', version: '1.1.3'
   }
 
   plugins {
