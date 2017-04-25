@@ -63,6 +63,7 @@ grails.project.dependency.resolution = {
     compile 'org.apache.httpcomponents:httpcore:4.3'
     compile 'org.apache.httpcomponents:httpclient:4.3'
     compile group: 'com.github.groovy-wslite', name: 'groovy-wslite', version: '1.1.3'
+    compile group: 'com.predic8', name: 'soa-model-core', version: '1.6.0'
   }
 
   plugins {
