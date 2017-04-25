@@ -8,6 +8,9 @@ import javax.xml.bind.annotation.XmlElement
 class AccountType {
 
   @XmlElement
+  Long id
+
+  @XmlElement
   String name
 
   static constraints = {
