@@ -27,7 +27,7 @@ class AccountController {
 
   def resetDatabase() {
     bankingService.resetValues()
-    render "<div id='resetResponse'>Done</div>"
+    redirect(controller: "home", action: "menu")
   }
 
   def doDeposit(Float amount) {
