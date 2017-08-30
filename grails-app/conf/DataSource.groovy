@@ -47,10 +47,10 @@ environments {
     dataSource {
       logSql = false
       username = "root"
-      password = "adminadmin"
+      password = "admin"
       dbCreate = "update"
       driverClassName = "com.mysql.jdbc.Driver"
-      url = "jdbc:mysql://genrocketbank1-cluster-1.cluster-cfdg3cgk3ajh.us-west-2.rds.amazonaws.com:3306/genrocket_bank"
+      url = "jdbc:mysql://localhost/genrocket_bank"
       dialect = org.hibernate.dialect.MySQL5InnoDBDialect
       properties {
         maxActive = 50
