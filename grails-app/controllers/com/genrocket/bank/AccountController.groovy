@@ -25,6 +25,11 @@ class AccountController {
     render(view: 'deposit')
   }
 
+  def resetDatabase() {
+    bankingService.resetValues()
+    render "<div id='resetResponse'>Done</div>"
+  }
+
   def doDeposit(Float amount) {
     Card card = bankingService.selectedCard
     card = Card.get(card.id)    // To fix : could not initialize proxy - no Session

@@ -49,4 +49,15 @@ class BankingService {
     return request.session
 
   }
+
+  void resetValues() {
+    Account.list().each {
+      it.balance = 0
+      it.save()
+    }
+
+    Transaction.list().each {
+      it.delete(flush: true)
+    }
+  }
 }
