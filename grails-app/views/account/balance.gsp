@@ -10,16 +10,17 @@
 <g:render template="/layouts/header"/>
 <div class="col-md-9">
   <div class="login-container">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="text-center m-b-md">
-        <h2>Your ${accountType?.name} Balance</h2>
-        <h3>$${balance.format()}</h3>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="text-center m-b-md">
+          <h2>Your ${accountType?.name} Balance</h2>
+
+          <h3 id="balance">$${balance ? balance.format() : "0.00"}</h3>
+        </div>
+        <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
       </div>
-      <a href="${createLink(controller: 'home', action: 'menu')}" class="btn btn-primary btn-block">Ok</a>
     </div>
   </div>
-</div>
 </div>
 </body>
 </html>
