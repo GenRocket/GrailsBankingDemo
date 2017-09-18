@@ -27,7 +27,7 @@ class BootStrap {
         bootstrapService.createAccounts()
       }
 
-     /* production {
+      production {
         accountTypeTestDataService.loadData()
         transactionTypeTestDataService.loadData()
         customerLevelTestDataService.loadData()
@@ -36,7 +36,7 @@ class BootStrap {
         branchTestDataService.loadData(10)
         userTestDataService.loadData(100)
         bootstrapService.createAccounts()
-      }*/
+      }
     }
   }
 
