@@ -61,6 +61,10 @@ environments {
         timeBetweenEvictionRunsMillis = 60000
         maxWait = 10000
         validationQuery = "/* ping */"
+        maxAge = 180000
+        testOnBorrow = true
+        testWhileIdle = true
+        validationInterval = 0
       }
     }
   }
