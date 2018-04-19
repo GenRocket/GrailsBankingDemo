@@ -931,7 +931,7 @@ class AccountControllerIntegrationSpec extends IntegrationSpec {
     then:
     map.user == user
     map.branches == Branch.list([sort: 'name'])
-    map.accountTypes == AccountType.list()
+    map.accountTypes?.sort() == AccountType.list().sort()
     map.customerLevels == CustomerLevel.list([sort: 'name'])
     map.cardTypes == CardType.list([sort: 'name'])
   }
