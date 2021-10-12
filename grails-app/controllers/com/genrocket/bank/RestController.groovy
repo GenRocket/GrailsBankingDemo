@@ -14,6 +14,7 @@ class RestController {
   def accountTypeService
   def customerLevelService
   def transactionTypeService
+  def userService
 
   def createAccountType() {
     Map accountTypeMap = request.JSON as Map
@@ -202,5 +203,23 @@ class RestController {
     TransactionStatus transactionStatus = accountService.openAccountWithDeposit(user, branch, customerLevel, checking, savings, pin)
 
     render([transactionStatus: message(code: "${transactionStatus}")] as JSON)
+  }
+
+  def createUser() {
+    Map map = request.JSON as Map
+
+    User user = new User()
+    user.title = map.title
+    user.firstName = map.first_name
+    user.lastName = map.last_name
+    user.middleInitial = map.middle_initial
+    user.suffix = map.suffix.trim() ?: null
+    user.username = map.username
+    user.emailAddress = map.email_address
+    user.phoneNumber = map.phone_number
+
+    userService.save(user)
+
+    render([success: true] as JSON)
   }
 }
